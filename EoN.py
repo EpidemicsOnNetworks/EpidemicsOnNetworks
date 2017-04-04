@@ -9,12 +9,11 @@ epidemicsonnetworks -- EoN
     and ODE models of disease spread.
 
     The algorithms are based on the book:
-        Mathematics of epidemics on networks: from exact to approximate 
-            models
-        By: 
-            Kiss, Miller & Simon
-        More information at 
-            https://EpidemicsOnNetworks.github.io/EpidemicsOnNetworks/
+    Mathematics of epidemics on networks: from exact to approximate 
+        models
+    By: Kiss, Miller & Simon
+    More information at 
+        https://EpidemicsOnNetworks.github.io/EpidemicsOnNetworks/
     Please cite the book if using these algorithms
 
     For simulations, we assume that input networks are **NetworkX** 
@@ -36,8 +35,7 @@ This is a preliminary version of the code:
 
 The following are not complete:
 SIS_pair_based (fails current example badly)
-order of arguments for the two SIR versions and in 
-     documentation
+order of arguments for the two SIR versions and in documentation
 Attack_rate_non_Markovian
 
 _SIR_pair_based_initialize_* documentation

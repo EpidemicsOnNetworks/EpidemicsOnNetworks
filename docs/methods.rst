@@ -1,0 +1,5 @@
+EONdocumentation
+=======================
+
+.. automodule:: EoN
+   :members:
