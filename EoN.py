@@ -9,11 +9,12 @@ epidemicsonnetworks -- EoN
     and ODE models of disease spread.
 
     The algorithms are based on the book:
-    Mathematics of epidemics on networks: from exact to approximate 
-        models
-    By: Kiss, Miller & Simon
-    More information at 
-        https://EpidemicsOnNetworks.github.io/EpidemicsOnNetworks/
+        Mathematics of epidemics on networks: from exact to approximate 
+            models
+        By: 
+            Kiss, Miller & Simon
+        More information at 
+            https://EpidemicsOnNetworks.github.io/EpidemicsOnNetworks/
     Please cite the book if using these algorithms
 
     For simulations, we assume that input networks are **NetworkX** 
@@ -35,7 +36,8 @@ This is a preliminary version of the code:
 
 The following are not complete:
 SIS_pair_based (fails current example badly)
-order of arguments for the two SIR versions and in documentation
+order of arguments for the two SIR versions and in 
+     documentation
 Attack_rate_non_Markovian
 
 _SIR_pair_based_initialize_* documentation
@@ -44,7 +46,10 @@ SIR_homogeneous_pairwise_from_graph documentation
 many of the *_from_graph do not have documentation 
     explaining inputs/outputs
 many of the descriptions do not state what they return.
--------
+
+
+
+
 Distributed under MIT license.  See license.txt for full details.
 
 '''
@@ -365,8 +370,8 @@ def get_PsiDPrime(Pk):
     return lambda x: Pkarray[k].dot(k*(k-1)*x**(k-2))
 
 
-
-def subsample(report_times, times, status1, status2=None, status3 = None):
+def subsample(report_times, times, status1, status2=None, 
+                status3 = None):
     r'''
     Given 
       S, I, and/or R as lists (or other iterable) of numbers of nodes of
@@ -381,7 +386,7 @@ def subsample(report_times, times, status1, status2=None, status3 = None):
     If report_times goes longer than times, then this simply assumes the 
     system freezes in the final state.
     
-    There is probably a better way to refactor this.
+    This uses a recursive approach if multiple arguments are defined.
 
     INPUTS
     ------
@@ -405,38 +410,28 @@ def subsample(report_times, times, status1, status2=None, status3 = None):
         [report_status1, report_status2, report_status3]
         
     '''
+    if report_times[0] < times[0]:
+        raise EoNError("report_times[0]<times[0]")
+        
     report_status1 = []
-    report_status2 = []
-    report_status3 = []
-    
     next_report_index = 0
-    for index, t in enumerate(times):
-        while next_report_index<len(report_times) and \
-                    t>= report_times[next_report_index]:
-            report_status1.append(status1[index])
-            if status2 is not None:
-                report_status2.append(status2[index])
-            if status3 is not None:
-                report_status3.append(status3[index])
-            next_report_index += 1
-    while next_report_index<len(report_times):
-        report_status1.append(status1[-1])
-        if status2 is not None:
-            report_status2.append(status2[-1])
-        if status3 is not None:
-            report_status3.append(status3[-1])
-        next_report_index += 1
-
-    return_value = []
-    return_value.append(scipy.array(report_status1))
+    next_observation_index = 0
+    while next_report_index < len(report_times):
+        while next_observation_index < len(times) and \
+              times[next_observation_index]<= report_times[next_report_index]:
+            candidate = status1[next_observation_index]
+            next_observation_index += 1
+        report_status1.append(candidate)
+        next_report_index +=1
     if status2 is not None:
-        return_value.append(scipy.array(report_status2))
-    if status3 is not None:
-        return_value.append(scipy.array(report_status3))
-    if len(return_value)==1:
-        return return_value[0]
+        if status3 is not None:
+            report_status2, report_status3 = subsample(report_times, times, status2, status3)
+            return report_status1, report_status2, report_status3
+        else:
+            return report_status1, report_status2
     else:
-        return return_value
+        return report_status1
+
 
 
 def get_time_shift(times, L, threshold):
@@ -502,8 +497,9 @@ def _simple_test_transmission_(u, v, p):
     return random.random()<p
 
 
-def discrete_SIR_epidemic(G, test_transmission=_simple_test_transmission_, 
-                args=(), initial_infecteds=None, return_node_data = False):
+def discrete_SIR_epidemic(G, 
+                test_transmission=_simple_test_transmission_, args=(), 
+                initial_infecteds=None, return_node_data = False):
     #tested in test_discrete_SIR_epidemic
     r'''
     From figure 6.8 of Kiss, Miller, & Simon.  Please cite the book
@@ -628,7 +624,8 @@ def discrete_SIR_epidemic(G, test_transmission=_simple_test_transmission_,
         S.append(S[-1]-I[-1])
         t.append(t[-1]+1)
     if not return_node_data:
-        return scipy.array(t), scipy.array(S), scipy.array(I), scipy.array(R)
+        return scipy.array(t), scipy.array(S), scipy.array(I), \
+               scipy.array(R)
     else:
         return scipy.array(t), scipy.array(S), scipy.array(I), \
                 scipy.array(R), infection_time, recovery_time
@@ -754,7 +751,8 @@ def _edge_exists_(u, v, H):
     '''
     return H.has_edge(u,v)
 
-def percolation_based_discrete_SIR_epidemic(G, p, initial_infecteds=None, 
+def percolation_based_discrete_SIR_epidemic(G, p, 
+                                            initial_infecteds=None, 
                                             return_node_data = False):
     #tested in test_basic_discrete_SIR_epidemic   
     r'''From figure 6.10 of Kiss, Miller, & Simon.  Please cite the book
@@ -971,7 +969,8 @@ def _out_component_(G, source):
     reachable_nodes = set()
 
     for node in source_nodes:
-        reachable_nodes = reachable_nodes.union(set(nx.descendants(G, node)))
+        reachable_nodes = reachable_nodes.union(
+                                        set(nx.descendants(G, node)))
 
     return reachable_nodes
 
@@ -1147,7 +1146,8 @@ def estimate_SIR_prob_size_from_dir_perc(H):
     AR = len(outC)/N
     return PE, AR
  
-def estimate_nonMarkov_SIR_prob_size(G, xi, zeta, transmission):
+def estimate_nonMarkov_SIR_prob_size(G, xi, zeta, 
+                                        transmission):
     '''
     INPUTS
     ----------
@@ -1406,8 +1406,8 @@ def _process_recovery_SIR_(event, times, S, I, R, status):
     status[node] = 'R'
     
     
-def fast_SIR(G, tau, gamma, initial_infecteds = None, tmax=float('Inf'), 
-                return_node_data = False):
+def fast_SIR(G, tau, gamma, initial_infecteds = None, 
+                tmax=float('Inf'), return_node_data = False):
     #tested in test_SIR_dynamics
     r'''From figure A.2 of Kiss, Miller, & Simon.  Please cite the
     book if using this algorithm.
@@ -1514,15 +1514,17 @@ def fast_SIR(G, tau, gamma, initial_infecteds = None, tmax=float('Inf'),
         #strip pred_inf_time and rec_time down to just the 
         #    values for nodes that became infected
         infection_time = {node:time for (node,time)     
-                            in pred_inf_time.iteritems() if status[node]!='S'}
+                            in pred_inf_time.iteritems() 
+                            if status[node]!='S'}
         recovery_time = {node:time for (node,time) 
                             in rec_time.iteritems() if status[node] !='S'}
         return scipy.array(times), scipy.array(S), scipy.array(I), \
                 scipy.array(R), infection_time, recovery_time
 
-def fast_nonMarkov_SIR(G, process_trans = _process_trans_SIR_, args = (), 
-                        initial_infecteds = None, tmax = float('Inf'), 
-                        return_node_data = False, Q=None):
+def fast_nonMarkov_SIR(G, process_trans = _process_trans_SIR_, 
+                        args = (), initial_infecteds = None, 
+                        tmax = float('Inf'), return_node_data = False, 
+                        Q=None):
     r'''
     A modification of the algorithm in figure A.2 of Kiss, Miller, & 
     Simon to allow for user-defined rules governing time of 
@@ -1677,8 +1679,8 @@ def fast_nonMarkov_SIR(G, process_trans = _process_trans_SIR_, args = (),
         event = heapq.heappop(Q)
         if event.action == 'transmit':
             if status[event.node] == 'S': 
-                process_trans(G, event, times, S, I, R, Q, status, rec_time, 
-                                pred_inf_time, tmax, *args)
+                process_trans(G, event, times, S, I, R, Q, status, 
+                                rec_time, pred_inf_time, tmax, *args)
         else:
             _process_recovery_SIR_(event, times, S, I, R, status)
 
@@ -1754,7 +1756,8 @@ def _process_trans_SIS_(G, event, tau, gamma, times, S, I, Q, status,
         newevent = Event(rec_time[node], 'recover', node)
         heapq.heappush(Q, newevent)
     for v in G.neighbors(node):
-        _find_next_trans_SIS_(Q, time, tau, node, v, status, rec_time, tmax)
+        _find_next_trans_SIS_(Q, time, tau, node, v, status, rec_time, 
+                                tmax)
 
 def _find_next_trans_SIS_(Q, time, tau, source, target, status, rec_time, 
                             tmax):
