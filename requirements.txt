@@ -1,2 +1,3 @@
 -e git+https://github.com/networkx/networkx/#egg=networkx
 -e git+https://github.com/scipy/scipy/#egg=scipy
+-e git+https://github.com/cython/cython/#egg=cython
