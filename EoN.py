@@ -25,27 +25,11 @@ epidemicsonnetworks -- EoN
 This is a preliminary version of the code:
   - The algorithms have not been tested in Python 3 (tested only in 2.7)
 
-  - The figure/equation references are based on the current draft of the 
-      book, so numbers may change
-
-  - I believe the simulations all work.
-
   - At present the ODE models are not fully tested.
 
   - Additional algorithms may be added beyond those in the book.
 
-The following are not complete:
-SIS_pair_based (fails current example badly)
-order of arguments for the two SIR versions and in 
-     documentation
-Attack_rate_non_Markovian
 
-_SIR_pair_based_initialize_* documentation
-SIS_homogeneous_pairwise_from_graph documentation
-SIR_homogeneous_pairwise_from_graph documentation
-many of the *_from_graph do not have documentation 
-    explaining inputs/outputs
-many of the descriptions do not state what they return.
 
 
 
