@@ -14,11 +14,14 @@ The package is built using tools from NetworkX_.
 .. _Mathematics of epidemics on networks\: from exact to approximate models: http://www.springer.com/us/book/9783319508047
 .. _NetworkX: https://networkx.github.io
 
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
-   
+
+   quickstart
    methods
+
 
 
 
