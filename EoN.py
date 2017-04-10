@@ -6080,6 +6080,30 @@ def EBCM_from_graph(G, tau, gamma, rho = None, tmin = 0, tmax=100,
                                         rho, tmax=tmax, 
                                         return_full_data=return_full_data)
 
+def EBCM_discrete_from_graph():
+    r'''Nothing to see here 
+    - just a place holder until this code is written'''
+    pass
+    
+def EBCM_deg_corr():
+    r'''Nothing to see here 
+    - just a place holder until this code is written'''
+    pass
+    
+def EBCM_deg_corr_discrete():
+    r'''Nothing to see here 
+    - just a place holder until this code is written'''
+    pass
+    
+def EBCM_deg_corr_from_graph(G):
+    r'''Nothing to see here 
+    - just a place holder until this code is written'''
+    pass
+
+def EBCM_deg_corr_discrete_from_graph():
+    r'''Nothing to see here 
+    - just a place holder until this code is written'''
+    pass
 
 '''
 These are the systems I want to include based on their numbering in the 
