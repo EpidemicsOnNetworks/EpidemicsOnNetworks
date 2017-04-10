@@ -3,7 +3,6 @@ r'''
 epidemicsonnetworks -- EoN
 
 "Epidemics on Networks"
-======
 
     EoN is a Python package for the simulation of epidemics on networks 
     and ODE models of disease spread.
