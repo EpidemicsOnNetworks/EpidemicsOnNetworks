@@ -2353,8 +2353,8 @@ def _dSIR_individual_based_(V, t, G, nodelist, index_of_node, trans_rate,
     return scipy.array(dV)
 
 def SIS_individual_based(G, nodelist, Y0, tau, gamma=None, tmin = 0, 
-                            tmax = 100, tcount = 1001, edge_label=None, 
-                            recovery_label=None, return_full_data = False):
+                            tmax = 100, tcount = 1001, edge_weight=None, 
+                            recovery_weight=None, return_full_data = False):
     #tested in test_SIS_individual_based
     '''Encodes System (3.7) of Kiss, Miller, & Simon.  Please cite the
     book if using this algorithm.
@@ -2382,7 +2382,7 @@ def SIS_individual_based(G, nodelist, Y0, tau, gamma=None, tmin = 0,
 
     gamma : number      (default None)
             global recovery rate 
-            (incompatible with recovery_label!=None)
+            (incompatible with recovery_weight!=None)
 
     tmin : number       (default 0)
            minimum report time
@@ -2393,15 +2393,15 @@ def SIS_individual_based(G, nodelist, Y0, tau, gamma=None, tmin = 0,
     tcount : integer       (default 1001)
              number of reports
 
-    edge_label : string       (default None)
+    edge_weight : string       (default None)
             the label for a weight given to the edges.
-            G.edge[i][j][edge_label] = g_{ij}
+            G.edge[i][j][edge_weight] = g_{ij}
 
-    recovery_label : string       (default None)
+    recovery_weight : string       (default None)
             a label for a weight given to the nodes for their recovery 
             rates
-                G.node[i][recovery_label] = gamma_i
-            We cannot define both gamma and recovery_label.  
+                G.node[i][recovery_weight] = gamma_i
+            We cannot define both gamma and recovery_weight.  
             This will raise an error.
 
     return_full_data       (default False)
@@ -2436,16 +2436,16 @@ def SIS_individual_based(G, nodelist, Y0, tau, gamma=None, tmin = 0,
                 tmax = 20)
     '''
     if gamma is None:
-        if recovery_label is None:
-            raise EoNError("need gamma or recovery_label defined.")
+        if recovery_weight is None:
+            raise EoNError("need gamma or recovery_weight defined.")
         else:
-            rec_rate = lambda x : G.node[x][recovery_label]
+            rec_rate = lambda x : G.node[x][recovery_weight]
     else:
-        if recovery_label is not None:
-            raise EoNError("only one of gamma and recovery_label can be defined.")
+        if recovery_weight is not None:
+            raise EoNError("only one of gamma and recovery_weight can be defined.")
         rec_rate = lambda x : gamma
-    if edge_label is not None:
-        trans_rate = lambda x, y: tau*G.edge[x][y][edge_label]
+    if edge_weight is not None:
+        trans_rate = lambda x, y: tau*G.edge[x][y][edge_weight]
     else:
         trans_rate = lambda x, y: tau
 
@@ -2462,8 +2462,8 @@ def SIS_individual_based(G, nodelist, Y0, tau, gamma=None, tmin = 0,
 
 
 def SIR_individual_based(G, nodelist, X0, Y0, tau, gamma=None, tmin = 0, 
-                            tmax = 100, tcount = 1001, edge_label=None, 
-                            recovery_label=None, return_full_data = False):
+                            tmax = 100, tcount = 1001, edge_weight=None, 
+                            recovery_weight=None, return_full_data = False):
     '''
     Encodes System (3.30) of Kiss, Miller, & Simon.  Please cite the
     book if using this algorithm.
@@ -2487,7 +2487,7 @@ def SIR_individual_based(G, nodelist, X0, Y0, tau, gamma=None, tmin = 0,
 
     gamma : number      (default None)
             global recovery rate  
-            (incompatible with recovery_label!=None)
+            (incompatible with recovery_weight!=None)
 
     tmin : number       (default 0)
            minimum report time
@@ -2498,15 +2498,15 @@ def SIR_individual_based(G, nodelist, X0, Y0, tau, gamma=None, tmin = 0,
     tcount : integer       (default 1001)
              number of reports
 
-    edge_label : string       (default None)
+    edge_weight : string       (default None)
             the label for a weight given to the edges.
-            G.edge[i][j][edge_label] = g_{ij}
+            G.edge[i][j][edge_weight] = g_{ij}
 
-    recovery_label : string       (default None)
+    recovery_weight : string       (default None)
             a label for a weight given to the nodes for their recovery 
             rates
-            G.node[i][recovery_label] = gamma_i
-            We cannot define both gamma and recovery_label.  
+            G.node[i][recovery_weight] = gamma_i
+            We cannot define both gamma and recovery_weight.  
             This will raise an error
 
     return_full_data       (default False)
@@ -2549,16 +2549,16 @@ def SIR_individual_based(G, nodelist, X0, Y0, tau, gamma=None, tmin = 0,
     '''
 
     if gamma is None:
-        if recovery_label is None:
-            raise EoNError("need gamma or recovery_label defined.")
+        if recovery_weight is None:
+            raise EoNError("need gamma or recovery_weight defined.")
         else:
-            rec_rate = lambda x : G.node[x][recovery_label]
+            rec_rate = lambda x : G.node[x][recovery_weight]
     else:
-        if recovery_label is not None:
-            raise EoNError("only one of gamma and recovery_label can be defined.")
+        if recovery_weight is not None:
+            raise EoNError("only one of gamma and recovery_weight can be defined.")
         rec_rate = lambda x : gamma
-    if edge_label is not None:
-        trans_rate = lambda x, y: tau*G.edge[x][y][edge_label]
+    if edge_weight is not None:
+        trans_rate = lambda x, y: tau*G.edge[x][y][edge_weight]
     else:
         trans_rate = lambda x, y: tau
 
@@ -2586,7 +2586,7 @@ def SIR_individual_based(G, nodelist, X0, Y0, tau, gamma=None, tmin = 0,
 
 def SIS_individual_based_pure_IC(G, index_nodes, nodelist, tau, gamma=None, 
                                     tmin = 0, tmax = 100, tcount = 1001, 
-                                    edge_label=None, recovery_label=None, 
+                                    edge_weight=None, recovery_weight=None, 
                                     return_full_data = False):
     '''Encodes System (3.7) of Kiss, Miller, & Simon.  Please cite the
     book if using this algorithm.
@@ -2608,7 +2608,7 @@ def SIS_individual_based_pure_IC(G, index_nodes, nodelist, tau, gamma=None,
           transmission rate of disease
     gamma : number      (default None)
             global recovery rate  
-            (incompatible with recovery_label!=None)
+            (incompatible with recovery_weight!=None)
 
     tmin : number       (default 0)
            minimum report time
@@ -2619,15 +2619,15 @@ def SIS_individual_based_pure_IC(G, index_nodes, nodelist, tau, gamma=None,
     tcount : integer       (default 1001)
              number of reports
 
-    edge_label : string       (default None)
+    edge_weight : string       (default None)
             the label for a weight given to the edges.
-            G.edge[i][j][edge_label] = g_{ij}
+            G.edge[i][j][edge_weight] = g_{ij}
 
-    recovery_label : string       (default None)
+    recovery_weight : string       (default None)
             a label for a weight given to the nodes for their recovery 
             rates
-            G.node[i][recovery_label] = gamma_i
-            We cannot define both gamma and recovery_label.  
+            G.node[i][recovery_weight] = gamma_i
+            We cannot define both gamma and recovery_weight.  
             This will raise an error
 
     return_full_data : boolean      (default False)
@@ -2658,15 +2658,15 @@ def SIS_individual_based_pure_IC(G, index_nodes, nodelist, tau, gamma=None,
     Y0 = scipy.array([1 if u in index_nodes else 0 for u in nodelist])
 
     return SIS_individual_based(G, nodelist, Y0, tau, gamma, tmin, tmax, tcount,
-                                edge_label, recovery_label, return_full_data)
+                                edge_weight, recovery_weight, return_full_data)
         
 
 
 
 def SIR_individual_based_pure_IC(G, index_nodes, nodelist, tau, gamma=None, 
                                     initial_susceptible=None, tmin = 0, 
-                                    tmax = 100, tcount = 1001, edge_label=None, 
-                                    recovery_label=None, 
+                                    tmax = 100, tcount = 1001, edge_weight=None, 
+                                    recovery_weight=None, 
                                     return_full_data = False):
     '''Encodes System (3.30) of Kiss, Miller, & Simon.  Please cite the
     book if using this algorithm.
@@ -2688,7 +2688,7 @@ def SIR_individual_based_pure_IC(G, index_nodes, nodelist, tau, gamma=None,
           transmission rate of disease
     gamma : number      (default None)
             global recovery rate  
-            (incompatible with recovery_label!=None)
+            (incompatible with recovery_weight!=None)
     initial_susceptible : list or set  (default None)
       initially susceptible nodes
       if equal to None, then all non-index nodes are initially 
@@ -2702,15 +2702,15 @@ def SIR_individual_based_pure_IC(G, index_nodes, nodelist, tau, gamma=None,
     tcount : integer       (default 1001)
              number of reports
 
-    edge_label : string       (default None)
+    edge_weight : string       (default None)
             the label for a weight given to the edges.
-            G.edge[i][j][edge_label] = g_{ij}
+            G.edge[i][j][edge_weight] = g_{ij}
 
-    recovery_label : string       (default None)
+    recovery_weight : string       (default None)
             a label for a weight given to the nodes for their recovery 
             rates
-            G.node[i][recovery_label] = gamma_i
-            We cannot define both gamma and recovery_label.  
+            G.node[i][recovery_weight] = gamma_i
+            We cannot define both gamma and recovery_weight.  
             This will raise an error
 
     return_full_data : boolean      (default False)
@@ -2734,7 +2734,7 @@ def SIR_individual_based_pure_IC(G, index_nodes, nodelist, tau, gamma=None,
                             for u in nodelist])
     
     return SIR_individual_based(G, nodelist, X0, Y0, tau, gamma, tmin, tmax, 
-                                    tcount, edge_label, recovery_label, 
+                                    tcount, edge_weight, recovery_weight, 
                                     return_full_data)
 
 ########   PAIR BASED
@@ -2909,8 +2909,8 @@ def _dSIR_pair_based_(V, t, G, nodelist, index_of_node, trans_rate, rec_rate):
 
 
 def SIS_pair_based(G, nodelist, Y0, tau, gamma=None, XY0=None, XX0 = None, 
-                    tmin = 0, tmax = 100, tcount = 1001, edge_label=None, 
-                    recovery_label=None, return_full_data = False):
+                    tmin = 0, tmax = 100, tcount = 1001, edge_weight=None, 
+                    recovery_weight=None, return_full_data = False):
     r'''
     Encodes System (3.26) of Kiss, Miller, & Simon.  Please cite the
     book if using this algorithm.
@@ -2946,7 +2946,7 @@ def SIS_pair_based(G, nodelist, Y0, tau, gamma=None, XY0=None, XX0 = None,
           transmission rate of disease
     gamma : number (default None)
             global recovery rate  
-            (incompatible with recovery_label!=None)
+            (incompatible with recovery_weight!=None)
     XY0 : 2D scipy array (default None)
             (each dimension has length number of nodes of G)
             XY0[i,j] is probability node i is susceptible and j is 
@@ -2964,14 +2964,14 @@ def SIS_pair_based(G, nodelist, Y0, tau, gamma=None, XY0=None, XX0 = None,
            maximum report time 
     tcount : integer (default 1001)
              number of reports
-    edge_label : string
+    edge_weight : string
             the label for a weight given to the edges.
-            G.edge[i][j][edge_label] = g_{ij}
-    recovery_label : string
+            G.edge[i][j][edge_weight] = g_{ij}
+    recovery_weight : string
             a label for a weight given to the nodes for their recovery 
             rates
-            G.node[i][recovery_label] = gamma_i
-            We cannot define both gamma and recovery_label.  
+            G.node[i][recovery_weight] = gamma_i
+            We cannot define both gamma and recovery_weight.  
             This will raise an error.
     return_full_data : boolean      (default False)
             if True:
@@ -3000,16 +3000,16 @@ def SIS_pair_based(G, nodelist, Y0, tau, gamma=None, XY0=None, XX0 = None,
     
 '''
     if gamma is None:
-        if recovery_label is None:
-            raise EoNError("need gamma or recovery_label defined.")
+        if recovery_weight is None:
+            raise EoNError("need gamma or recovery_weight defined.")
         else:
-            rec_rate = lambda x : G.node[x][recovery_label]
+            rec_rate = lambda x : G.node[x][recovery_weight]
     else:
-        if recovery_label is not None:
-            raise EoNError("only one of gamma and recovery_label can be defined.")
+        if recovery_weight is not None:
+            raise EoNError("only one of gamma and recovery_weight can be defined.")
         rec_rate = lambda x : gamma
-    if edge_label is not None:
-        trans_rate = lambda x, y: tau*G.edge[x][y][edge_label]
+    if edge_weight is not None:
+        trans_rate = lambda x, y: tau*G.edge[x][y][edge_weight]
     else:
         trans_rate = lambda x, y: tau
 
@@ -3064,7 +3064,7 @@ def SIS_pair_based(G, nodelist, Y0, tau, gamma=None, XY0=None, XX0 = None,
 
 def SIR_pair_based(G, nodelist, Y0, tau, gamma=None, X0 = None, XY0=None, 
                     XX0 = None, tmin = 0, tmax = 100, tcount = 1001, 
-                    edge_label=None, recovery_label=None, 
+                    edge_weight=None, recovery_weight=None, 
                     return_full_data = False):
     '''
     Encodes System (3.39) of Kiss, Miller, & Simon.  Please cite the
@@ -3101,7 +3101,7 @@ def SIR_pair_based(G, nodelist, Y0, tau, gamma=None, X0 = None, XY0=None,
           transmission rate of disease
     gamma : number (default None)
             global recovery rate  
-            (incompatible with recovery_label!=None)
+            (incompatible with recovery_weight!=None)
     X0 : scipy array (default None)
             probability a random node is initially susceptible.
             the probability of initially recovered will be 1-X0-Y0.  By 
@@ -3124,14 +3124,14 @@ def SIR_pair_based(G, nodelist, Y0, tau, gamma=None, X0 = None, XY0=None,
            maximum report time 
     tcount : integer (default 1001)
              number of reports
-    edge_label : string
+    edge_weight : string
             the label for a weight given to the edges.
-            G.edge[i][j][edge_label] = g_{ij}
-    recovery_label : string
+            G.edge[i][j][edge_weight] = g_{ij}
+    recovery_weight : string
             a label for a weight given to the nodes for their recovery 
             rates
-            G.node[i][recovery_label] = gamma_i
-            We cannot define both gamma and recovery_label.  
+            G.node[i][recovery_weight] = gamma_i
+            We cannot define both gamma and recovery_weight.  
             This will raise an error.
     return_full_data : boolean      (default False)
             if True:
@@ -3160,16 +3160,16 @@ def SIR_pair_based(G, nodelist, Y0, tau, gamma=None, X0 = None, XY0=None,
 
 
     if gamma is None:
-        if recovery_label is None:
-            raise EoNError("need gamma or recovery_label defined.")
+        if recovery_weight is None:
+            raise EoNError("need gamma or recovery_weight defined.")
         else:
-            rec_rate = lambda x : G.node[x][recovery_label]
+            rec_rate = lambda x : G.node[x][recovery_weight]
     else:
-        if recovery_label is not None:
-            raise EoNError("only one of gamma and recovery_label can be defined.")
+        if recovery_weight is not None:
+            raise EoNError("only one of gamma and recovery_weight can be defined.")
         rec_rate = lambda x : gamma
-    if edge_label is not None:
-        trans_rate = lambda x, y: tau*G.edge[x][y][edge_label]
+    if edge_weight is not None:
+        trans_rate = lambda x, y: tau*G.edge[x][y][edge_weight]
     else:
         trans_rate = lambda x, y: tau
 
@@ -3372,8 +3372,8 @@ def _SIR_pair_based_initialize_edge_data(G, edgelist, nodelist, XY0, YX0,
                             for u,v in edgelist])
     return edgelist, XY0, YX0, XX0
 
-def _get_rate_functions(G, tau, gamma=None, recovery_label=None, 
-                        edge_rate_label = None):
+def _get_rate_functions(G, tau, gamma=None, recovery_weight=None, 
+                        edge_weight = None):
     r'''
     INPUT:
     -----
@@ -3384,24 +3384,24 @@ def _get_rate_functions(G, tau, gamma=None, recovery_label=None,
         (subject to edge scaling)
     gamma : number (default None)
         disease parameter giving typical recovery rate, If given then 
-        recovery_label must be None
-    recovery_label : key (default None)
-        G.node[node][recovery_label] is recovery rate
-    edge_rate_label : key (default None)
-        G.edge[u][v][edge_rate_label] scales up or down the recovery 
+        recovery_weight must be None
+    recovery_weight : key (default None)
+        G.node[node][recovery_weight] is recovery rate
+    edge_weight : key (default None)
+        G.edge[u][v][edge_weight] scales up or down the recovery 
         rate.
 '''
-    if (gamma is None and recovery_label is None) \
-                or (gamma is not None and recovery_label is not None):
-        raise EoNError("need exactly one of gamma and recovery_label defined.")
+    if (gamma is None and recovery_weight is None) \
+                or (gamma is not None and recovery_weight is not None):
+        raise EoNError("need exactly one of gamma and recovery_weight defined.")
     
-    if gamma:
+    if gamma is not None:
         rec_rate = lambda x : gamma
     else:
-        rec_rate = lambda x : G.node[x][recovery_label]
+        rec_rate = lambda x : G.node[x][recovery_weight]
         
-    if edge_rate_label:
-        trans_rate = lambda x, y: tau*G.edge[x][y][edge_rate_label]
+    if edge_weight is not None:
+        trans_rate = lambda x, y: tau*G.edge[x][y][edge_weight]
     else:
         trans_rate = lambda x, y: tau
     return rec_rate, trans_rate
@@ -3409,7 +3409,7 @@ def _get_rate_functions(G, tau, gamma=None, recovery_label=None,
 def SIR_pair_based2(G, tau, gamma=None, rho = None, nodelist=None, X0=None, 
                     Y0=None, edgelist = None, XY0=None, YX0 = None, 
                     XX0 = None, tmin = 0, tmax = 100, tcount = 1001, 
-                    edge_rate_label=None, recovery_label=None, 
+                    edge_weight=None, recovery_weight=None, 
                     return_full_data = False):
     '''
     Encodes System (3.39) of Kiss, Miller, & Simon.  Please cite the
@@ -3462,7 +3462,7 @@ def SIR_pair_based2(G, tau, gamma=None, rho = None, nodelist=None, X0=None,
           transmission rate of disease
     gamma : number (default None)
             global recovery rate  
-            (incompatible with recovery_label!=None)
+            (incompatible with recovery_weight!=None)
     XY0 : 2D scipy array (default None)
             (each dimension has length number of nodes of G)
             XY0[i,j] is probability node i is susceptible and j is 
@@ -3480,14 +3480,14 @@ def SIR_pair_based2(G, tau, gamma=None, rho = None, nodelist=None, X0=None,
            maximum report time 
     tcount : integer (default 1001)
              number of reports
-    edge_rate_label : string
+    edge_weight : string
             the label for a weight given to the edges.
-            G.edge[i][j][edge_rate_label] = g_{ij}
-    recovery_label : string
+            G.edge[i][j][edge_weight] = g_{ij}
+    recovery_weight : string
             a label for a weight given to the nodes for their recovery 
             rates
-            G.node[i][recovery_label] = gamma_i
-            We cannot define both gamma and recovery_label.  
+            G.node[i][recovery_weight] = gamma_i
+            We cannot define both gamma and recovery_weight.  
             This will raise an error.
     return_full_data : boolean      (default False)
             if True:
@@ -3512,8 +3512,8 @@ def SIR_pair_based2(G, tau, gamma=None, rho = None, nodelist=None, X0=None,
     E = len(edgelist)
     #now we define functions which give the transmission rate of edges 
     #and recovery rate of nodes.  
-    rec_rate, trans_rate = _get_rate_functions(G, tau, gamma, recovery_label, 
-                                                edge_rate_label)
+    rec_rate, trans_rate = _get_rate_functions(G, tau, gamma, recovery_weight, 
+                                                edge_weight)
 
     times = scipy.linspace(tmin,tmax,tcount)
 
@@ -5522,6 +5522,7 @@ def Epi_Prob_discrete(Pk, p, number_its = 100):
         alpha = 1-p +p *psiPrime(alpha)/k_ave
     return 1- psi(alpha)
 
+
 def Epi_Prob_cts_time(Pk, tau, gamma, umin=0, umax = 10, ucount = 1001, 
                         number_its = 100):
     '''Encodes System (6.3) of Kiss, Miller, & Simon.  Please cite the
@@ -5697,11 +5698,11 @@ def Attack_rate_discrete(Pk, p, number_its=100, rho = None, Sk0=None,
         theta = 1-p + p*(phiR0 +  phiS0*psihatPrime(theta)/psihatPrime(1))
     return 1 - psihat(theta)
 
-def Attack_rate_discrete_from_graph(G, p, number_its = 100, rho = None, 
+#def Attack_rate_discrete_from_graph(G, p, number_its = 100, rho = None, 
                                         Sk0 = None):
-    Pk = get_Pks(G)
-    return Attack_rate_discrete_from_graph(Pk, p, number_its = number_its, 
-                                            rho = rho, Sk0 = Sk0)
+#    Pk = get_Pks(G)
+#    return Attack_rate_discrete(Pk, p, number_its = number_its, 
+#                                            rho = rho, Sk0 = Sk0)
 
 def Attack_rate_cts_time(Pk, tau, gamma, number_its =100, rho = None, 
                             Sk0 = None, phiS0=None, phiR0=0):
@@ -5773,10 +5774,14 @@ def Attack_rate_cts_time_from_graph(G,  tau, gamma, number_its =100, rho=None,
                                     Sk0 = None):
     r'''
     Given a graph, predicts the attack rate for Configuration Model 
-    networks with the given degree distribution.
+    networks with the given degree distribution.  This does not account 
+    for any structure in G beyond degree distribution.
     
     First calculates the degree distribution and then calls 
-    Attack_rate_cts_time
+    Attack_rate_cts_time.
+    
+    SEE ALSO
+    estimate_SIR_prob_size(G, p) - accounts for entire structure of G
     '''
     Pk = get_Pk(G)
     return Attack_rate_cts_time(Pk, tau, gamma, number_its = number_its, 
@@ -6080,10 +6085,6 @@ def EBCM_from_graph(G, tau, gamma, rho = None, tmin = 0, tmax=100,
                                         rho, tmax=tmax, 
                                         return_full_data=return_full_data)
 
-def EBCM_discrete_from_graph():
-    r'''Nothing to see here 
-    - just a place holder until this code is written'''
-    pass
     
 def EBCM_deg_corr():
     r'''Nothing to see here 
