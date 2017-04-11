@@ -12,7 +12,7 @@ The code here provides an example of creating a Barabasi-Albert network.  Then i
 >>> G=nx.barabasi_albert_graph(N, 5) #create a barabasi-albert graph
 >>> 
 >>> tmax = 20
->>> iterations = 5  #run 10 simulations
+>>> iterations = 5  #run 5 simulations
 >>> tau = 0.1           #transmission rate
 >>> gamma = 1.0    #recovery rate
 >>> rho = 0.005      #random fraction initially infected
