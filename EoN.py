@@ -519,7 +519,7 @@ def _simple_test_transmission_(u, v, p):
 
 def discrete_SIR_epidemic(G, 
                 test_transmission=_simple_test_transmission_, args=(), 
-                initial_infecteds=None, return_node_data = False):
+                initial_infecteds=None, return_full_data = False):
     #tested in test_discrete_SIR_epidemic
     r'''
     From figure 6.8 of Kiss, Miller, & Simon.  Please cite the book
@@ -572,7 +572,7 @@ def discrete_SIR_epidemic(G,
        if an iterable, then whole set is initially infected
        if None, then a randomly chosen node is initially infected.
 
-    return_node_data: boolean  (default False)
+    return_full_data: boolean  (default False)
         Tells whether the infection and recovery times of each 
             individual node should be returned.
         It is returned in the form of two dicts, 
@@ -582,7 +582,7 @@ def discrete_SIR_epidemic(G,
 
     RETURNS
     ------------
-    if return_node_data is False:
+    if return_full_data is False:
        the scipy arrays: t, S, I, R
     else:
        the scipy arrays: t, S, I, R 
@@ -607,7 +607,7 @@ def discrete_SIR_epidemic(G,
     basic_discrete_SIR_epidemic
     '''
 
-    if return_node_data:
+    if return_full_data:
         infection_time = {}
         recovery_time = {}
     
@@ -635,7 +635,7 @@ def discrete_SIR_epidemic(G,
                 if susceptible[v] and test_transmission(u, v, *args):
                     new_infecteds.append(v)
                     susceptible[v] = False
-            if return_node_data:
+            if return_full_data:
                 infection_time[u] = t[-1]
                 recovery_time[u] = t[-1]+1
         infecteds = new_infecteds
@@ -643,7 +643,7 @@ def discrete_SIR_epidemic(G,
         I.append(len(infecteds))
         S.append(S[-1]-I[-1])
         t.append(t[-1]+1)
-    if not return_node_data:
+    if not return_full_data:
         return scipy.array(t), scipy.array(S), scipy.array(I), \
                scipy.array(R)
     else:
@@ -653,7 +653,7 @@ def discrete_SIR_epidemic(G,
 
 
 def basic_discrete_SIR_epidemic(G, p, initial_infecteds=None, 
-                                return_node_data = False):
+                                return_full_data = False):
     #tested in test_basic_discrete_SIR_epidemic   
     r'''
     From figure 6.8 of Kiss, Miller, & Simon.  Please cite the book if 
@@ -673,7 +673,7 @@ def basic_discrete_SIR_epidemic(G, p, initial_infecteds=None,
        if a single node, then this node is initially infected
        if an iterable, then whole set is initially infected
        if None, then a randomly chosen node is initially infected.
-    return_node_data: boolean (default False)
+    return_full_data: boolean (default False)
         Tells whether the infection and recovery times of each 
         individual node should be returned.  
         It is returned in the form of two dicts, 
@@ -683,7 +683,7 @@ def basic_discrete_SIR_epidemic(G, p, initial_infecteds=None,
 
     RETURNS
     -------
-    if return_node_data is False:
+    if return_full_data is False:
         the scipy arrays: t, S, I, R
     else:
         the scipy arrays: t, S, I, R 
@@ -709,7 +709,7 @@ def basic_discrete_SIR_epidemic(G, p, initial_infecteds=None,
 '''
 
     return discrete_SIR_epidemic(G, _simple_test_transmission_, (p,), 
-                                    initial_infecteds, return_node_data)
+                                    initial_infecteds, return_full_data)
 
 
 def percolate_network(G, p):
@@ -773,7 +773,7 @@ def _edge_exists_(u, v, H):
 
 def percolation_based_discrete_SIR_epidemic(G, p, 
                                             initial_infecteds=None, 
-                                            return_node_data = False):
+                                            return_full_data = False):
     #tested in test_basic_discrete_SIR_epidemic   
     r'''From figure 6.10 of Kiss, Miller, & Simon.  Please cite the book
     if using this algorithm.
@@ -804,7 +804,7 @@ def percolation_based_discrete_SIR_epidemic(G, p,
        if a single node, then this node is initially infected
        if an iterable, then whole set is initially infected
        if None, then a randomly chosen node is initially infected.
-    return_node_data: boolean
+    return_full_data: boolean
         Tells whether the infection and recovery times of each 
         individual node should be returned.  
         It is returned in the form of two dicts, 
@@ -814,7 +814,7 @@ def percolation_based_discrete_SIR_epidemic(G, p,
 
     RETURNS
     ------------
-    if return_node_data is False:
+    if return_full_data is False:
         the lists: t, S, I, R
     else:
         the lists: t, S, I, R 
@@ -844,7 +844,7 @@ def percolation_based_discrete_SIR_epidemic(G, p,
         initial_infecteds=[initial_infecteds]
     H = percolate_network(G, p)
     return discrete_SIR_epidemic(H, _edge_exists_, [H], initial_infecteds, 
-                                    return_node_data)
+                                    return_full_data)
 
 
 def estimate_SIR_prob_size(G, p):
@@ -1101,6 +1101,9 @@ def get_infected_nodes(G, tau, gamma, initial_infecteds=None):
 def estimate_directed_SIR_prob_size(G, tau, gamma):
     #tested in test_estimate_SIR_prob_size
     '''
+    From figure 6.17 of Kiss, Miller, & Simon.  Please cite the book if 
+    using this algorithm
+    
     Predicts probability and attack rate assuming continuous-time 
     Markovian SIR disease on network G
     
@@ -1173,9 +1176,12 @@ def estimate_SIR_prob_size_from_dir_perc(H):
     AR = len(outC)/N
     return PE, AR
  
-def estimate_nonMarkov_SIR_prob_size(G, xi, zeta, 
-                                        transmission):
+def estimate_nonMarkov_SIR_prob_size(G, xi, zeta, transmission):
     '''
+    This is not directly described in Kiss, Miller, & Simon.  It uses
+    nonMarkov_directed_percolate_network  (fig 6.18) to predict 
+    epidemic probability and size.
+    
     INPUTS
     ----------
     G : NetworkX Graph
@@ -1333,7 +1339,7 @@ def _process_trans_SIR_(G, event, times, S, I, R, Q, status, rec_time,
                             pred_inf_time, tmax, trans_rate_fxn, 
                             rec_rate_fxn):
     r'''
-    From figure A.3 of Kiss, Miller, & Simon.  Please cite the book if 
+    From figure A.4 of Kiss, Miller, & Simon.  Please cite the book if 
     using this algorithm.
 
     INPUTS
@@ -1398,7 +1404,7 @@ def _process_trans_SIR_(G, event, times, S, I, R, Q, status, rec_time,
         _find_trans_SIR_(Q, time, trans_rate_fxn(node,v), node, v, status, 
                             pred_inf_time, cutoff_time)
     
-def _process_recovery_SIR_(event, times, S, I, R, status):
+def _process_rec_SIR_(event, times, S, I, R, status):
     r'''From figure A.3 of Kiss, Miller, & Simon.  Please cite the
     book if using this algorithm.
 
@@ -1437,9 +1443,9 @@ def _process_recovery_SIR_(event, times, S, I, R, status):
     
 def fast_SIR(G, tau, gamma, initial_infecteds = None, 
                 tmax=float('Inf'), transmission_weight = None, 
-                recovery_weight = None, return_node_data = False):
+                recovery_weight = None, return_full_data = False):
     #tested in test_SIR_dynamics
-    r'''From figure A.2 of Kiss, Miller, & Simon.  Please cite the
+    r'''From figure A.3 of Kiss, Miller, & Simon.  Please cite the
     book if using this algorithm.
 
     fast SIR simulation assuming exponentially distributed infection and
@@ -1462,10 +1468,10 @@ def fast_SIR(G, tau, gamma, initial_infecteds = None,
        if an iterable, then whole set is initially infected
        if None, then a randomly chosen node is initially infected.
 
-    tmax : number
+    tmax : number   (default float('Inf'))
        maximum time after which simulation will stop.
-       default float('Inf') to set to infinity.  
-       Okay for SIR, not for SIS.
+       the default of running to infinity is okay for SIR, 
+       but not for SIS.
 
     transmission_weight : string       (default None)
             the label for a weight given to the edges.
@@ -1477,7 +1483,7 @@ def fast_SIR(G, tau, gamma, initial_infecteds = None,
             recovery rates
                 gamma_i = G.node[i][recovery_weight]*gamma
 
-    return_node_data: boolean
+    return_full_data: boolean
         Tells whether the infection and recovery times of each 
         individual node should be returned.  
         It is returned in the form of two dicts, infection_time and 
@@ -1490,7 +1496,7 @@ def fast_SIR(G, tau, gamma, initial_infecteds = None,
     times, S, I, R : each a scipy array
          giving times and number in each status for corresponding time
 
-    OR if return_node_data=True:
+    OR if return_full_data=True:
     times, S, I, R, infection_time, recovery_time
          first four are scipy arrays as above.  New objects are dicts
          with entries just for those nodes that were infected ever
@@ -1519,15 +1525,15 @@ def fast_SIR(G, tau, gamma, initial_infecteds = None,
     return fast_nonMarkov_SIR(G, process_trans = _process_trans_SIR_, 
                             args = (trans_rate_fxn, rec_rate_fxn), 
                             initial_infecteds=initial_infecteds, 
-                            tmax=tmax, return_node_data=return_node_data)
+                            tmax=tmax, return_full_data=return_full_data)
 
 
 def fast_nonMarkov_SIR(G, process_trans = _process_trans_SIR_, 
                         args = (), initial_infecteds = None, 
-                        tmax = float('Inf'), return_node_data = False, 
+                        tmax = float('Inf'), return_full_data = False, 
                         Q=None):
     r'''
-    A modification of the algorithm in figure A.2 of Kiss, Miller, & 
+    A modification of the algorithm in figure A.3 of Kiss, Miller, & 
     Simon to allow for user-defined rules governing time of 
     transmission.  
     
@@ -1566,9 +1572,11 @@ def fast_nonMarkov_SIR(G, process_trans = _process_trans_SIR_,
        if a single node, then this node is initially infected
        if an iterable, then whole set is initially infected
        if None, then a randomly chosen node is initially infected.
+
     tmax : number
         stop time
-    return_node_data: boolean
+
+    return_full_data: boolean
         Tells whether the infection and recovery times of each 
         individual node should be returned.  
         It is returned in the form of two dicts, infection_time and 
@@ -1582,9 +1590,12 @@ def fast_nonMarkov_SIR(G, process_trans = _process_trans_SIR_,
              **PRIOR** to t=0.  
              Those infected at t=0 will be handled by being in Q 
              already.
+
     tmax : (default infinity)
         final time
-    return_node_data : boolean (default False)
+
+    return_full_data : boolean (default False)
+
     Q : If user wants to predefine some events, this can be done.  This 
         can be input as a heap or as a list (it will be heapified and 
         modified).
@@ -1611,7 +1622,7 @@ def fast_nonMarkov_SIR(G, process_trans = _process_trans_SIR_,
     times, S, I, R : each a scipy array
          giving times and number in each status for corresponding time
 
-    OR if return_node_data=True:
+    OR if return_full_data=True:
     times, S, I, R, infection_time, recovery_time
          first four are scipy arrays as above.  New objects are dicts
          with entries just for those nodes that were infected ever
@@ -1667,7 +1678,7 @@ def fast_nonMarkov_SIR(G, process_trans = _process_trans_SIR_,
     
     #Note that when finally infected, pred_inf_time is correct
     #and rec_time is correct.  
-    #So if return_node_data is true, these are correct
+    #So if return_full_data is true, these are correct
 
     while Q:
         event = heapq.heappop(Q)
@@ -1676,7 +1687,7 @@ def fast_nonMarkov_SIR(G, process_trans = _process_trans_SIR_,
                 process_trans(G, event, times, S, I, R, Q, status, 
                                 rec_time, pred_inf_time, tmax, *args)
         else:
-            _process_recovery_SIR_(event, times, S, I, R, status)
+            _process_rec_SIR_(event, times, S, I, R, status)
 
     #the initial infections were treated as ordinary infection events at 
     #time 0.
@@ -1687,7 +1698,7 @@ def fast_nonMarkov_SIR(G, process_trans = _process_trans_SIR_,
     I=I[len(initial_infecteds):]
     R=R[len(initial_infecteds):]
 
-    if not return_node_data:
+    if not return_full_data:
         return scipy.array(times), scipy.array(S), scipy.array(I), \
                scipy.array(R) 
     else:
@@ -1703,7 +1714,7 @@ def fast_nonMarkov_SIR(G, process_trans = _process_trans_SIR_,
 
 def _process_trans_SIS_(G, event, trans_rate_fxn, rec_rate_fxn, times, 
                         S, I, Q, status, rec_time, tmax):
-    r'''From figure A.5 of Kiss, Miller, & Simon.  Please cite the
+    r'''From figure A.6 of Kiss, Miller, & Simon.  Please cite the
     book if using this algorithm.
 
     INPUTS
@@ -1765,7 +1776,7 @@ def _process_trans_SIS_(G, event, trans_rate_fxn, rec_rate_fxn, times,
 
 def _find_next_trans_SIS_(Q, time, tau, source, target, status, rec_time, 
                             tmax):
-    r'''From figure A.3 of Kiss, Miller, & Simon.  Please cite the
+    r'''From figure A.6 of Kiss, Miller, & Simon.  Please cite the
     book if using this algorithm.
 
 
@@ -1815,8 +1826,8 @@ def _find_next_trans_SIS_(Q, time, tau, source, target, status, rec_time,
 
 
  
-def _process_recovery_SIS_(event, times, S, I, status):
-    r'''From figure A.4 of Kiss, Miller, & Simon.  Please cite the
+def _process_rec_SIS_(event, times, S, I, status):
+    r'''From figure A.6 of Kiss, Miller, & Simon.  Please cite the
     book if using this algorithm.
 
     '''
@@ -1833,7 +1844,7 @@ def _process_recovery_SIS_(event, times, S, I, status):
 
 def fast_SIS(G, tau, gamma, initial_infecteds=None, tmax=100, 
                 transmission_weight = None, recovery_weight = None, 
-                return_node_data = False):
+                return_full_data = False):
     r'''From figure A.5 of Kiss, Miller, & Simon.  Please cite the
     book if using this algorithm.
 
@@ -1866,7 +1877,7 @@ def fast_SIS(G, tau, gamma, initial_infecteds=None, tmax=100,
             recovery rates
                 gamma_i = G.node[i][recovery_weight]*gamma
     
-    return_node_data: boolean
+    return_full_data: boolean
         Tells whether the infection and recovery times of each 
         individual node should be returned.  
         It is returned in the form of two dicts, infection_time and 
@@ -1879,7 +1890,7 @@ def fast_SIS(G, tau, gamma, initial_infecteds=None, tmax=100,
     times, S, I : each a scipy array
          giving times and number in each status for corresponding time
 
-    OR if return_node_data=True:
+    OR if return_full_data=True:
     times, S, I, infection_time, recovery_time
          first four are scipy arrays as above.  New objects are dicts
          with entries just for those nodes that were infected ever
@@ -1945,7 +1956,7 @@ def fast_SIS(G, tau, gamma, initial_infecteds=None, tmax=100,
                                         source, node, status, rec_time, 
                                         tmax)
         else:
-            _process_recovery_SIS_(event, times, S, I, status)
+            _process_rec_SIS_(event, times, S, I, status)
             recovery_times[node].append(time)
 
     #the initial infections were treated as ordinary infection events at 
@@ -1956,7 +1967,7 @@ def fast_SIS(G, tau, gamma, initial_infecteds=None, tmax=100,
     S=S[len(initial_infecteds):]
     I=I[len(initial_infecteds):]
 
-    if not return_node_data:
+    if not return_full_data:
         return scipy.array(times), scipy.array(S), scipy.array(I)
     else:
         return scipy.array(times), scipy.array(S), scipy.array(I), \
@@ -1972,7 +1983,7 @@ def fast_SIS(G, tau, gamma, initial_infecteds=None, tmax=100,
 #####Now dealing with Gillespie code#####
 
 def _Gillespie_Initialize_(G, initial_infecteds, infection_times, 
-                            return_node_data, SIR = True):
+                            return_full_data, SIR = True):
     '''Initializes the network'''
     times = [0]
     S = [G.order()-len(initial_infecteds)]
@@ -1992,7 +2003,7 @@ def _Gillespie_Initialize_(G, initial_infecteds, infection_times,
                     risk_group[infected_neighbor_count[neighbor]-1].remove(
                                                                     neighbor)
                 risk_group[infected_neighbor_count[neighbor]].add(neighbor)
-    if return_node_data:
+    if return_full_data:
         for node in initial_infecteds:
             infection_times[node].append(0)
     if SIR:
@@ -2004,7 +2015,7 @@ def _Gillespie_Initialize_(G, initial_infecteds, infection_times,
     
 def _Gillespie_Infect_(G, S, I, R, times, infected, current_time, 
                         infected_neighbor_count, risk_group, status, 
-                        infection_times, return_node_data, SIR=True):
+                        infection_times, return_full_data, SIR=True):
     '''
     Chooses the node to infect.
 
@@ -2060,7 +2071,7 @@ def _Gillespie_Infect_(G, S, I, R, times, infected, current_time,
 
 def _Gillespie_Recover_SIR_(G, S, I, R, times, infected, current_time, status,
                             infected_neighbor_count, risk_group, 
-                            recovery_times, return_node_data):
+                            recovery_times, return_full_data):
     r''' Changes: S, I, R, infected, times'''
     assert(I[-1]==len(infected))
     index = random.randint(0,I[-1]-1)
@@ -2080,13 +2091,18 @@ def _Gillespie_Recover_SIR_(G, S, I, R, times, infected, current_time, status,
             infected_neighbor_count[neighbor] -= 1
             if infected_neighbor_count[neighbor]>0:
                 risk_group[infected_neighbor_count[neighbor]].add(neighbor)            
-    if return_node_data:
+    if return_full_data:
         recovery_times[recovering_node].append(current_time)
 
 def _Gillespie_Recover_SIS_(G, S, I, times, infected, current_time, status, 
                             infected_neighbor_count, risk_group, 
-                            recovery_times, return_node_data):
-    r''' x'''
+                            recovery_times, return_full_data):
+    r''' From figure A.5 of Kiss, Miller, & Simon.  Please cite the
+    book if using this algorithm.
+    
+    INPUTS
+    ------
+    '''
     assert(I[-1]==len(infected))
     index = random.randint(0,I[-1]-1)
     infected[index], infected[-1] = infected[-1], infected[index] 
@@ -2113,14 +2129,15 @@ def _Gillespie_Recover_SIS_(G, S, I, times, infected, current_time, status,
     if infected_neighbor_count[recovering_node]>0:
         risk_group[infected_neighbor_count[recovering_node]].add(
                                                             recovering_node)
-    if return_node_data:
+    if return_full_data:
         recovery_times[recovering_node].append(current_time)
 
 def Gillespie_SIR(G, tau, gamma, initial_infecteds=None, tmax=float('Inf'), 
-                    return_node_data = False):
+                    return_full_data = False):
     #tested in test_SIR_dynamics
     r'''
-    Performs a Gillespie-based SIR simulation.
+    From figure A.1 of Kiss, Miller, & Simon.  Please cite the
+    book if using this algorithm.
 
     Assumes that the network is unweighted.  
     
@@ -2130,13 +2147,8 @@ def Gillespie_SIR(G, tau, gamma, initial_infecteds=None, tmax=float('Inf'),
     This would not be as good if the edges were weighted, but we could 
     put the at_risk nodes into bands.
     
-    At present the network is treated as unweighted, so the possible 
-    risk rates are discretized.
-    
     The event-driven simulation is almost certainly faster in all cases, 
     and the benefit would increase if the network were weighted.  
-    
-    I think the coding would also be easier.
 
     At present, this does not accept recovery or transmission weights.
     This is because including that will force us to sum up these weights
@@ -2164,13 +2176,25 @@ def Gillespie_SIR(G, tau, gamma, initial_infecteds=None, tmax=float('Inf'),
        if None, then a randomly chosen node is initially infected.
     tmax : number
         stop time
-    return_node_data: boolean
+    return_full_data: boolean
         Tells whether the infection and recovery times of each 
         individual node should be returned.  
         It is returned in the form of two dicts, infection_time and 
         recovery_time.
         infection_time[node] is the time of infection and 
         recovery_time[node] is the recovery time.
+
+    RETURNS
+    -------
+    times, S, I, R : each a scipy array
+         giving times and number in each status for corresponding time
+
+    OR if return_full_data=True:
+    times, S, I, R, infection_time, recovery_time
+         first four are scipy arrays as above.  New objects are dicts
+         with entries just for those nodes that were infected ever
+         infection_time[node] is time of infection
+         recovery_time[node] is time of recovery
 
     SAMPLE USE
     ----------
@@ -2202,7 +2226,7 @@ def Gillespie_SIR(G, tau, gamma, initial_infecteds=None, tmax=float('Inf'),
 
     times, S, I, R, status, infected, infected_neighbor_count, risk_group = \
                     _Gillespie_Initialize_(G, initial_infecteds, 
-                                            infection_times, return_node_data)
+                                            infection_times, return_full_data)
 
     total_trans_rate = tau*sum(n*len(risk_group[n]) 
                                     for n in risk_group.keys())
@@ -2216,20 +2240,20 @@ def Gillespie_SIR(G, tau, gamma, initial_infecteds=None, tmax=float('Inf'),
             _Gillespie_Recover_SIR_(G, S, I, R, times, infected, next_time, 
                                     status, infected_neighbor_count, 
                                     risk_group, recovery_times, 
-                                    return_node_data)
+                                    return_full_data)
             total_rec_rate = gamma*I[-1]
         else:
             #an infection occurs
             _Gillespie_Infect_(G, S, I, R, times, infected, next_time, 
                                 infected_neighbor_count, risk_group, status, 
-                                infection_times, return_node_data, SIR=True)
+                                infection_times, return_full_data, SIR=True)
         total_trans_rate = tau*sum(n*len(risk_group[n]) 
                                     for n in risk_group.keys())
         total_rate = total_rec_rate + total_trans_rate
         if total_rate >0:  
             next_time += random.expovariate(total_rate)
 
-    if not return_node_data:
+    if not return_full_data:
         return scipy.array(times), scipy.array(S), scipy.array(I), \
                 scipy.array(R)
     else:
@@ -2242,8 +2266,12 @@ def Gillespie_SIR(G, tau, gamma, initial_infecteds=None, tmax=float('Inf'),
 
 
 def Gillespie_SIS(G, tau, gamma, initial_infecteds=None, tmax=100, 
-                    return_node_data = False):
+                    return_full_data = False):
     r'''
+    
+    Based on figure A.1 of Kiss, Miller, & Simon.  Please cite the
+    book if using this algorithm.
+    
     This could be made more efficient if we divide the at_risk nodes 
     into groups based on how at risk they are. 
     
@@ -2277,7 +2305,7 @@ def Gillespie_SIS(G, tau, gamma, initial_infecteds=None, tmax=100,
        if None, then a randomly chosen node is initially infected.
     tmax : number
         stop time
-    return_node_data: boolean
+    return_full_data: boolean
         Tells whether the infection and recovery times of each 
         individual node should be returned.  
         It is returned in the form of two dicts, infection_time and 
@@ -2314,7 +2342,7 @@ def Gillespie_SIS(G, tau, gamma, initial_infecteds=None, tmax=100,
 
     times, S, I, status, infected, infected_neighbor_count, risk_group = \
                 _Gillespie_Initialize_(G, initial_infecteds,  infection_times,  
-                                        return_node_data, SIR=False)
+                                        return_full_data, SIR=False)
     #note that at this point times, S, and I must all be lists 
     #since we will be appending to them
 
@@ -2330,13 +2358,13 @@ def Gillespie_SIS(G, tau, gamma, initial_infecteds=None, tmax=100,
             _Gillespie_Recover_SIS_(G, S, I, times, infected, next_time, 
                                     status, infected_neighbor_count, 
                                     risk_group, recovery_times, 
-                                    return_node_data)
+                                    return_full_data)
             total_rec_rate = gamma*I[-1]
         else:
             #an infection occurs
             _Gillespie_Infect_(G, S, I, [], times, infected, next_time, 
                                 infected_neighbor_count, risk_group, status, 
-                                infection_times, return_node_data, SIR=False)
+                                infection_times, return_full_data, SIR=False)
             #updates variables as needed and calculates new max_trans_rate
         total_trans_rate = tau*sum(n*len(risk_group[n]) 
                                     for n in risk_group.keys())
@@ -2347,7 +2375,7 @@ def Gillespie_SIS(G, tau, gamma, initial_infecteds=None, tmax=100,
             next_time = float('Inf')
         #        print next_time, I[-1]
 
-    if not return_node_data:
+    if not return_full_data:
         return scipy.array(times), scipy.array(S), scipy.array(I)
     else:
         return scipy.array(times), scipy.array(S), scipy.array(I), \
@@ -2361,12 +2389,6 @@ def Gillespie_SIS(G, tau, gamma, initial_infecteds=None, tmax=100,
 #    ODE CODE    #
 #                #
 ##################
-'''All system numbers below are based on the current draft of the book.  
-They are subject to change'''
-
-'''Code will be ordered so that when SIS and SIR versions both exist, 
-the corresponding functions are adjacent to each other.'''
-
 
 
 ########      INDIVIDUAL BASED code -
@@ -5382,7 +5404,10 @@ def SIR_effective_degree_from_graph(G, tau, gamma, rho = None, tmin = 0,
 def SIS_compact_effective_degree(Sk0, Ik0, SI0, SS0, II0, tau, gamma, 
                                     tmin = 0, tmax=100, tcount=1001, 
                                     return_full_data=False):
-    '''
+    r'''
+    Encodes system (5.44) of Kiss, Miller, & Simon.  Please cite the
+    book if using this algorithm.
+    
     This model is identical to the SIS compact pairwise model, so it 
     simply calls SIS_compact_pairwise()'''
 
@@ -5540,7 +5565,7 @@ def Epi_Prob_discrete(Pk, p, number_its = 100):
 
 def Epi_Prob_cts_time(Pk, tau, gamma, umin=0, umax = 10, ucount = 1001, 
                         number_its = 100):
-    '''Encodes System (6.3) of Kiss, Miller, & Simon.  Please cite the
+    r'''Encodes System (6.3) of Kiss, Miller, & Simon.  Please cite the
     book if using this algorithm.
 
     The equations are rescaled by setting $u=\gamma T$.  Then it becomes
@@ -5607,7 +5632,7 @@ def Epi_Prob_cts_time(Pk, tau, gamma, umin=0, umax = 10, ucount = 1001,
 
 def Epi_Prob_non_Markovian(Pk, tau, gamma, Pxidxi, po, umin=0, umax = 10, 
                             ucount = 1001, number_its = 100):
-    '''Encodes system (6.5) of Kiss, Miller, & Simon.  Please cite the
+    r'''Encodes system (6.5) of Kiss, Miller, & Simon.  Please cite the
     book if using this algorithm.
     
     INPUTS
