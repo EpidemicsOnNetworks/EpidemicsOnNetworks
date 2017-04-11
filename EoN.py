@@ -4918,7 +4918,7 @@ def _dSIS_super_compact_pairwise_(X, t, tau, gamma, N, k_ave, ksquare_ave,
     n_S = (SS+SI)/(S)
     
     Q = ((ksquare_ave*(ksquare_ave-n_S*k_ave) \
-            + kcube_ave*(n_S-k_ave)) (n_S*(ksquare_ave-k_ave**2))-1)/(S*n_S)
+            + kcube_ave*(n_S-k_ave)) *(n_S*(ksquare_ave-k_ave**2))-1)/(S*n_S)
     dIdt = tau*SI - gamma*I
     dSSdt = 2*gamma*SI - 2*tau*SI*SS*Q
     dSIdt = gamma*(II - SI) + tau*SI*(SS-SI)*Q - tau*SI
