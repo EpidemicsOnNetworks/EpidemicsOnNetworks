@@ -124,8 +124,44 @@ class _ListDict_(object):
         return random.choice(self.items)
 
 
+def _get_rate_functions(G, tau, gamma, transmission_weight = None, 
+                        recovery_weight=None):
+    r'''
+    INPUT:
+    -----
+    G : networkx Graph
+        the graph disease spread on
 
-def my_odeint(dfunc, V0, times, args=()):
+    tau : number
+        disease parameter giving edge transmission rate 
+        (subject to edge scaling)
+
+    gamma : number (default None)
+        disease parameter giving typical recovery rate, 
+        
+    transmission_weight : string (default None)
+        G.edge[u][v][transmission_weight] scales up or down the recovery 
+        rate.
+
+    recovery_weight : string       (default None)
+            a label for a weight given to the nodes to scale their 
+            recovery rates
+                gamma_i = G.node[i][recovery_weight]*gamma
+'''
+    if transmission_weight is None:
+        trans_rate_fxn = lambda x, y: tau
+    else:
+        trans_rate_fxn = lambda x, y: tau*G.edge[x][y][transmission_weight]
+
+    if recovery_weight is None:
+        rec_rate_fxn = lambda x : gamma
+    else:
+        rec_rate_fxn = lambda x : gamma*G.node[x][recovery_weight]
+
+
+    return trans_rate_fxn, rec_rate_fxn
+
+def _my_odeint(dfunc, V0, times, args=()):
     r'''For some of the systems odeint will switch to the BDF solver.
     In large enough systems, it then gets stuck trying to estimate the 
     Jacobian.
@@ -411,6 +447,7 @@ def subsample(report_times, times, status1, status2=None,
             report_status2, report_status3 = subsample(report_times, times, status2, status3)
             return report_status1, report_status2, report_status3
         else:
+            report_status2 = subsample(report_times, times, status2)
             return report_status1, report_status2
     else:
         return report_status1
@@ -1015,6 +1052,13 @@ def get_infected_nodes(G, tau, gamma, initial_infecteds=None):
     There are much faster ways to implement an algorithm giving the same 
     output, for example by actually running an epidemic.
     
+    WARNING
+    ---------
+    why are you using this command? If it's to better understand some
+    concept, that's fine.  But this command IS NOT an efficient way to
+    calculate anything.  Don't do it like this.  Use one of the other
+    algorithms.  Try fast_SIR, for example.
+    
     INPUTS
     ----------
     G : NetworkX Graph
@@ -1286,7 +1330,8 @@ def _find_trans_SIR_(Q, t, tau, source, target, status, pred_inf_time,
             pred_inf_time[target] = inf_time
 
 def _process_trans_SIR_(G, event, times, S, I, R, Q, status, rec_time, 
-                            pred_inf_time, tau, gamma, tmax):
+                            pred_inf_time, tmax, trans_rate_fxn, 
+                            rec_rate_fxn):
     r'''
     From figure A.3 of Kiss, Miller, & Simon.  Please cite the book if 
     using this algorithm.
@@ -1310,11 +1355,12 @@ def _process_trans_SIR_(G, event, times, S, I, R, Q, status, rec_time,
         dictionary giving predicted infeciton time of nodes 
     tmax : number
         max time allowed
-    tau : number
-        transmission rate (from node)
-    gamma : number
-        recovery rate (of node)
-
+    trans_rate_fxn : function
+        transmission rate trans_rate_fxn(u,v) gives transmission rate from
+        u to v
+    rec_rate_fxn : function
+        recovery rate rec_rate_fxn(u) is recovery rate of u.
+        
     RETURNS
     -------
     nothing returned
@@ -1343,14 +1389,14 @@ def _process_trans_SIR_(G, event, times, S, I, R, Q, status, rec_time,
     S.append(S[-1]-1) #one less susceptible
     I.append(I[-1]+1) #one more infected
     R.append(R[-1])   #no change to recovered
-    rec_time[node] = time + random.expovariate(gamma)
+    rec_time[node] = time + random.expovariate(rec_rate_fxn(node))
     if rec_time[node] < tmax:
         newevent = Event(rec_time[node], 'recover', node)
         heapq.heappush(Q,newevent)
     cutoff_time = min(tmax, rec_time[node])
     for v in G.neighbors(node):
-        _find_trans_SIR_(Q, time, tau, node, v, status, pred_inf_time, 
-                            cutoff_time)
+        _find_trans_SIR_(Q, time, trans_rate_fxn(node,v), node, v, status, 
+                            pred_inf_time, cutoff_time)
     
 def _process_recovery_SIR_(event, times, S, I, R, status):
     r'''From figure A.3 of Kiss, Miller, & Simon.  Please cite the
@@ -1390,7 +1436,8 @@ def _process_recovery_SIR_(event, times, S, I, R, status):
     
     
 def fast_SIR(G, tau, gamma, initial_infecteds = None, 
-                tmax=float('Inf'), return_node_data = False):
+                tmax=float('Inf'), transmission_weight = None, 
+                recovery_weight = None, return_node_data = False):
     #tested in test_SIR_dynamics
     r'''From figure A.2 of Kiss, Miller, & Simon.  Please cite the
     book if using this algorithm.
@@ -1403,18 +1450,33 @@ def fast_SIR(G, tau, gamma, initial_infecteds = None,
     ------
     G : NetworkX Graph
        The underlying network
+
     tau : number
        transmission rate per edge
+
     gamma : number
        recovery rate per node
+
     initial_infecteds: node or iterable of nodes
        if a single node, then this node is initially infected
        if an iterable, then whole set is initially infected
        if None, then a randomly chosen node is initially infected.
+
     tmax : number
        maximum time after which simulation will stop.
        default float('Inf') to set to infinity.  
        Okay for SIR, not for SIS.
+
+    transmission_weight : string       (default None)
+            the label for a weight given to the edges.
+            transmission rate is
+            G.edge[i][j][transmission_weight]*tau
+
+    recovery_weight : string       (default None)
+            a label for a weight given to the nodes to scale their 
+            recovery rates
+                gamma_i = G.node[i][recovery_weight]*gamma
+
     return_node_data: boolean
         Tells whether the infection and recovery times of each 
         individual node should be returned.  
@@ -1450,59 +1512,15 @@ def fast_SIR(G, tau, gamma, initial_infecteds = None,
                                 
     plt.plot(t, I)
     '''
-    if initial_infecteds is None:
-        initial_infecteds=[random.choice(G.nodes())]
-    elif G.has_node(initial_infecteds):
-        initial_infecteds=[initial_infecteds]
+    
+    trans_rate_fxn, rec_rate_fxn = _get_rate_functions(G, tau, gamma, 
+                                                transmission_weight,
+                                                recovery_weight)
+    return fast_nonMarkov_SIR(G, process_trans = _process_trans_SIR_, 
+                            args = (trans_rate_fxn, rec_rate_fxn), 
+                            initial_infecteds=initial_infecteds, 
+                            tmax=tmax, return_node_data=return_node_data)
 
-
-    Q = []#an empty heap
-        
-    times, S, I, R= ([0], [G.order()], [0], [0])
-
-    status = defaultdict(lambda: 'S') #node status defaults to 'S'
-    rec_time = defaultdict(lambda: -1) #node recovery time defaults to -1
-    pred_inf_time = defaultdict(lambda: float('Inf')) 
-    #infection time defaults to \infty  --- this could be set to tmax, 
-    #probably with a slight improvement to performance.
-    #Note that if node becomes infected, pred_inf_time is actually inf_time
-    #and similarly for rec_time rec_time is correct.  
-    for u in initial_infecteds:
-        newevent = Event(0, 'transmit', u)
-        pred_inf_time[u] = 0
-        heapq.heappush(Q,newevent)
-
-    while Q:
-        event = heapq.heappop(Q)
-        if event.action == 'transmit':
-            if status[event.node] == 'S': 
-                _process_trans_SIR_(G, event, times, S, I, R, Q, status, 
-                                    rec_time, pred_inf_time,  tau, gamma, 
-                                    tmax)
-        else:
-            _process_recovery_SIR_(event, times, S, I, R, status)
-
-    #the initial infections were treated as ordinary infection events at 
-    #time 0.
-    #So each initial infection added an entry at time 0 to lists.
-    #We'd like to get rid these excess events.
-    times = times[len(initial_infecteds):]
-    S=S[len(initial_infecteds):]
-    I=I[len(initial_infecteds):]
-    R=R[len(initial_infecteds):]
-    if not return_node_data:
-        return scipy.array(times), scipy.array(S), scipy.array(I), \
-                scipy.array(R) # ignoring initial value entered.
-    else:
-        #strip pred_inf_time and rec_time down to just the 
-        #    values for nodes that became infected
-        infection_time = {node:time for (node,time)     
-                            in pred_inf_time.iteritems() 
-                            if status[node]!='S'}
-        recovery_time = {node:time for (node,time) 
-                            in rec_time.iteritems() if status[node] !='S'}
-        return scipy.array(times), scipy.array(S), scipy.array(I), \
-                scipy.array(R), infection_time, recovery_time
 
 def fast_nonMarkov_SIR(G, process_trans = _process_trans_SIR_, 
                         args = (), initial_infecteds = None, 
@@ -1605,15 +1623,6 @@ def fast_nonMarkov_SIR(G, process_trans = _process_trans_SIR_,
     
     '''
 
-    if process_trans == _process_trans_SIR_:
-        try:
-            tau, gamma = map(float, args)  
-            #better be able to make args be two floats.
-        except:
-            raise EoNError("if using default for fast_nonMarkov_SIR, then \
-                            args should be (tau,gamma)\n \
-                            Consider just using fast_SIR.")
-
     status = defaultdict(lambda: 'S') #node status defaults to 'S'
     rec_time = defaultdict(lambda: -1) #node recovery time defaults to -1
     pred_inf_time = defaultdict(lambda: float('Inf')) 
@@ -1625,7 +1634,9 @@ def fast_nonMarkov_SIR(G, process_trans = _process_trans_SIR_,
         if initial_infecteds is None:
             initial_infecteds=[random.choice(G.nodes())]
         elif G.has_node(initial_infecteds):
-            initial_infecteds=[initial_infecteds]
+            initial_infecteds=[initial_infecteds]   
+        #else it is assumed to be a list of nodes.
+        
         for u in initial_infecteds:
             newevent = Event(0, 'transmit', u)
             pred_inf_time[u] = 0
@@ -1667,6 +1678,15 @@ def fast_nonMarkov_SIR(G, process_trans = _process_trans_SIR_,
         else:
             _process_recovery_SIR_(event, times, S, I, R, status)
 
+    #the initial infections were treated as ordinary infection events at 
+    #time 0.
+    #So each initial infection added an entry at time 0 to lists.
+    #We'd like to get rid these excess events.
+    times = times[len(initial_infecteds):]
+    S=S[len(initial_infecteds):]
+    I=I[len(initial_infecteds):]
+    R=R[len(initial_infecteds):]
+
     if not return_node_data:
         return scipy.array(times), scipy.array(S), scipy.array(I), \
                scipy.array(R) 
@@ -1681,8 +1701,8 @@ def fast_nonMarkov_SIR(G, process_trans = _process_trans_SIR_,
                 scipy.array(R), infection_time, recovery_time
 
 
-def _process_trans_SIS_(G, event, tau, gamma, times, S, I, Q, status, 
-                        rec_time, tmax):
+def _process_trans_SIS_(G, event, trans_rate_fxn, rec_rate_fxn, times, 
+                        S, I, Q, status, rec_time, tmax):
     r'''From figure A.5 of Kiss, Miller, & Simon.  Please cite the
     book if using this algorithm.
 
@@ -1691,10 +1711,11 @@ def _process_trans_SIS_(G, event, tau, gamma, times, S, I, Q, status,
     G : NetworkX Graph
     event: event
         has details on node and time
-    tau : number
-        transmission rate (from node)
-    gamma : number
-        recovery rate (of node)
+    trans_rate_fxn : function
+        transmission rate trans_rate_fxn(u,v) gives transmission rate 
+        from u to v
+    rec_rate_fxn : function
+        recovery rate rec_rate_fxn(u) is recovery rate of u.
     times : list
         list of times at which events have happened
     S, I: lists
@@ -1734,13 +1755,13 @@ def _process_trans_SIS_(G, event, tau, gamma, times, S, I, Q, status,
     I.append(I[-1]+1) #one more infected
     S.append(S[-1]-1) #one less susceptible
     times.append(time)
-    rec_time[node] = time + random.expovariate(gamma)
+    rec_time[node] = time + random.expovariate(rec_rate_fxn(node))
     if rec_time[node] < tmax:
         newevent = Event(rec_time[node], 'recover', node)
         heapq.heappush(Q, newevent)
     for v in G.neighbors(node):
-        _find_next_trans_SIS_(Q, time, tau, node, v, status, rec_time, 
-                                tmax)
+        _find_next_trans_SIS_(Q, time, trans_rate_fxn(node, v), node, v, 
+                                status, rec_time, tmax)
 
 def _find_next_trans_SIS_(Q, time, tau, source, target, status, rec_time, 
                             tmax):
@@ -1811,6 +1832,7 @@ def _process_recovery_SIS_(event, times, S, I, status):
 
 
 def fast_SIS(G, tau, gamma, initial_infecteds=None, tmax=100, 
+                transmission_weight = None, recovery_weight = None, 
                 return_node_data = False):
     r'''From figure A.5 of Kiss, Miller, & Simon.  Please cite the
     book if using this algorithm.
@@ -1819,16 +1841,31 @@ def fast_SIS(G, tau, gamma, initial_infecteds=None, tmax=100,
     -------------
     G : NetworkX Graph
        The underlying network
+
     tau : number
        transmission rate per edge
+
     gamma : number
        recovery rate per node
+
     initial_infecteds: node or iterable of nodes
        if a single node, then this node is initially infected
        if an iterable, then whole set is initially infected
        if None, then a randomly chosen node is initially infected.
+
     tmax : number
         stop time
+
+    transmission_weight : string       (default None)
+            the label for a weight given to the edges.
+            transmission rate is
+            G.edge[i][j][transmission_weight]*tau
+
+    recovery_weight : string       (default None)
+            a label for a weight given to the nodes to scale their 
+            recovery rates
+                gamma_i = G.node[i][recovery_weight]*gamma
+    
     return_node_data: boolean
         Tells whether the infection and recovery times of each 
         individual node should be returned.  
@@ -1866,6 +1903,10 @@ def fast_SIS(G, tau, gamma, initial_infecteds=None, tmax=100,
         
     '''
 
+    trans_rate_fxn, rec_rate_fxn = _get_rate_functions(G, tau, gamma, 
+                                                transmission_weight,
+                                                recovery_weight)
+
     if initial_infecteds is None:
         initial_infecteds=[random.choice(G.nodes())]
     elif G.has_node(initial_infecteds):
@@ -1894,15 +1935,27 @@ def fast_SIS(G, tau, gamma, initial_infecteds=None, tmax=100,
         if event.action == 'transmit':
             source = event.source
             if status[node] == 'S':
-                _process_trans_SIS_(G, event, tau, gamma, times, S, I, Q, 
+                _process_trans_SIS_(G, event, trans_rate_fxn, 
+                                    rec_rate_fxn, times, S, I, Q, 
                                     status, rec_time, tmax)
                 infection_times[node].append(time)
             if source != 'initial_condition':
-                _find_next_trans_SIS_(Q, time, tau, source, node, status, 
-                                        rec_time, tmax)
+                _find_next_trans_SIS_(Q, time, 
+                                        trans_rate_fxn(source, node), 
+                                        source, node, status, rec_time, 
+                                        tmax)
         else:
             _process_recovery_SIS_(event, times, S, I, status)
             recovery_times[node].append(time)
+
+    #the initial infections were treated as ordinary infection events at 
+    #time 0.
+    #So each initial infection added an entry at time 0 to lists.
+    #We'd like to get rid these excess events.
+    times = times[len(initial_infecteds):]
+    S=S[len(initial_infecteds):]
+    I=I[len(initial_infecteds):]
+
     if not return_node_data:
         return scipy.array(times), scipy.array(S), scipy.array(I)
     else:
@@ -2085,6 +2138,11 @@ def Gillespie_SIR(G, tau, gamma, initial_infecteds=None, tmax=float('Inf'),
     
     I think the coding would also be easier.
 
+    At present, this does not accept recovery or transmission weights.
+    This is because including that will force us to sum up these weights
+    more frequently rather than just counting how many exist
+    which will slow the code down.  For weights, try fast_SIR
+    
     SEE ALSO
     --------
     fast_SIR which has the same inputs but uses a different method to 
@@ -2195,6 +2253,11 @@ def Gillespie_SIS(G, tau, gamma, initial_infecteds=None, tmax=100,
     Warning: self-edges will cause this to die.  
     You can remove self-edges by G.remove_edges_from(G.selfloop_edges())
 
+    At present, this does not accept recovery or transmission weights.
+    This is because including that will force us to sum up these weights
+    more frequently rather than just counting how many exist
+    which will slow the code down.  For weights, try fast_SIS
+    
     SEE ALSO
     --------
     fast_SIS which has the same inputs but uses a much faster method.
@@ -2311,7 +2374,7 @@ the corresponding functions are adjacent to each other.'''
 ########  having given status based on probabilities of neighbors.  Assumes
 ########  independence.
     
-def _dSIS_individual_based_(Y, t, G, nodelist, trans_rate, rec_rate):
+def _dSIS_individual_based_(Y, t, G, nodelist, trans_rate_fxn, rec_rate_fxn):
     N = len(nodelist)
     dY = scipy.zeros(N)
     for index, (node, Yi) in enumerate(zip(nodelist,Y)):
@@ -2322,12 +2385,12 @@ def _dSIS_individual_based_(Y, t, G, nodelist, trans_rate, rec_rate):
         #numpy sparse matrices.  Perhaps that works?
         #No plan to do premature optimization.  Let's get it
         #working and then see if it's slow.
-        dY[index] = sum(trans_rate(node,nbr)*(1-Y[node])*Y[nbr] 
-                            for nbr in G.neighbors(node)) - rec_rate(node)*Yi
+        dY[index] = sum(trans_rate_fxn(node,nbr)*(1-Y[node])*Y[nbr] 
+                            for nbr in G.neighbors(node)) - rec_rate_fxn(node)*Yi
     return dY
 
-def _dSIR_individual_based_(V, t, G, nodelist, index_of_node, trans_rate, 
-                            rec_rate):
+def _dSIR_individual_based_(V, t, G, nodelist, index_of_node, trans_rate_fxn, 
+                            rec_rate_fxn):
     '''    <\dot{X}_i> = - tau sum_j g_{ij} <Xi><Yj>
     <\dot{Y}_i> = tau sum_j g_{ij} <Xi><Yj> - gamma_i <Y_i>
     Z_i = 1-X_i-Y_i
@@ -2346,14 +2409,14 @@ def _dSIR_individual_based_(V, t, G, nodelist, index_of_node, trans_rate,
         #No plan to do premature optimization.  Let's get it
         #working and then see if it's slow.
         
-        dX[index] = -Xi*sum(trans_rate(node,nbr)*Y[index_of_node[nbr]] 
+        dX[index] = -Xi*sum(trans_rate_fxn(node,nbr)*Y[index_of_node[nbr]] 
                                 for nbr in G.neighbors(node))
-        dY[index] =  -dX[index] - rec_rate(node)*Yi
+        dY[index] =  -dX[index] - rec_rate_fxn(node)*Yi
     dV = scipy.concatenate((dX,dY), axis=0)
     return scipy.array(dV)
 
-def SIS_individual_based(G, nodelist, Y0, tau, gamma=None, tmin = 0, 
-                            tmax = 100, tcount = 1001, edge_weight=None, 
+def SIS_individual_based(G, nodelist, Y0, tau, gamma, tmin = 0, 
+                            tmax = 100, tcount = 1001, transmission_weight=None, 
                             recovery_weight=None, return_full_data = False):
     #tested in test_SIS_individual_based
     '''Encodes System (3.7) of Kiss, Miller, & Simon.  Please cite the
@@ -2380,9 +2443,8 @@ def SIS_individual_based(G, nodelist, Y0, tau, gamma=None, tmin = 0,
     tau : number
           transmission rate of disease
 
-    gamma : number      (default None)
+    gamma : number 
             global recovery rate 
-            (incompatible with recovery_weight!=None)
 
     tmin : number       (default 0)
            minimum report time
@@ -2393,16 +2455,14 @@ def SIS_individual_based(G, nodelist, Y0, tau, gamma=None, tmin = 0,
     tcount : integer       (default 1001)
              number of reports
 
-    edge_weight : string       (default None)
+    transmission_weight : string       (default None)
             the label for a weight given to the edges.
-            G.edge[i][j][edge_weight] = g_{ij}
+            G.edge[i][j][transmission_weight] = g_{ij}
 
     recovery_weight : string       (default None)
-            a label for a weight given to the nodes for their recovery 
-            rates
-                G.node[i][recovery_weight] = gamma_i
-            We cannot define both gamma and recovery_weight.  
-            This will raise an error.
+            a label for a weight given to the nodes to scale their 
+            recovery rates
+                gamma_i = G.node[i][recovery_weight]*gamma
 
     return_full_data       (default False)
             If True, returns times, Ss, Is
@@ -2435,23 +2495,13 @@ def SIS_individual_based(G, nodelist, Y0, tau, gamma=None, tmin = 0,
     t, S, I = EoN.SIS_individual_based(G, nodelist, Y, 0.3, gamma=1, 
                 tmax = 20)
     '''
-    if gamma is None:
-        if recovery_weight is None:
-            raise EoNError("need gamma or recovery_weight defined.")
-        else:
-            rec_rate = lambda x : G.node[x][recovery_weight]
-    else:
-        if recovery_weight is not None:
-            raise EoNError("only one of gamma and recovery_weight can be defined.")
-        rec_rate = lambda x : gamma
-    if edge_weight is not None:
-        trans_rate = lambda x, y: tau*G.edge[x][y][edge_weight]
-    else:
-        trans_rate = lambda x, y: tau
+    trans_rate_fxn, rec_rate_fxn = _get_rate_functions(G, tau, gamma, 
+                                                transmission_weight,
+                                                recovery_weight)
 
     times = scipy.linspace(tmin, tmax, tcount)
     Y = integrate.odeint(_dSIS_individual_based_, Y0, times,  
-                                    args =(G, nodelist, trans_rate, rec_rate))
+                                    args =(G, nodelist, trans_rate_fxn, rec_rate_fxn))
     Is = Y.T
     Ss = scipy.ones(len(Is))[:,None]-Is 
     
@@ -2461,8 +2511,8 @@ def SIS_individual_based(G, nodelist, Y0, tau, gamma=None, tmin = 0,
         return times, sum(Ss), sum(Is)
 
 
-def SIR_individual_based(G, nodelist, X0, Y0, tau, gamma=None, tmin = 0, 
-                            tmax = 100, tcount = 1001, edge_weight=None, 
+def SIR_individual_based(G, nodelist, X0, Y0, tau, gamma, tmin = 0, 
+                            tmax = 100, tcount = 1001, transmission_weight=None, 
                             recovery_weight=None, return_full_data = False):
     '''
     Encodes System (3.30) of Kiss, Miller, & Simon.  Please cite the
@@ -2487,7 +2537,6 @@ def SIR_individual_based(G, nodelist, X0, Y0, tau, gamma=None, tmin = 0,
 
     gamma : number      (default None)
             global recovery rate  
-            (incompatible with recovery_weight!=None)
 
     tmin : number       (default 0)
            minimum report time
@@ -2498,16 +2547,14 @@ def SIR_individual_based(G, nodelist, X0, Y0, tau, gamma=None, tmin = 0,
     tcount : integer       (default 1001)
              number of reports
 
-    edge_weight : string       (default None)
+    transmission_weight : string       (default None)
             the label for a weight given to the edges.
-            G.edge[i][j][edge_weight] = g_{ij}
+            G.edge[i][j][transmission_weight] = g_{ij}
 
     recovery_weight : string       (default None)
-            a label for a weight given to the nodes for their recovery 
-            rates
-            G.node[i][recovery_weight] = gamma_i
-            We cannot define both gamma and recovery_weight.  
-            This will raise an error
+            a label for a weight given to the nodes to scale their 
+            recovery rates
+                gamma_i = G.node[i][recovery_weight]*gamma
 
     return_full_data       (default False)
             If True, returns times, S, I, R, Ss, Is, Rs
@@ -2548,19 +2595,9 @@ def SIR_individual_based(G, nodelist, X0, Y0, tau, gamma=None, tmin = 0,
     plt.plot(t,I)
     '''
 
-    if gamma is None:
-        if recovery_weight is None:
-            raise EoNError("need gamma or recovery_weight defined.")
-        else:
-            rec_rate = lambda x : G.node[x][recovery_weight]
-    else:
-        if recovery_weight is not None:
-            raise EoNError("only one of gamma and recovery_weight can be defined.")
-        rec_rate = lambda x : gamma
-    if edge_weight is not None:
-        trans_rate = lambda x, y: tau*G.edge[x][y][edge_weight]
-    else:
-        trans_rate = lambda x, y: tau
+    trans_rate_fxn, rec_rate_fxn = _get_rate_functions(G, tau, gamma, 
+                                                transmission_weight,
+                                                recovery_weight)
 
     index_of_node = {}
     for i, node in enumerate(nodelist):
@@ -2571,7 +2608,7 @@ def SIR_individual_based(G, nodelist, X0, Y0, tau, gamma=None, tmin = 0,
     V0 = scipy.concatenate((X0,Y0), axis=0)
     V = integrate.odeint(_dSIR_individual_based_, V0, times, 
                             args = (G, nodelist, index_of_node, 
-                                    trans_rate, rec_rate))
+                                    trans_rate_fxn, rec_rate_fxn))
     Ss = V.T[:N]
     S = Ss.sum(axis=0)
     Is = V.T[N:]
@@ -2584,9 +2621,10 @@ def SIR_individual_based(G, nodelist, X0, Y0, tau, gamma=None, tmin = 0,
         return times, S, I, R
 
 
-def SIS_individual_based_pure_IC(G, index_nodes, nodelist, tau, gamma=None, 
+def SIS_individual_based_pure_IC(G, index_nodes, nodelist, tau, gamma, 
                                     tmin = 0, tmax = 100, tcount = 1001, 
-                                    edge_weight=None, recovery_weight=None, 
+                                    transmission_weight=None, 
+                                    recovery_weight=None, 
                                     return_full_data = False):
     '''Encodes System (3.7) of Kiss, Miller, & Simon.  Please cite the
     book if using this algorithm.
@@ -2608,7 +2646,6 @@ def SIS_individual_based_pure_IC(G, index_nodes, nodelist, tau, gamma=None,
           transmission rate of disease
     gamma : number      (default None)
             global recovery rate  
-            (incompatible with recovery_weight!=None)
 
     tmin : number       (default 0)
            minimum report time
@@ -2619,16 +2656,14 @@ def SIS_individual_based_pure_IC(G, index_nodes, nodelist, tau, gamma=None,
     tcount : integer       (default 1001)
              number of reports
 
-    edge_weight : string       (default None)
+    transmission_weight : string       (default None)
             the label for a weight given to the edges.
-            G.edge[i][j][edge_weight] = g_{ij}
+            G.edge[i][j][transmission_weight] = g_{ij}
 
     recovery_weight : string       (default None)
-            a label for a weight given to the nodes for their recovery 
-            rates
-            G.node[i][recovery_weight] = gamma_i
-            We cannot define both gamma and recovery_weight.  
-            This will raise an error
+            a label for a weight given to the nodes to scale their 
+            recovery rates
+                gamma_i = G.node[i][recovery_weight]*gamma
 
     return_full_data : boolean      (default False)
 
@@ -2658,14 +2693,15 @@ def SIS_individual_based_pure_IC(G, index_nodes, nodelist, tau, gamma=None,
     Y0 = scipy.array([1 if u in index_nodes else 0 for u in nodelist])
 
     return SIS_individual_based(G, nodelist, Y0, tau, gamma, tmin, tmax, tcount,
-                                edge_weight, recovery_weight, return_full_data)
+                                transmission_weight, recovery_weight, return_full_data)
         
 
 
 
-def SIR_individual_based_pure_IC(G, index_nodes, nodelist, tau, gamma=None, 
+def SIR_individual_based_pure_IC(G, index_nodes, nodelist, tau, gamma, 
                                     initial_susceptible=None, tmin = 0, 
-                                    tmax = 100, tcount = 1001, edge_weight=None, 
+                                    tmax = 100, tcount = 1001, 
+                                    transmission_weight=None, 
                                     recovery_weight=None, 
                                     return_full_data = False):
     '''Encodes System (3.30) of Kiss, Miller, & Simon.  Please cite the
@@ -2680,19 +2716,24 @@ def SIR_individual_based_pure_IC(G, index_nodes, nodelist, tau, gamma=None,
     INPUTS
     -------
     G : Networkx graph
+    
     index_nodes : list or set
       the set of nodes initially infected
+      
     nodelist : list
          list of nodes in G in the same order as in Y0
+
     tau : number
           transmission rate of disease
+
     gamma : number      (default None)
             global recovery rate  
-            (incompatible with recovery_weight!=None)
+
     initial_susceptible : list or set  (default None)
       initially susceptible nodes
       if equal to None, then all non-index nodes are initially 
       susceptible.
+
     tmin : number       (default 0)
            minimum report time
 
@@ -2702,16 +2743,14 @@ def SIR_individual_based_pure_IC(G, index_nodes, nodelist, tau, gamma=None,
     tcount : integer       (default 1001)
              number of reports
 
-    edge_weight : string       (default None)
+    transmission_weight : string       (default None)
             the label for a weight given to the edges.
-            G.edge[i][j][edge_weight] = g_{ij}
+            G.edge[i][j][transmission_weight] = g_{ij}
 
     recovery_weight : string       (default None)
-            a label for a weight given to the nodes for their recovery 
-            rates
-            G.node[i][recovery_weight] = gamma_i
-            We cannot define both gamma and recovery_weight.  
-            This will raise an error
+            a label for a weight given to the nodes to scale their 
+            recovery rates
+                gamma_i = G.node[i][recovery_weight]*gamma
 
     return_full_data : boolean      (default False)
 
@@ -2733,13 +2772,13 @@ def SIR_individual_based_pure_IC(G, index_nodes, nodelist, tau, gamma=None,
         X0 = scipy.array([1 if u in initially_susceptible else 0 
                             for u in nodelist])
     
-    return SIR_individual_based(G, nodelist, X0, Y0, tau, gamma, tmin, tmax, 
-                                    tcount, edge_weight, recovery_weight, 
-                                    return_full_data)
+    return SIR_individual_based(G, nodelist, X0, Y0, tau, gamma, tmin, 
+                                tmax, tcount, transmission_weight, 
+                                recovery_weight, return_full_data)
 
 ########   PAIR BASED
 
-def _dSIS_pair_based_(V, t, G, nodelist, index_of_node, trans_rate, rec_rate):
+def _dSIS_pair_based_(V, t, G, nodelist, index_of_node, trans_rate_fxn, rec_rate_fxn):
     '''
     <\dot{Y}_i> = tau \sum_j g_{ij} <XiYj>  -  gamma_i <Yi>
     <\dot{XY}_ij> = tau sum_{k \neq i} g_{jk} <XiXj><XjYk>/<Xj>
@@ -2799,14 +2838,14 @@ def _dSIS_pair_based_(V, t, G, nodelist, index_of_node, trans_rate, rec_rate):
     #Will avoid (premature) optimization for now.
     for u in nodelist:
         i = index_of_node[u]
-        dY[i] += -rec_rate(u)*Y[i] 
+        dY[i] += -rec_rate_fxn(u)*Y[i] 
         for v in G.neighbors(u):
             j = index_of_node[v]
-            dY[i] += trans_rate(u,v)*XY[i,j]
+            dY[i] += trans_rate_fxn(u,v)*XY[i,j]
             
-            dXY[i,j] +=  - (trans_rate(u,v)+rec_rate(v))*XY[i,j] \
-                            + rec_rate(u)*YY[i,j]
-            dXX[i,j] +=  rec_rate(u)*YX[i,j] + rec_rate(v)*XY[i,j]
+            dXY[i,j] +=  - (trans_rate_fxn(u,v)+rec_rate_fxn(v))*XY[i,j] \
+                            + rec_rate_fxn(u)*YY[i,j]
+            dXX[i,j] +=  rec_rate_fxn(u)*YX[i,j] + rec_rate_fxn(v)*XY[i,j]
             #all the pure pairs are dealt with.  Now the triples
             for w in G.neighbors(u):
                 if w == v: #skip these
@@ -2814,10 +2853,10 @@ def _dSIS_pair_based_(V, t, G, nodelist, index_of_node, trans_rate, rec_rate):
                 #so w != v. 
                 k= index_of_node[w]
 
-                dXY[i,j] += trans_rate(v,w) * XX[i,j] * XY[j,k]*Xinv[j]  \
-                            -  trans_rate(u,w) * YX[k,i] * XY[i,j]*Xinv[i]
-                dXX[i,j] += -trans_rate(v,w) * XX[i,j] * XY[j,k]*Xinv[j] \
-                            -  trans_rate(u,w) * YX[k,i] * XX[i,j]*Xinv[i]
+                dXY[i,j] += trans_rate_fxn(v,w) * XX[i,j] * XY[j,k]*Xinv[j]  \
+                            -  trans_rate_fxn(u,w) * YX[k,i] * XY[i,j]*Xinv[i]
+                dXX[i,j] += -trans_rate_fxn(v,w) * XX[i,j] * XY[j,k]*Xinv[j] \
+                            -  trans_rate_fxn(u,w) * YX[k,i] * XX[i,j]*Xinv[i]
 
     dXY.shape = (N**2,1)
     dXX.shape = (N**2,1)
@@ -2825,7 +2864,7 @@ def _dSIS_pair_based_(V, t, G, nodelist, index_of_node, trans_rate, rec_rate):
     dV = scipy.concatenate((dY[:,None], dXY, dXX), axis=0).T[0]
     return dV
 
-def _dSIR_pair_based_(V, t, G, nodelist, index_of_node, trans_rate, rec_rate):
+def _dSIR_pair_based_(V, t, G, nodelist, index_of_node, trans_rate_fxn, rec_rate_fxn):
     '''
     <\dot{X}_i> = -tau sum_j g_{ij} <XiYj>
     <\dot{Y}_i> = tau \sum_j g_{ij} <XiYj>  -  gamma_i <Y_i>
@@ -2877,13 +2916,13 @@ def _dSIR_pair_based_(V, t, G, nodelist, index_of_node, trans_rate, rec_rate):
     #optimization for now.
     for u in nodelist:
         i = index_of_node[u]
-        dY[i] += -rec_rate(u)*Y[i] 
+        dY[i] += -rec_rate_fxn(u)*Y[i] 
         for v in G.neighbors(u):
             j = index_of_node[v]
-            dX[i] += -trans_rate(u,v)*XY[i,j]
-            dY[i] += trans_rate(u,v)*XY[i,j]
+            dX[i] += -trans_rate_fxn(u,v)*XY[i,j]
+            dY[i] += trans_rate_fxn(u,v)*XY[i,j]
             
-            dXY[i,j] +=  - (trans_rate(u,v)+rec_rate(v))*XY[i,j] 
+            dXY[i,j] +=  - (trans_rate_fxn(u,v)+rec_rate_fxn(v))*XY[i,j] 
 
             #all the pure pairs are dealt with.  Now the triples
             for w in G.neighbors(v):
@@ -2892,14 +2931,14 @@ def _dSIR_pair_based_(V, t, G, nodelist, index_of_node, trans_rate, rec_rate):
                 #so w != u.  
                 k= index_of_node[w]
                 #i corresponds to u, j to v and k to w.
-                dXY[i,j] += trans_rate(v,w) * XX[i,j] * XY[j,k]*Xinv[j]  
-                dXX[i,j] += -trans_rate(v,w) * XX[i,j] * XY[j,k]*Xinv[j] 
+                dXY[i,j] += trans_rate_fxn(v,w) * XX[i,j] * XY[j,k]*Xinv[j]  
+                dXX[i,j] += -trans_rate_fxn(v,w) * XX[i,j] * XY[j,k]*Xinv[j] 
             for w in G.neighbors(u):
                 if w == v:
                     continue #skip these
                 k = index_of_node[w]
-                dXY[i,j] += -  trans_rate(u,w) * YX[k,i] * XY[i,j]*Xinv[i]
-                dXX[i,j] += -  trans_rate(u,w) * YX[k,i] * XX[i,j]*Xinv[i]
+                dXY[i,j] += -  trans_rate_fxn(u,w) * YX[k,i] * XY[i,j]*Xinv[i]
+                dXX[i,j] += -  trans_rate_fxn(u,w) * YX[k,i] * XX[i,j]*Xinv[i]
 
     dXY.shape = (N**2,1)
     dXX.shape = (N**2,1)
@@ -2908,8 +2947,8 @@ def _dSIR_pair_based_(V, t, G, nodelist, index_of_node, trans_rate, rec_rate):
     return dV
 
 
-def SIS_pair_based(G, nodelist, Y0, tau, gamma=None, XY0=None, XX0 = None, 
-                    tmin = 0, tmax = 100, tcount = 1001, edge_weight=None, 
+def SIS_pair_based(G, nodelist, Y0, tau, gamma, XY0=None, XX0 = None, 
+                    tmin = 0, tmax = 100, tcount = 1001, transmission_weight=None, 
                     recovery_weight=None, return_full_data = False):
     r'''
     Encodes System (3.26) of Kiss, Miller, & Simon.  Please cite the
@@ -2937,42 +2976,51 @@ def SIS_pair_based(G, nodelist, Y0, tau, gamma=None, XY0=None, XX0 = None,
     INPUT:
     ------
     G : Networkx graph
+
     nodelist : list
          list of nodes in G in the same order as in Y0
+
     Y0 : scipy array
          the array of initial infection probabilities for each node in 
          order as in nodelist
+
     tau : number
           transmission rate of disease
+
     gamma : number (default None)
             global recovery rate  
-            (incompatible with recovery_weight!=None)
+
     XY0 : 2D scipy array (default None)
             (each dimension has length number of nodes of G)
             XY0[i,j] is probability node i is susceptible and j is 
             infected.
             if None, then assumes that infections are introduced 
             randomly according to Y0.
+
     XX0 : 2D scipy array (default None)
             (each dimension has length number of nodes of G)
             XX0[i,j] is probability nodes i and j are susceptible.
             if None, then assumes that infections are introduced 
             randomly according to Y0.
+
     tmin : number (default 0)
            minimum report time
+
     tmax : number (default 100)
            maximum report time 
+
     tcount : integer (default 1001)
              number of reports
-    edge_weight : string
+
+    transmission_weight : string
             the label for a weight given to the edges.
-            G.edge[i][j][edge_weight] = g_{ij}
-    recovery_weight : string
-            a label for a weight given to the nodes for their recovery 
-            rates
-            G.node[i][recovery_weight] = gamma_i
-            We cannot define both gamma and recovery_weight.  
-            This will raise an error.
+            G.edge[i][j][transmission_weight] = g_{ij}
+
+    recovery_weight : string       (default None)
+            a label for a weight given to the nodes to scale their 
+            recovery rates
+                gamma_i = G.node[i][recovery_weight]*gamma
+
     return_full_data : boolean      (default False)
             if True:
                 returns times, S, I, R, Xs, Ys, Zs, XY, XX
@@ -2999,19 +3047,9 @@ def SIS_pair_based(G, nodelist, Y0, tau, gamma=None, XY0=None, XX0 = None,
     plt.plot(t,I)
     
 '''
-    if gamma is None:
-        if recovery_weight is None:
-            raise EoNError("need gamma or recovery_weight defined.")
-        else:
-            rec_rate = lambda x : G.node[x][recovery_weight]
-    else:
-        if recovery_weight is not None:
-            raise EoNError("only one of gamma and recovery_weight can be defined.")
-        rec_rate = lambda x : gamma
-    if edge_weight is not None:
-        trans_rate = lambda x, y: tau*G.edge[x][y][edge_weight]
-    else:
-        trans_rate = lambda x, y: tau
+    trans_rate_fxn, rec_rate_fxn = _get_rate_functions(G, tau, gamma, 
+                                                transmission_weight,
+                                                recovery_weight)
 
     times = scipy.linspace(tmin,tmax,tcount)
 
@@ -3042,8 +3080,8 @@ def SIS_pair_based(G, nodelist, Y0, tau, gamma=None, XY0=None, XX0 = None,
     index_of_node = {node:i for i, node in enumerate(nodelist)}
 
     V = integrate.odeint(_dSIS_pair_based_, V0, times, 
-                            args = (G, nodelist, index_of_node, trans_rate, 
-                                    rec_rate))
+                            args = (G, nodelist, index_of_node, trans_rate_fxn, 
+                                    rec_rate_fxn))
     Ys = V.T[0:N]
     I = Ys.sum(axis=0)
     Xs = scipy.ones(N)[:,None]-Ys
@@ -3062,9 +3100,9 @@ def SIS_pair_based(G, nodelist, Y0, tau, gamma=None, XY0=None, XX0 = None,
 
 
 
-def SIR_pair_based(G, nodelist, Y0, tau, gamma=None, X0 = None, XY0=None, 
+def SIR_pair_based(G, nodelist, Y0, tau, gamma, X0 = None, XY0=None, 
                     XX0 = None, tmin = 0, tmax = 100, tcount = 1001, 
-                    edge_weight=None, recovery_weight=None, 
+                    transmission_weight=None, recovery_weight=None, 
                     return_full_data = False):
     '''
     Encodes System (3.39) of Kiss, Miller, & Simon.  Please cite the
@@ -3092,47 +3130,57 @@ def SIR_pair_based(G, nodelist, Y0, tau, gamma=None, X0 = None, XY0=None,
     INPUT:
     ------
     G : Networkx graph
+    
     nodelist : list
          list of nodes in G in the same order as in Y0
+
     Y0 : scipy array
          the array of initial infection probabilities for each node in 
          order as in nodelist
+
     tau : number
           transmission rate of disease
+
     gamma : number (default None)
             global recovery rate  
-            (incompatible with recovery_weight!=None)
+
     X0 : scipy array (default None)
             probability a random node is initially susceptible.
             the probability of initially recovered will be 1-X0-Y0.  By 
             default we assume no initial recoveries, so X0=1-Y0 will be 
             assumed in this case.
+
     XY0 : 2D scipy array (default None)
             (each dimension has length number of nodes of G)
             XY0[i,j] is probability node i is susceptible and j is 
                 infected.
             if None, then assumes that infections are introduced 
                 randomly according to Y0.
+
     XX0 : 2D scipy array (default None)
             (each dimension has length number of nodes of G)
             XX0[i,j] is probability nodes i and j are susceptible.
             if None, then assumes that infections are introduced 
                 randomly according to Y0.
+
     tmin : number (default 0)
            minimum report time
+
     tmax : number (default 100)
            maximum report time 
+
     tcount : integer (default 1001)
              number of reports
-    edge_weight : string
+
+    transmission_weight : string
             the label for a weight given to the edges.
-            G.edge[i][j][edge_weight] = g_{ij}
-    recovery_weight : string
-            a label for a weight given to the nodes for their recovery 
-            rates
-            G.node[i][recovery_weight] = gamma_i
-            We cannot define both gamma and recovery_weight.  
-            This will raise an error.
+            G.edge[i][j][transmission_weight] = g_{ij}
+
+    recovery_weight : string       (default None)
+            a label for a weight given to the nodes to scale their 
+            recovery rates
+                gamma_i = G.node[i][recovery_weight]*gamma
+
     return_full_data : boolean      (default False)
             if True:
                 returns times, S, I, R, Xs, Ys, Zs, XY, XX
@@ -3159,19 +3207,9 @@ def SIR_pair_based(G, nodelist, Y0, tau, gamma=None, X0 = None, XY0=None,
     '''
 
 
-    if gamma is None:
-        if recovery_weight is None:
-            raise EoNError("need gamma or recovery_weight defined.")
-        else:
-            rec_rate = lambda x : G.node[x][recovery_weight]
-    else:
-        if recovery_weight is not None:
-            raise EoNError("only one of gamma and recovery_weight can be defined.")
-        rec_rate = lambda x : gamma
-    if edge_weight is not None:
-        trans_rate = lambda x, y: tau*G.edge[x][y][edge_weight]
-    else:
-        trans_rate = lambda x, y: tau
+    trans_rate_fxn, rec_rate_fxn = _get_rate_functions(G, tau, gamma, 
+                                                transmission_weight,
+                                                recovery_weight)
 
     times = scipy.linspace(tmin,tmax,tcount)
     if X0 is None:
@@ -3205,8 +3243,8 @@ def SIR_pair_based(G, nodelist, Y0, tau, gamma=None, X0 = None, XY0=None,
 
 
     V = integrate.odeint(_dSIR_pair_based_, V0, times, 
-                            args = (G, nodelist, index_of_node, trans_rate, 
-                                    rec_rate))
+                            args = (G, nodelist, index_of_node, trans_rate_fxn, 
+                                    rec_rate_fxn))
     Xs = V.T[0:N]
     S = Xs.sum(axis=0)
     Ys = V.T[N:2*N]
@@ -3225,7 +3263,7 @@ def SIR_pair_based(G, nodelist, Y0, tau, gamma=None, X0 = None, XY0=None,
 
 
 def _dSIR_pair_based2_(V, t, G, nodelist, index_of_node, edgelist, 
-                        index_of_edge, trans_rate, rec_rate):
+                        index_of_edge, trans_rate_fxn, rec_rate_fxn):
     #X, Y, XY, YX, XX
     N=len(nodelist)
     E=len(edgelist)
@@ -3288,35 +3326,35 @@ def _dSIR_pair_based2_(V, t, G, nodelist, index_of_node, edgelist,
     #I expect it to run quickly regardless.  
     #Will avoid (premature) optimization for now.
     for i, u in enumerate(nodelist):
-        dY[i] += -rec_rate(u)*Y[i] 
+        dY[i] += -rec_rate_fxn(u)*Y[i] 
     for edgeindex, (u,v) in enumerate(edgelist):
         i = index_of_node[u]
         j = index_of_node[v]
 
-        dX[i] += -trans_rate(u,v)*XY[edgeindex] 
-        dY[i] += trans_rate(u,v)*XY[edgeindex]  
+        dX[i] += -trans_rate_fxn(u,v)*XY[edgeindex] 
+        dY[i] += trans_rate_fxn(u,v)*XY[edgeindex]  
 
-        dX[j] += -trans_rate(u,v)*YX[edgeindex]
-        dY[j] += trans_rate(u,v)*YX[edgeindex]
+        dX[j] += -trans_rate_fxn(u,v)*YX[edgeindex]
+        dY[j] += trans_rate_fxn(u,v)*YX[edgeindex]
 
-        dXY[edgeindex] += - (trans_rate(u,v)+rec_rate(v))*XY[edgeindex]
-        dYX[edgeindex] += - (trans_rate(u,v)+rec_rate(v))*YX[edgeindex]
+        dXY[edgeindex] += - (trans_rate_fxn(u,v)+rec_rate_fxn(v))*XY[edgeindex]
+        dYX[edgeindex] += - (trans_rate_fxn(u,v)+rec_rate_fxn(v))*YX[edgeindex]
 
         for w in G.neighbors(u):
             if w==v:  #skip this case
                 continue
             k=index_of_node[w]
-            dXY[edgeindex] += -trans_rate(w,u)*my_YX(w,u) * my_XY(u,v)*Xinv(u)
-            dYX[edgeindex] += trans_rate(w,u)*my_XX(v,u)*my_XY(u,w)*Xinv(u)
-            dXX[edgeindex] += -trans_rate(w,u) * my_XX(u,v) \
+            dXY[edgeindex] += -trans_rate_fxn(w,u)*my_YX(w,u) * my_XY(u,v)*Xinv(u)
+            dYX[edgeindex] += trans_rate_fxn(w,u)*my_XX(v,u)*my_XY(u,w)*Xinv(u)
+            dXX[edgeindex] += -trans_rate_fxn(w,u) * my_XX(u,v) \
                                 * my_XY(u,w)*Xinv(u) 
         for w in G.neighbors(v):
             if w==u:
                 continue
             #w transmits to v.
-            dXY[edgeindex] += trans_rate(w,v)*my_XX(u,v) *my_XY(v,w)*Xinv(v)
-            dYX[edgeindex] += -trans_rate(w,v)*my_XY(v,w)*my_YX(u,v)*Xinv(v)
-            dXX[edgeindex] += -trans_rate(w,v)*my_XX(u,v)*my_XY(v,w)*Xinv(v)
+            dXY[edgeindex] += trans_rate_fxn(w,v)*my_XX(u,v) *my_XY(v,w)*Xinv(v)
+            dYX[edgeindex] += -trans_rate_fxn(w,v)*my_XY(v,w)*my_YX(u,v)*Xinv(v)
+            dXX[edgeindex] += -trans_rate_fxn(w,v)*my_XX(u,v)*my_XY(v,w)*Xinv(v)
 
     dV = scipy.concatenate((dX, dY, dXY, dYX, dXX), axis=0)
     return dV
@@ -3372,44 +3410,11 @@ def _SIR_pair_based_initialize_edge_data(G, edgelist, nodelist, XY0, YX0,
                             for u,v in edgelist])
     return edgelist, XY0, YX0, XX0
 
-def _get_rate_functions(G, tau, gamma=None, recovery_weight=None, 
-                        edge_weight = None):
-    r'''
-    INPUT:
-    -----
-    G : networkx Graph
-        the graph disease spread on
-    tau : number
-        disease parameter giving edge transmission rate 
-        (subject to edge scaling)
-    gamma : number (default None)
-        disease parameter giving typical recovery rate, If given then 
-        recovery_weight must be None
-    recovery_weight : key (default None)
-        G.node[node][recovery_weight] is recovery rate
-    edge_weight : key (default None)
-        G.edge[u][v][edge_weight] scales up or down the recovery 
-        rate.
-'''
-    if (gamma is None and recovery_weight is None) \
-                or (gamma is not None and recovery_weight is not None):
-        raise EoNError("need exactly one of gamma and recovery_weight defined.")
     
-    if gamma is not None:
-        rec_rate = lambda x : gamma
-    else:
-        rec_rate = lambda x : G.node[x][recovery_weight]
-        
-    if edge_weight is not None:
-        trans_rate = lambda x, y: tau*G.edge[x][y][edge_weight]
-    else:
-        trans_rate = lambda x, y: tau
-    return rec_rate, trans_rate
-    
-def SIR_pair_based2(G, tau, gamma=None, rho = None, nodelist=None, X0=None, 
+def SIR_pair_based2(G, tau, gamma, rho = None, nodelist=None, X0=None, 
                     Y0=None, edgelist = None, XY0=None, YX0 = None, 
                     XX0 = None, tmin = 0, tmax = 100, tcount = 1001, 
-                    edge_weight=None, recovery_weight=None, 
+                    transmission_weight=None, recovery_weight=None, 
                     return_full_data = False):
     '''
     Encodes System (3.39) of Kiss, Miller, & Simon.  Please cite the
@@ -3453,42 +3458,51 @@ def SIR_pair_based2(G, tau, gamma=None, rho = None, nodelist=None, X0=None,
 
     -------
     G : Networkx graph
+
     nodelist : list
          list of nodes in G in the same order as in Y0
+
     Y0 : scipy array
          the array of initial infection probabilities for each node in 
          order as in nodelist
+
     tau : number
           transmission rate of disease
+
     gamma : number (default None)
             global recovery rate  
-            (incompatible with recovery_weight!=None)
+
     XY0 : 2D scipy array (default None)
             (each dimension has length number of nodes of G)
             XY0[i,j] is probability node i is susceptible and j is 
             infected.
             if None, then assumes that infections are introduced 
                 randomly according to Y0.
+
     XX0 : 2D scipy array (default None)
             (each dimension has length number of nodes of G)
             XX0[i,j] is probability nodes i and j are susceptible.
             if None, then assumes that infections are introduced 
                 randomly according to Y0.
+
     tmin : number (default 0)
            minimum report time
+
     tmax : number (default 100)
            maximum report time 
+
     tcount : integer (default 1001)
              number of reports
-    edge_weight : string
+
+    transmission_weight : string
             the label for a weight given to the edges.
-            G.edge[i][j][edge_weight] = g_{ij}
-    recovery_weight : string
-            a label for a weight given to the nodes for their recovery 
-            rates
-            G.node[i][recovery_weight] = gamma_i
-            We cannot define both gamma and recovery_weight.  
-            This will raise an error.
+            G.edge[i][j][transmission_weight] = g_{ij}
+
+    recovery_weight : string       (default None)
+            a label for a weight given to the nodes to scale their 
+            recovery rates
+                gamma_i = G.node[i][recovery_weight]*gamma
+
     return_full_data : boolean      (default False)
             if True:
                 returns times, S, I, R, Xs, Ys, Zs, XY, XX
@@ -3512,8 +3526,9 @@ def SIR_pair_based2(G, tau, gamma=None, rho = None, nodelist=None, X0=None,
     E = len(edgelist)
     #now we define functions which give the transmission rate of edges 
     #and recovery rate of nodes.  
-    rec_rate, trans_rate = _get_rate_functions(G, tau, gamma, recovery_weight, 
-                                                edge_weight)
+    trans_rate_fxn, rec_rate_fxn = _get_rate_functions(G, tau, gamma, 
+                                                transmission_weight,
+                                                recovery_weight)
 
     times = scipy.linspace(tmin,tmax,tcount)
 
@@ -3521,7 +3536,7 @@ def SIR_pair_based2(G, tau, gamma=None, rho = None, nodelist=None, X0=None,
     V0 = scipy.concatenate((X0, Y0, XY0, YX0, XX0),axis=0)
     V = integrate.odeint(_dSIR_pair_based2_, V0, times, 
                             args = (G, nodelist, index_of_node, edgelist, 
-                                    index_of_edge, trans_rate, rec_rate))
+                                    index_of_edge, trans_rate_fxn, rec_rate_fxn))
                                     
     #dX, dY, dXY, dYX, dXX
     Xs = V.T[0:N]
@@ -4498,7 +4513,7 @@ def SIS_heterogeneous_pairwise(Sk0, Ik0, SkSl0, SkIl0, IkIl0, tau, gamma,
     SkIl0.shape = (kcount**2,1)
     X0 = scipy.concatenate((Sk0[:,None], SkSl0, SkIl0), axis=0).T[0]
 
-    X = my_odeint(_dSIS_heterogeneous_pairwise_, X0, times, 
+    X = _my_odeint(_dSIS_heterogeneous_pairwise_, X0, times, 
                     args = (Nk, NkNl, tau, gamma, Ks))
 
     kcount = len(Nk)
@@ -4903,7 +4918,7 @@ def _dSIS_super_compact_pairwise_(X, t, tau, gamma, N, k_ave, ksquare_ave,
     n_S = (SS+SI)/(S)
     
     Q = ((ksquare_ave*(ksquare_ave-n_S*k_ave) \
-            + kcube_ave*(n_S-k_ave)) (n_S*(ksquare_ave-k_ave**2))-1)/(S*n_S)
+            + kcube_ave*(n_S-k_ave)) *(n_S*(ksquare_ave-k_ave**2))-1)/(S*n_S)
     dIdt = tau*SI - gamma*I
     dSSdt = 2*gamma*SI - 2*tau*SI*SS*Q
     dSIdt = gamma*(II - SI) + tau*SI*(SS-SI)*Q - tau*SI
@@ -5699,7 +5714,7 @@ def Attack_rate_discrete(Pk, p, number_its=100, rho = None, Sk0=None,
     return 1 - psihat(theta)
 
 #def Attack_rate_discrete_from_graph(G, p, number_its = 100, rho = None, 
-                                        Sk0 = None):
+#                                        Sk0 = None):
 #    Pk = get_Pks(G)
 #    return Attack_rate_discrete(Pk, p, number_its = number_its, 
 #                                            rho = rho, Sk0 = Sk0)
@@ -5907,7 +5922,7 @@ def EBCM_discrete_uniform_introduction(N, psi, psiPrime, p, rho, tmax=100,
                             return_full_data=return_full_data)
 
 
-def EBCM_discrete_from_graph(G, tau, gamma, rho = None, tmin = 0, tmax=100, 
+def EBCM_discrete_from_graph(G, p, rho = None, tmin = 0, tmax=100, 
                                 tcount=1001, return_full_data=False):
     #tested in test_basic_discrete_SIR_epidemic
     '''
