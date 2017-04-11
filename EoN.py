@@ -1052,6 +1052,13 @@ def get_infected_nodes(G, tau, gamma, initial_infecteds=None):
     There are much faster ways to implement an algorithm giving the same 
     output, for example by actually running an epidemic.
     
+    WARNING
+    ---------
+    why are you using this command? If it's to better understand some
+    concept, that's fine.  But this command IS NOT an efficient way to
+    calculate anything.  Don't do it like this.  Use one of the other
+    algorithms.  Try fast_SIR, for example.
+    
     INPUTS
     ----------
     G : NetworkX Graph
@@ -1323,7 +1330,8 @@ def _find_trans_SIR_(Q, t, tau, source, target, status, pred_inf_time,
             pred_inf_time[target] = inf_time
 
 def _process_trans_SIR_(G, event, times, S, I, R, Q, status, rec_time, 
-                            pred_inf_time, tmax, trans_rate_fxn, rec_rate_fxn):
+                            pred_inf_time, tmax, trans_rate_fxn, 
+                            rec_rate_fxn):
     r'''
     From figure A.3 of Kiss, Miller, & Simon.  Please cite the book if 
     using this algorithm.
@@ -1693,8 +1701,8 @@ def fast_nonMarkov_SIR(G, process_trans = _process_trans_SIR_,
                 scipy.array(R), infection_time, recovery_time
 
 
-def _process_trans_SIS_(G, event, tau, gamma, times, S, I, Q, status, 
-                        rec_time, tmax):
+def _process_trans_SIS_(G, event, trans_rate_fxn, rec_rate_fxn, times, 
+                        S, I, Q, status, rec_time, tmax):
     r'''From figure A.5 of Kiss, Miller, & Simon.  Please cite the
     book if using this algorithm.
 
@@ -1703,10 +1711,11 @@ def _process_trans_SIS_(G, event, tau, gamma, times, S, I, Q, status,
     G : NetworkX Graph
     event: event
         has details on node and time
-    tau : number
-        transmission rate (from node)
-    gamma : number
-        recovery rate (of node)
+    trans_rate_fxn : function
+        transmission rate trans_rate_fxn(u,v) gives transmission rate 
+        from u to v
+    rec_rate_fxn : function
+        recovery rate rec_rate_fxn(u) is recovery rate of u.
     times : list
         list of times at which events have happened
     S, I: lists
@@ -1746,13 +1755,13 @@ def _process_trans_SIS_(G, event, tau, gamma, times, S, I, Q, status,
     I.append(I[-1]+1) #one more infected
     S.append(S[-1]-1) #one less susceptible
     times.append(time)
-    rec_time[node] = time + random.expovariate(gamma)
+    rec_time[node] = time + random.expovariate(rec_rate_fxn(node))
     if rec_time[node] < tmax:
         newevent = Event(rec_time[node], 'recover', node)
         heapq.heappush(Q, newevent)
     for v in G.neighbors(node):
-        _find_next_trans_SIS_(Q, time, tau, node, v, status, rec_time, 
-                                tmax)
+        _find_next_trans_SIS_(Q, time, trans_rate_fxn(node, v), node, v, 
+                                status, rec_time, tmax)
 
 def _find_next_trans_SIS_(Q, time, tau, source, target, status, rec_time, 
                             tmax):
@@ -1823,6 +1832,7 @@ def _process_recovery_SIS_(event, times, S, I, status):
 
 
 def fast_SIS(G, tau, gamma, initial_infecteds=None, tmax=100, 
+                transmission_weight = None, recovery_weight = None, 
                 return_node_data = False):
     r'''From figure A.5 of Kiss, Miller, & Simon.  Please cite the
     book if using this algorithm.
@@ -1831,16 +1841,31 @@ def fast_SIS(G, tau, gamma, initial_infecteds=None, tmax=100,
     -------------
     G : NetworkX Graph
        The underlying network
+
     tau : number
        transmission rate per edge
+
     gamma : number
        recovery rate per node
+
     initial_infecteds: node or iterable of nodes
        if a single node, then this node is initially infected
        if an iterable, then whole set is initially infected
        if None, then a randomly chosen node is initially infected.
+
     tmax : number
         stop time
+
+    transmission_weight : string       (default None)
+            the label for a weight given to the edges.
+            transmission rate is
+            G.edge[i][j][transmission_weight]*tau
+
+    recovery_weight : string       (default None)
+            a label for a weight given to the nodes to scale their 
+            recovery rates
+                gamma_i = G.node[i][recovery_weight]*gamma
+    
     return_node_data: boolean
         Tells whether the infection and recovery times of each 
         individual node should be returned.  
@@ -1878,6 +1903,10 @@ def fast_SIS(G, tau, gamma, initial_infecteds=None, tmax=100,
         
     '''
 
+    trans_rate_fxn, rec_rate_fxn = _get_rate_functions(G, tau, gamma, 
+                                                transmission_weight,
+                                                recovery_weight)
+
     if initial_infecteds is None:
         initial_infecteds=[random.choice(G.nodes())]
     elif G.has_node(initial_infecteds):
@@ -1906,12 +1935,15 @@ def fast_SIS(G, tau, gamma, initial_infecteds=None, tmax=100,
         if event.action == 'transmit':
             source = event.source
             if status[node] == 'S':
-                _process_trans_SIS_(G, event, tau, gamma, times, S, I, Q, 
+                _process_trans_SIS_(G, event, trans_rate_fxn, 
+                                    rec_rate_fxn, times, S, I, Q, 
                                     status, rec_time, tmax)
                 infection_times[node].append(time)
             if source != 'initial_condition':
-                _find_next_trans_SIS_(Q, time, tau, source, node, status, 
-                                        rec_time, tmax)
+                _find_next_trans_SIS_(Q, time, 
+                                        trans_rate_fxn(source, node), 
+                                        source, node, status, rec_time, 
+                                        tmax)
         else:
             _process_recovery_SIS_(event, times, S, I, status)
             recovery_times[node].append(time)
@@ -5890,7 +5922,7 @@ def EBCM_discrete_uniform_introduction(N, psi, psiPrime, p, rho, tmax=100,
                             return_full_data=return_full_data)
 
 
-def EBCM_discrete_from_graph(G, tau, gamma, rho = None, tmin = 0, tmax=100, 
+def EBCM_discrete_from_graph(G, p, rho = None, tmin = 0, tmax=100, 
                                 tcount=1001, return_full_data=False):
     #tested in test_basic_discrete_SIR_epidemic
     '''
