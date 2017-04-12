@@ -12,8 +12,8 @@ epidemicsonnetworks -- EoN
             models
         By: 
             Kiss, Miller & Simon
-        More information at 
-            https://EpidemicsOnNetworks.github.io/EpidemicsOnNetworks/
+        http://www.springer.com/book/9783319508047
+        
     Please cite the book if using these algorithms
 
     For simulations, we assume that input networks are **NetworkX** 
@@ -27,10 +27,6 @@ This is a preliminary version of the code:
   - At present the ODE models are not fully tested.
 
   - Additional algorithms may be added beyond those in the book.
-
-
-
-
 
 
 Distributed under MIT license.  See license.txt for full details.
@@ -53,6 +49,9 @@ from scipy.ndimage.interpolation import shift
 #   Auxiliary stuff   #
 #                     #
 #######################
+
+__version__ = "0.91"
+
 class EoNError(Exception):
     r'''
     this will be the basic error type for EoN
