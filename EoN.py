@@ -4,20 +4,20 @@ epidemicsonnetworks -- EoN
 
 "Epidemics on Networks"
 
-    EoN is a Python package for the simulation of epidemics on networks 
-    and ODE models of disease spread.
+EoN is a Python package for the simulation of epidemics on networks 
+and ODE models of disease spread.
 
-    The algorithms are based on the book:
-        Mathematics of epidemics on networks: from exact to approximate 
-            models
-        By: 
-            Kiss, Miller & Simon
+The algorithms are based on the book
+        
+`Mathematics of epidemics on networks: from exact to approximate 
+models`
+by Kiss, Miller & Simon
         http://www.springer.com/book/9783319508047
         
-    Please cite the book if using these algorithms
+Please cite the book if using these algorithms
 
-    For simulations, we assume that input networks are **NetworkX** 
-    graphs; see https://networkx.github.io/
+For simulations, we assume that input networks are **NetworkX** 
+graphs; see https://networkx.github.io/
 
 
 
@@ -160,7 +160,7 @@ def _get_rate_functions(G, tau, gamma, transmission_weight = None,
 
     return trans_rate_fxn, rec_rate_fxn
 
-def _my_odeint(dfunc, V0, times, args=()):
+def my_odeint(dfunc, V0, times, args=()):
     r'''For some of the systems odeint will switch to the BDF solver.
     In large enough systems, it then gets stuck trying to estimate the 
     Jacobian.
@@ -1440,7 +1440,7 @@ def _process_rec_SIR_(event, times, S, I, R, status):
     status[node] = 'R'
     
     
-def fast_SIR(G, tau, gamma, initial_infecteds = None, 
+def fast_SIR(G, tau, gamma, initial_infecteds = None, rho = None,
                 tmax=float('Inf'), transmission_weight = None, 
                 recovery_weight = None, return_full_data = False):
     #tested in test_SIR_dynamics
@@ -1524,11 +1524,12 @@ def fast_SIR(G, tau, gamma, initial_infecteds = None,
     return fast_nonMarkov_SIR(G, process_trans = _process_trans_SIR_, 
                             args = (trans_rate_fxn, rec_rate_fxn), 
                             initial_infecteds=initial_infecteds, 
-                            tmax=tmax, return_full_data=return_full_data)
+                            rho=rho, tmax=tmax, 
+                            return_full_data=return_full_data)
 
 
 def fast_nonMarkov_SIR(G, process_trans = _process_trans_SIR_, 
-                        args = (), initial_infecteds = None, 
+                        args = (), initial_infecteds = None, rho=None,
                         tmax = float('Inf'), return_full_data = False, 
                         Q=None):
     r'''
@@ -1632,6 +1633,9 @@ def fast_nonMarkov_SIR(G, process_trans = _process_trans_SIR_,
     ----------
     
     '''
+    if rho is not None and initial_infecteds is not None:
+        raise EoNError("cannot define both initial_infecteds and rho")
+
 
     status = defaultdict(lambda: 'S') #node status defaults to 'S'
     rec_time = defaultdict(lambda: -1) #node recovery time defaults to -1
@@ -1641,10 +1645,15 @@ def fast_nonMarkov_SIR(G, process_trans = _process_trans_SIR_,
     
     if Q is None:
         Q = []
+
         if initial_infecteds is None:
-            initial_infecteds=[random.choice(G.nodes())]
+            if rho is None:
+                initial_number = 1
+            else:
+                initial_number = scipy.random.binomial(G.order(),rho)
+            initial_infecteds=random.sample(G.nodes(), initial_number)
         elif G.has_node(initial_infecteds):
-            initial_infecteds=[initial_infecteds]   
+            initial_infecteds=[initial_infecteds]
         #else it is assumed to be a list of nodes.
         
         for u in initial_infecteds:
@@ -1660,8 +1669,15 @@ def fast_nonMarkov_SIR(G, process_trans = _process_trans_SIR_,
                         delete this message.")
 
         if initial_infecteds is None:
-            initial_infecteds = []  #assuming that input Q has this 
-                                    #taken care of 
+            if rho is None:
+                initial_number = 0 #assuming that input Q has this 
+                                   #taken care of 
+            else:
+                initial_number = scipy.random.binomial(G.order(),rho)
+            initial_infecteds=random.sample(G.nodes(), initial_number)
+        elif G.has_node(initial_infecteds):
+            initial_infecteds=[initial_infecteds]
+
         for node in initial_infecteds:
             status[node] = 'I'
             pred_inf_time[node] = -1
@@ -1841,7 +1857,7 @@ def _process_rec_SIS_(event, times, S, I, status):
 
 
 
-def fast_SIS(G, tau, gamma, initial_infecteds=None, tmax=100, 
+def fast_SIS(G, tau, gamma, initial_infecteds=None, rho = None, tmax=100, 
                 transmission_weight = None, recovery_weight = None, 
                 return_full_data = False):
     r'''From figure A.5 of Kiss, Miller, & Simon.  Please cite the
@@ -1861,8 +1877,12 @@ def fast_SIS(G, tau, gamma, initial_infecteds=None, tmax=100,
     initial_infecteds: node or iterable of nodes
        if a single node, then this node is initially infected
        if an iterable, then whole set is initially infected
-       if None, then a randomly chosen node is initially infected.
-
+       if None, then choose randomly based on rho.  If rho is also
+       None, a random single node is chosen.
+       
+    rho : number
+       initial fraction infected.
+       
     tmax : number
         stop time
 
@@ -1912,13 +1932,19 @@ def fast_SIS(G, tau, gamma, initial_infecteds=None, tmax=100,
     plt.plot(t, I)
         
     '''
-
+    if rho is not None and initial_infecteds is not None:
+        raise EoNError("cannot define both initial_infecteds and rho")
+    
     trans_rate_fxn, rec_rate_fxn = _get_rate_functions(G, tau, gamma, 
                                                 transmission_weight,
                                                 recovery_weight)
 
     if initial_infecteds is None:
-        initial_infecteds=[random.choice(G.nodes())]
+        if rho is None:
+            initial_number = 1
+        else:
+            initial_number = scipy.random.binomial(G.order(),rho)
+        initial_infecteds=random.sample(G.nodes(), initial_number)
     elif G.has_node(initial_infecteds):
         initial_infecteds=[initial_infecteds]
 
@@ -4534,7 +4560,7 @@ def SIS_heterogeneous_pairwise(Sk0, Ik0, SkSl0, SkIl0, IkIl0, tau, gamma,
     SkIl0.shape = (kcount**2,1)
     X0 = scipy.concatenate((Sk0[:,None], SkSl0, SkIl0), axis=0).T[0]
 
-    X = _my_odeint(_dSIS_heterogeneous_pairwise_, X0, times, 
+    X = my_odeint(_dSIS_heterogeneous_pairwise_, X0, times, 
                     args = (Nk, NkNl, tau, gamma, Ks))
 
     kcount = len(Nk)
@@ -5760,18 +5786,15 @@ def Attack_rate_cts_time(Pk, tau, gamma, number_its =100, rho = None,
     If we look for the limit of a nonzero initial fraction infected, we 
     introduce rho or Sk0
 
-    INPUTS
-    ------
-    Pk : dict
-        Pk[k] is the probability a randomly selected node has degree k.
-    tau : number
-        per-edge transmission rate.
-    gamma : number
-        per-node recovery rate
-    number_its : The solution is found iteratively, so this determines 
+    Args:
+    Pk (dict):  the probability a randomly selected node has degree k.
+    tau (number): per-edge transmission rate.
+    gamma (number): per-node recovery rate
+    number_its (int): The solution is found iteratively, so this determines 
                  the number of iterations.
-    rho : Number (default None)
-    Sk0 : dict (default None)
+    rho (number, optional): The initial proportion infected (defaults to 
+         None)
+    Sk0 (dict): (default None)
           only one of rho and Sk0 can be defined.  
           The other (or both) should remain None.
           rho gives the fraction of nodes randomly infected.

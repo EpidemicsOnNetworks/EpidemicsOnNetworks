@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>EONdocumentation &#8212; Epidemics on Networks 0.9 documentation</title>
+    <title>EON documentation &#8212; Epidemics on Networks 0.91 documentation</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.9',
+        VERSION:     '0.91',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -42,7 +42,7 @@
         <li class="right" >
           <a href="quickstart.html" title="QuickStart Guide"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Epidemics on Networks 0.9 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Epidemics on Networks 0.91 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -52,28 +52,20 @@
           <div class="body" role="main">
             
   <div class="section" id="module-EoN">
-<span id="eondocumentation"></span><h1>EONdocumentation<a class="headerlink" href="#module-EoN" title="Permalink to this headline">¶</a></h1>
+<span id="eon-documentation"></span><h1>EON documentation<a class="headerlink" href="#module-EoN" title="Permalink to this headline">¶</a></h1>
 <p>epidemicsonnetworks &#8211; EoN</p>
 <p>&#8220;Epidemics on Networks&#8221;</p>
-<blockquote>
-<div><p>EoN is a Python package for the simulation of epidemics on networks 
+<p>EoN is a Python package for the simulation of epidemics on networks 
 and ODE models of disease spread.</p>
-<dl class="docutils">
-<dt>The algorithms are based on the book:</dt>
-<dd><dl class="first last docutils">
-<dt>Mathematics of epidemics on networks: from exact to approximate </dt>
-<dd>models</dd>
-<dt>By: </dt>
-<dd>Kiss, Miller &amp; Simon</dd>
-<dt>More information at </dt>
-<dd><a class="reference external" href="https://EpidemicsOnNetworks.github.io/EpidemicsOnNetworks/">https://EpidemicsOnNetworks.github.io/EpidemicsOnNetworks/</a></dd>
-</dl>
-</dd>
-</dl>
+<p>The algorithms are based on the book</p>
+<p><cite>Mathematics of epidemics on networks: from exact to approximate 
+models</cite>
+by Kiss, Miller &amp; Simon</p>
+<blockquote>
+<div><a class="reference external" href="http://www.springer.com/book/9783319508047">http://www.springer.com/book/9783319508047</a></div></blockquote>
 <p>Please cite the book if using these algorithms</p>
 <p>For simulations, we assume that input networks are <strong>NetworkX</strong> 
 graphs; see <a class="reference external" href="https://networkx.github.io/">https://networkx.github.io/</a></p>
-</div></blockquote>
 <dl class="docutils">
 <dt>This is a preliminary version of the code:</dt>
 <dd><ul class="first last simple">
@@ -96,26 +88,25 @@ Markovian SIR disease.</p>
 fraction infected approaches 0.</p>
 <p>If we look for the limit of a nonzero initial fraction infected, we 
 introduce rho or Sk0</p>
-<dl class="docutils">
-<dt>Pk <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
-<dd>Pk[k] is the probability a randomly selected node has degree k.</dd>
-<dt>tau <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
-<dd>per-edge transmission rate.</dd>
-<dt>gamma <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
-<dd>per-node recovery rate</dd>
-<dt>number_its <span class="classifier-delimiter">:</span> <span class="classifier">The solution is found iteratively, so this determines </span></dt>
-<dd>the number of iterations.</dd>
-</dl>
-<p>rho : Number (default None)
-Sk0 : dict (default None)</p>
+<p>Args:
+Pk (dict):  the probability a randomly selected node has degree k.
+tau (number): per-edge transmission rate.
+gamma (number): per-node recovery rate
+number_its (int): The solution is found iteratively, so this determines</p>
 <blockquote>
-<div><p>only one of rho and Sk0 can be defined.  
+<div>the number of iterations.</div></blockquote>
+<dl class="docutils">
+<dt>rho (number, optional): The initial proportion infected (defaults to </dt>
+<dd>None)</dd>
+<dt>Sk0 (dict): (default None)</dt>
+<dd><p class="first">only one of rho and Sk0 can be defined.  
 The other (or both) should remain None.
 rho gives the fraction of nodes randomly infected.
 Sk0 is a dict such that Sk0[k] is the probability that a</p>
-<blockquote>
+<blockquote class="last">
 <div>degree k node is susceptible at start.</div></blockquote>
-</div></blockquote>
+</dd>
+</dl>
 <dl class="docutils">
 <dt>A <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
 <dd>the predicted fraction infected.</dd>
@@ -126,9 +117,12 @@ Sk0 is a dict such that Sk0[k] is the probability that a</p>
 <dt id="EoN.Attack_rate_cts_time_from_graph">
 <code class="descclassname">EoN.</code><code class="descname">Attack_rate_cts_time_from_graph</code><span class="sig-paren">(</span><em>G</em>, <em>tau</em>, <em>gamma</em>, <em>number_its=100</em>, <em>rho=None</em>, <em>Sk0=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#Attack_rate_cts_time_from_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.Attack_rate_cts_time_from_graph" title="Permalink to this definition">¶</a></dt>
 <dd><p>Given a graph, predicts the attack rate for Configuration Model 
-networks with the given degree distribution.</p>
+networks with the given degree distribution.  This does not account 
+for any structure in G beyond degree distribution.</p>
 <p>First calculates the degree distribution and then calls 
-Attack_rate_cts_time</p>
+Attack_rate_cts_time.</p>
+<p>SEE ALSO
+estimate_SIR_prob_size(G, p) - accounts for entire structure of G</p>
 </dd></dl>
 
 <dl class="function">
@@ -307,9 +301,34 @@ connecting to recovered nodes</dd>
 
 <dl class="function">
 <dt id="EoN.EBCM_discrete_from_graph">
-<code class="descclassname">EoN.</code><code class="descname">EBCM_discrete_from_graph</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#EBCM_discrete_from_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.EBCM_discrete_from_graph" title="Permalink to this definition">¶</a></dt>
-<dd><p>Nothing to see here 
-- just a place holder until this code is written</p>
+<code class="descclassname">EoN.</code><code class="descname">EBCM_discrete_from_graph</code><span class="sig-paren">(</span><em>G</em>, <em>p</em>, <em>rho=None</em>, <em>tmin=0</em>, <em>tmax=100</em>, <em>tcount=1001</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#EBCM_discrete_from_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.EBCM_discrete_from_graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes a given graph, finds the degree distribution 
+(from which it gets psi),
+assumes a constant proportion of the population is infected at time 
+0, 
+and then uses the discrete EBCM model.</p>
+<p>G : Networkx Graph
+p : number</p>
+<blockquote>
+<div>per edge transmission probability</div></blockquote>
+<dl class="docutils">
+<dt>rho <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
+<dd>initial proportion of infected nodes</dd>
+<dt>tmax <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
+<dd>maximum time</dd>
+<dt>return_full-data <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
+<dd><dl class="first last docutils">
+<dt>if False, </dt>
+<dd>return t, S, I, R and if True return t, S, I, R, and theta</dd>
+</dl>
+</dd>
+</dl>
+<dl class="docutils">
+<dt>if return_full_data == False:</dt>
+<dd>returns t, S, I, R, all scipy arrays</dd>
+<dt>if ...== True</dt>
+<dd>returns t, S, I, R and theta, all scipy arrays</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
@@ -400,38 +419,38 @@ to depending on degree.</p>
 <dd><p>Encodes System (6.3) of Kiss, Miller, &amp; Simon.  Please cite the
 book if using this algorithm.</p>
 <p>The equations are rescaled by setting $u=gamma T$.  Then it becomes</p>
-<p>P = 1- int_0^infty psi(lpha(u/gamma)) e^{-u} du
+<p>P = 1- int_0^infty psi(alpha(u/gamma)) e^{-u} du
 alpha_d(u/gamma) = 1- p(u/gamma)</p>
 <blockquote>
 <div><ul>
 <li><p class="first">p(u/gamma)
 int_0^infty</p>
 <blockquote>
-<div><p>(psiPrime(lpha(hat{u}/gamma))/&lt;K&gt;)
+<div><p>(psiPrime(alpha(hat{u}/gamma))/&lt;K&gt;)
 e^{-u}du</p>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-<p>where p(u/gamma) = 1 - e^{-        au u/gamma}</p>
+<p>where p(u/gamma) = 1 - e^{-tau u/gamma}</p>
 <dl class="docutils">
 <dt>Define </dt>
-<dd>hat{p}(u) = p(u/gamma), and hat{lpha}(u) = lpha(u/gamma)</dd>
+<dd>hat{p}(u) = p(u/gamma), and hat{alpha}(u) = alpha(u/gamma)</dd>
 </dl>
 <p>and then drop hats to get</p>
-<p>P = 1-int_0^infty psi(lpha(u)) e^{-u} du
-lpha(u) = 1-p(u) + p(u)</p>
+<p>P = 1-int_0^infty psi(alpha(u)) e^{-u} du
+alpha(u) = 1-p(u) + p(u)</p>
 <blockquote>
 <div><dl class="docutils">
 <dt>int_0^infty </dt>
-<dd>(psiPrime(lpha(u))/&lt;K&gt;)e^{-u} du</dd>
+<dd>(psiPrime(alpha(u))/&lt;K&gt;)e^{-u} du</dd>
 </dl>
 </div></blockquote>
 <dl class="docutils">
 <dt>with initial guess </dt>
-<dd>lpha_1(u) = e^{-       au u/gamma}</dd>
+<dd>alpha_1(u) = e^{-tau u/gamma}</dd>
 <dt>and </dt>
-<dd>p(u) = 1-e^{-   au u/gamma}</dd>
+<dd>p(u) = 1-e^{-tau u/gamma}</dd>
 </dl>
 <p>Pk : scipy array Pk[k] is probability a node has degree k.</p>
 <p>tau : transmission rate</p>
@@ -474,7 +493,7 @@ book if using this algorithm.</p>
 <dl class="docutils">
 <dt>Pxidxi <span class="classifier-delimiter">:</span> <span class="classifier">a dict.  Returns P(xi)dxi for user-selected xi.  The </span></dt>
 <dd>algorithm will replace the integral with
-sum_{xi in Pxidxi.keys()} psi(lpha(xi)) Pxidxi(xi)</dd>
+sum_{xi in Pxidxi.keys()} psi(alpha(xi)) Pxidxi(xi)</dd>
 <dt>po <span class="classifier-delimiter">:</span> <span class="classifier">a function.</span></dt>
 <dd>returns p_o(xi), the probability a node will transmit to a 
 random neighbor given xi.</dd>
@@ -506,18 +525,20 @@ arguments for the function.</p>
 
 <dl class="function">
 <dt id="EoN.Gillespie_SIR">
-<code class="descclassname">EoN.</code><code class="descname">Gillespie_SIR</code><span class="sig-paren">(</span><em>G</em>, <em>tau</em>, <em>gamma</em>, <em>initial_infecteds=None</em>, <em>tmax=inf</em>, <em>return_node_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#Gillespie_SIR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.Gillespie_SIR" title="Permalink to this definition">¶</a></dt>
-<dd><p>Performs a Gillespie-based SIR simulation.</p>
+<code class="descclassname">EoN.</code><code class="descname">Gillespie_SIR</code><span class="sig-paren">(</span><em>G</em>, <em>tau</em>, <em>gamma</em>, <em>initial_infecteds=None</em>, <em>tmax=inf</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#Gillespie_SIR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.Gillespie_SIR" title="Permalink to this definition">¶</a></dt>
+<dd><p>From figure A.1 of Kiss, Miller, &amp; Simon.  Please cite the
+book if using this algorithm.</p>
 <p>Assumes that the network is unweighted.</p>
 <p>Thus the risks are quantized: equal to tau times the number of 
 infected neighbors of a node.</p>
 <p>This would not be as good if the edges were weighted, but we could 
 put the at_risk nodes into bands.</p>
-<p>At present the network is treated as unweighted, so the possible 
-risk rates are discretized.</p>
 <p>The event-driven simulation is almost certainly faster in all cases, 
 and the benefit would increase if the network were weighted.</p>
-<p>I think the coding would also be easier.</p>
+<p>At present, this does not accept recovery or transmission weights.
+This is because including that will force us to sum up these weights
+more frequently rather than just counting how many exist
+which will slow the code down.  For weights, try fast_SIR</p>
 <p>fast_SIR which has the same inputs but uses a different method to 
 run much faster</p>
 <dl class="docutils">
@@ -533,7 +554,7 @@ if an iterable, then whole set is initially infected
 if None, then a randomly chosen node is initially infected.</dd>
 <dt>tmax <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
 <dd>stop time</dd>
-<dt>return_node_data: boolean</dt>
+<dt>return_full_data: boolean</dt>
 <dd>Tells whether the infection and recovery times of each 
 individual node should be returned.  
 It is returned in the form of two dicts, infection_time and 
@@ -541,6 +562,17 @@ recovery_time.
 infection_time[node] is the time of infection and 
 recovery_time[node] is the recovery time.</dd>
 </dl>
+<dl class="docutils">
+<dt>times, S, I, R <span class="classifier-delimiter">:</span> <span class="classifier">each a scipy array</span></dt>
+<dd>giving times and number in each status for corresponding time</dd>
+</dl>
+<p>OR if return_full_data=True:
+times, S, I, R, infection_time, recovery_time</p>
+<blockquote>
+<div>first four are scipy arrays as above.  New objects are dicts
+with entries just for those nodes that were infected ever
+infection_time[node] is time of infection
+recovery_time[node] is time of recovery</div></blockquote>
 <p>import networkx as nx
 import EoN
 import matplotlib.pyplot as plt</p>
@@ -556,13 +588,19 @@ t, S, I, R = EoN.fast_SIR(G, tau, gamma,</p>
 
 <dl class="function">
 <dt id="EoN.Gillespie_SIS">
-<code class="descclassname">EoN.</code><code class="descname">Gillespie_SIS</code><span class="sig-paren">(</span><em>G</em>, <em>tau</em>, <em>gamma</em>, <em>initial_infecteds=None</em>, <em>tmax=100</em>, <em>return_node_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#Gillespie_SIS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.Gillespie_SIS" title="Permalink to this definition">¶</a></dt>
-<dd><p>This could be made more efficient if we divide the at_risk nodes 
+<code class="descclassname">EoN.</code><code class="descname">Gillespie_SIS</code><span class="sig-paren">(</span><em>G</em>, <em>tau</em>, <em>gamma</em>, <em>initial_infecteds=None</em>, <em>tmax=100</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#Gillespie_SIS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.Gillespie_SIS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Based on figure A.1 of Kiss, Miller, &amp; Simon.  Please cite the
+book if using this algorithm.</p>
+<p>This could be made more efficient if we divide the at_risk nodes 
 into groups based on how at risk they are.</p>
 <p>This would not be as good if the edges were weighted, but we could 
 put the at_risk nodes into bands.</p>
 <p>Warning: self-edges will cause this to die.  
 You can remove self-edges by G.remove_edges_from(G.selfloop_edges())</p>
+<p>At present, this does not accept recovery or transmission weights.
+This is because including that will force us to sum up these weights
+more frequently rather than just counting how many exist
+which will slow the code down.  For weights, try fast_SIS</p>
 <p>fast_SIS which has the same inputs but uses a much faster method.</p>
 <dl class="docutils">
 <dt>G <span class="classifier-delimiter">:</span> <span class="classifier">NetworkX Graph</span></dt>
@@ -577,7 +615,7 @@ if an iterable, then whole set is initially infected
 if None, then a randomly chosen node is initially infected.</dd>
 <dt>tmax <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
 <dd>stop time</dd>
-<dt>return_node_data: boolean</dt>
+<dt>return_full_data: boolean</dt>
 <dd>Tells whether the infection and recovery times of each 
 individual node should be returned.  
 It is returned in the form of two dicts, infection_time and 
@@ -1049,7 +1087,7 @@ t, S, I, R = EoN.SIR_homogeneous_pairwise_from_graph(G, tau, gamma, rho,</p>
 
 <dl class="function">
 <dt id="EoN.SIR_individual_based">
-<code class="descclassname">EoN.</code><code class="descname">SIR_individual_based</code><span class="sig-paren">(</span><em>G</em>, <em>nodelist</em>, <em>X0</em>, <em>Y0</em>, <em>tau</em>, <em>gamma=None</em>, <em>tmin=0</em>, <em>tmax=100</em>, <em>tcount=1001</em>, <em>edge_label=None</em>, <em>recovery_label=None</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#SIR_individual_based"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.SIR_individual_based" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">EoN.</code><code class="descname">SIR_individual_based</code><span class="sig-paren">(</span><em>G</em>, <em>nodelist</em>, <em>X0</em>, <em>Y0</em>, <em>tau</em>, <em>gamma</em>, <em>tmin=0</em>, <em>tmax=100</em>, <em>tcount=1001</em>, <em>transmission_weight=None</em>, <em>recovery_weight=None</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#SIR_individual_based"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.SIR_individual_based" title="Permalink to this definition">¶</a></dt>
 <dd><p>Encodes System (3.30) of Kiss, Miller, &amp; Simon.  Please cite the
 book if using this algorithm.</p>
 <p>See also:</p>
@@ -1064,23 +1102,22 @@ book if using this algorithm.</p>
 <dt>tau <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
 <dd>transmission rate of disease</dd>
 <dt>gamma <span class="classifier-delimiter">:</span> <span class="classifier">number      (default None)</span></dt>
-<dd>global recovery rate  
-(incompatible with recovery_label!=None)</dd>
+<dd>global recovery rate</dd>
 <dt>tmin <span class="classifier-delimiter">:</span> <span class="classifier">number       (default 0)</span></dt>
 <dd>minimum report time</dd>
 <dt>tmax <span class="classifier-delimiter">:</span> <span class="classifier">number       (default 100)</span></dt>
 <dd>maximum report time</dd>
 <dt>tcount <span class="classifier-delimiter">:</span> <span class="classifier">integer       (default 1001)</span></dt>
 <dd>number of reports</dd>
-<dt>edge_label <span class="classifier-delimiter">:</span> <span class="classifier">string       (default None)</span></dt>
+<dt>transmission_weight <span class="classifier-delimiter">:</span> <span class="classifier">string       (default None)</span></dt>
 <dd>the label for a weight given to the edges.
-G.edge[i][j][edge_label] = g_{ij}</dd>
-<dt>recovery_label <span class="classifier-delimiter">:</span> <span class="classifier">string       (default None)</span></dt>
-<dd>a label for a weight given to the nodes for their recovery 
-rates
-G.node[i][recovery_label] = gamma_i
-We cannot define both gamma and recovery_label.  
-This will raise an error</dd>
+G.edge[i][j][transmission_weight] = g_{ij}</dd>
+<dt>recovery_weight <span class="classifier-delimiter">:</span> <span class="classifier">string       (default None)</span></dt>
+<dd><p class="first">a label for a weight given to the nodes to scale their 
+recovery rates</p>
+<blockquote class="last">
+<div>gamma_i = G.node[i][recovery_weight]*gamma</div></blockquote>
+</dd>
 <dt>return_full_data       (default False)</dt>
 <dd>If True, returns times, S, I, R, Ss, Is, Rs
 if False, returns times, S, I, R</dd>
@@ -1122,25 +1159,23 @@ plt.plot(t,I)</p>
 
 <dl class="function">
 <dt id="EoN.SIR_individual_based_pure_IC">
-<code class="descclassname">EoN.</code><code class="descname">SIR_individual_based_pure_IC</code><span class="sig-paren">(</span><em>G</em>, <em>index_nodes</em>, <em>nodelist</em>, <em>tau</em>, <em>gamma=None</em>, <em>initial_susceptible=None</em>, <em>tmin=0</em>, <em>tmax=100</em>, <em>tcount=1001</em>, <em>edge_label=None</em>, <em>recovery_label=None</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#SIR_individual_based_pure_IC"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.SIR_individual_based_pure_IC" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">EoN.</code><code class="descname">SIR_individual_based_pure_IC</code><span class="sig-paren">(</span><em>G</em>, <em>index_nodes</em>, <em>nodelist</em>, <em>tau</em>, <em>gamma</em>, <em>initial_susceptible=None</em>, <em>tmin=0</em>, <em>tmax=100</em>, <em>tcount=1001</em>, <em>transmission_weight=None</em>, <em>recovery_weight=None</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#SIR_individual_based_pure_IC"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.SIR_individual_based_pure_IC" title="Permalink to this definition">¶</a></dt>
 <dd><p>Encodes System (3.30) of Kiss, Miller, &amp; Simon.  Please cite the
 book if using this algorithm.</p>
 <p>The difference between this and SIR_individual_based is that this 
 one assumes a &#8220;pure initial condition&#8221;, that is, we know exactly 
 what the statuses of the nodes are at the initial time.</p>
 <p>&lt;dot{Y}_i&gt; = tau sum_j g_{ij} (1-&lt;Y_i&gt;)&lt;Y_j&gt;  -  gamma_i &lt;Y_i&gt;</p>
-<p>G : Networkx graph
-index_nodes : list or set</p>
-<blockquote>
-<div>the set of nodes initially infected</div></blockquote>
+<p>G : Networkx graph</p>
 <dl class="docutils">
+<dt>index_nodes <span class="classifier-delimiter">:</span> <span class="classifier">list or set</span></dt>
+<dd>the set of nodes initially infected</dd>
 <dt>nodelist <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
 <dd>list of nodes in G in the same order as in Y0</dd>
 <dt>tau <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
 <dd>transmission rate of disease</dd>
 <dt>gamma <span class="classifier-delimiter">:</span> <span class="classifier">number      (default None)</span></dt>
-<dd>global recovery rate  
-(incompatible with recovery_label!=None)</dd>
+<dd>global recovery rate</dd>
 <dt>initial_susceptible <span class="classifier-delimiter">:</span> <span class="classifier">list or set  (default None)</span></dt>
 <dd>initially susceptible nodes
 if equal to None, then all non-index nodes are initially 
@@ -1151,15 +1186,15 @@ susceptible.</dd>
 <dd>maximum report time</dd>
 <dt>tcount <span class="classifier-delimiter">:</span> <span class="classifier">integer       (default 1001)</span></dt>
 <dd>number of reports</dd>
-<dt>edge_label <span class="classifier-delimiter">:</span> <span class="classifier">string       (default None)</span></dt>
+<dt>transmission_weight <span class="classifier-delimiter">:</span> <span class="classifier">string       (default None)</span></dt>
 <dd>the label for a weight given to the edges.
-G.edge[i][j][edge_label] = g_{ij}</dd>
-<dt>recovery_label <span class="classifier-delimiter">:</span> <span class="classifier">string       (default None)</span></dt>
-<dd>a label for a weight given to the nodes for their recovery 
-rates
-G.node[i][recovery_label] = gamma_i
-We cannot define both gamma and recovery_label.  
-This will raise an error</dd>
+G.edge[i][j][transmission_weight] = g_{ij}</dd>
+<dt>recovery_weight <span class="classifier-delimiter">:</span> <span class="classifier">string       (default None)</span></dt>
+<dd><p class="first">a label for a weight given to the nodes to scale their 
+recovery rates</p>
+<blockquote class="last">
+<div>gamma_i = G.node[i][recovery_weight]*gamma</div></blockquote>
+</dd>
 </dl>
 <p>return_full_data : boolean      (default False)</p>
 <dl class="docutils">
@@ -1172,7 +1207,7 @@ This will raise an error</dd>
 
 <dl class="function">
 <dt id="EoN.SIR_pair_based">
-<code class="descclassname">EoN.</code><code class="descname">SIR_pair_based</code><span class="sig-paren">(</span><em>G</em>, <em>nodelist</em>, <em>Y0</em>, <em>tau</em>, <em>gamma=None</em>, <em>X0=None</em>, <em>XY0=None</em>, <em>XX0=None</em>, <em>tmin=0</em>, <em>tmax=100</em>, <em>tcount=1001</em>, <em>edge_label=None</em>, <em>recovery_label=None</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#SIR_pair_based"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.SIR_pair_based" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">EoN.</code><code class="descname">SIR_pair_based</code><span class="sig-paren">(</span><em>G</em>, <em>nodelist</em>, <em>Y0</em>, <em>tau</em>, <em>gamma</em>, <em>X0=None</em>, <em>XY0=None</em>, <em>XX0=None</em>, <em>tmin=0</em>, <em>tmax=100</em>, <em>tcount=1001</em>, <em>transmission_weight=None</em>, <em>recovery_weight=None</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#SIR_pair_based"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.SIR_pair_based" title="Permalink to this definition">¶</a></dt>
 <dd><p>Encodes System (3.39) of Kiss, Miller, &amp; Simon.  Please cite the
 book if using this algorithm.</p>
 <p>This system solves equations for an SIR disease model spreading on a
@@ -1189,19 +1224,17 @@ Epidemic control analysis: Desigining targeted intervention</p>
 <blockquote>
 <div>strategies against epidemics propagated on contact networks,</div></blockquote>
 <p>Journal of Theoretical Biology</p>
-<p>G : Networkx graph
-nodelist : list</p>
-<blockquote>
-<div>list of nodes in G in the same order as in Y0</div></blockquote>
+<p>G : Networkx graph</p>
 <dl class="docutils">
+<dt>nodelist <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd>list of nodes in G in the same order as in Y0</dd>
 <dt>Y0 <span class="classifier-delimiter">:</span> <span class="classifier">scipy array</span></dt>
 <dd>the array of initial infection probabilities for each node in 
 order as in nodelist</dd>
 <dt>tau <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
 <dd>transmission rate of disease</dd>
 <dt>gamma <span class="classifier-delimiter">:</span> <span class="classifier">number (default None)</span></dt>
-<dd>global recovery rate  
-(incompatible with recovery_label!=None)</dd>
+<dd>global recovery rate</dd>
 <dt>X0 <span class="classifier-delimiter">:</span> <span class="classifier">scipy array (default None)</span></dt>
 <dd>probability a random node is initially susceptible.
 the probability of initially recovered will be 1-X0-Y0.  By 
@@ -1230,15 +1263,15 @@ if None, then assumes that infections are introduced</p>
 <dd>maximum report time</dd>
 <dt>tcount <span class="classifier-delimiter">:</span> <span class="classifier">integer (default 1001)</span></dt>
 <dd>number of reports</dd>
-<dt>edge_label <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dt>transmission_weight <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
 <dd>the label for a weight given to the edges.
-G.edge[i][j][edge_label] = g_{ij}</dd>
-<dt>recovery_label <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
-<dd>a label for a weight given to the nodes for their recovery 
-rates
-G.node[i][recovery_label] = gamma_i
-We cannot define both gamma and recovery_label.  
-This will raise an error.</dd>
+G.edge[i][j][transmission_weight] = g_{ij}</dd>
+<dt>recovery_weight <span class="classifier-delimiter">:</span> <span class="classifier">string       (default None)</span></dt>
+<dd><p class="first">a label for a weight given to the nodes to scale their 
+recovery rates</p>
+<blockquote class="last">
+<div>gamma_i = G.node[i][recovery_weight]*gamma</div></blockquote>
+</dd>
 <dt>return_full_data <span class="classifier-delimiter">:</span> <span class="classifier">boolean      (default False)</span></dt>
 <dd><dl class="first last docutils">
 <dt>if True:</dt>
@@ -1265,7 +1298,7 @@ plt.plot(t,I)</p>
 
 <dl class="function">
 <dt id="EoN.SIR_pair_based2">
-<code class="descclassname">EoN.</code><code class="descname">SIR_pair_based2</code><span class="sig-paren">(</span><em>G</em>, <em>tau</em>, <em>gamma=None</em>, <em>rho=None</em>, <em>nodelist=None</em>, <em>X0=None</em>, <em>Y0=None</em>, <em>edgelist=None</em>, <em>XY0=None</em>, <em>YX0=None</em>, <em>XX0=None</em>, <em>tmin=0</em>, <em>tmax=100</em>, <em>tcount=1001</em>, <em>edge_rate_label=None</em>, <em>recovery_label=None</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#SIR_pair_based2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.SIR_pair_based2" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">EoN.</code><code class="descname">SIR_pair_based2</code><span class="sig-paren">(</span><em>G</em>, <em>tau</em>, <em>gamma</em>, <em>rho=None</em>, <em>nodelist=None</em>, <em>X0=None</em>, <em>Y0=None</em>, <em>edgelist=None</em>, <em>XY0=None</em>, <em>YX0=None</em>, <em>XX0=None</em>, <em>tmin=0</em>, <em>tmax=100</em>, <em>tcount=1001</em>, <em>transmission_weight=None</em>, <em>recovery_weight=None</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#SIR_pair_based2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.SIR_pair_based2" title="Permalink to this definition">¶</a></dt>
 <dd><blockquote>
 <div><p>Encodes System (3.39) of Kiss, Miller, &amp; Simon.  Please cite the
 book if using this algorithm.</p>
@@ -1303,19 +1336,17 @@ derivatives are zero.</p>
 small contribution.</p>
 <p>Before I forced the initial conditions for these nonedges to be 0, 
 they caused quite a bit of numerical headaches.</p>
-<p>G : Networkx graph
-nodelist : list</p>
-<blockquote>
-<div>list of nodes in G in the same order as in Y0</div></blockquote>
+<p>G : Networkx graph</p>
 <dl class="last docutils">
+<dt>nodelist <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd>list of nodes in G in the same order as in Y0</dd>
 <dt>Y0 <span class="classifier-delimiter">:</span> <span class="classifier">scipy array</span></dt>
 <dd>the array of initial infection probabilities for each node in 
 order as in nodelist</dd>
 <dt>tau <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
 <dd>transmission rate of disease</dd>
 <dt>gamma <span class="classifier-delimiter">:</span> <span class="classifier">number (default None)</span></dt>
-<dd>global recovery rate  
-(incompatible with recovery_label!=None)</dd>
+<dd>global recovery rate</dd>
 <dt>XY0 <span class="classifier-delimiter">:</span> <span class="classifier">2D scipy array (default None)</span></dt>
 <dd><p class="first">(each dimension has length number of nodes of G)
 XY0[i,j] is probability node i is susceptible and j is 
@@ -1337,15 +1368,15 @@ if None, then assumes that infections are introduced</p>
 <dd>maximum report time</dd>
 <dt>tcount <span class="classifier-delimiter">:</span> <span class="classifier">integer (default 1001)</span></dt>
 <dd>number of reports</dd>
-<dt>edge_rate_label <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dt>transmission_weight <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
 <dd>the label for a weight given to the edges.
-G.edge[i][j][edge_rate_label] = g_{ij}</dd>
-<dt>recovery_label <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
-<dd>a label for a weight given to the nodes for their recovery 
-rates
-G.node[i][recovery_label] = gamma_i
-We cannot define both gamma and recovery_label.  
-This will raise an error.</dd>
+G.edge[i][j][transmission_weight] = g_{ij}</dd>
+<dt>recovery_weight <span class="classifier-delimiter">:</span> <span class="classifier">string       (default None)</span></dt>
+<dd><p class="first">a label for a weight given to the nodes to scale their 
+recovery rates</p>
+<blockquote class="last">
+<div>gamma_i = G.node[i][recovery_weight]*gamma</div></blockquote>
+</dd>
 <dt>return_full_data <span class="classifier-delimiter">:</span> <span class="classifier">boolean      (default False)</span></dt>
 <dd><dl class="first last docutils">
 <dt>if True:</dt>
@@ -1391,7 +1422,9 @@ calculated data.</dd>
 <dl class="function">
 <dt id="EoN.SIS_compact_effective_degree">
 <code class="descclassname">EoN.</code><code class="descname">SIS_compact_effective_degree</code><span class="sig-paren">(</span><em>Sk0</em>, <em>Ik0</em>, <em>SI0</em>, <em>SS0</em>, <em>II0</em>, <em>tau</em>, <em>gamma</em>, <em>tmin=0</em>, <em>tmax=100</em>, <em>tcount=1001</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#SIS_compact_effective_degree"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.SIS_compact_effective_degree" title="Permalink to this definition">¶</a></dt>
-<dd><p>This model is identical to the SIS compact pairwise model, so it 
+<dd><p>Encodes system (5.44) of Kiss, Miller, &amp; Simon.  Please cite the
+book if using this algorithm.</p>
+<p>This model is identical to the SIS compact pairwise model, so it 
 simply calls SIS_compact_pairwise()</p>
 </dd></dl>
 
@@ -1775,7 +1808,7 @@ t, S, I = EoN.SIS_homogeneous_pairwise_from_graph(G, tau, gamma, rho, tmax = 20)
 
 <dl class="function">
 <dt id="EoN.SIS_individual_based">
-<code class="descclassname">EoN.</code><code class="descname">SIS_individual_based</code><span class="sig-paren">(</span><em>G</em>, <em>nodelist</em>, <em>Y0</em>, <em>tau</em>, <em>gamma=None</em>, <em>tmin=0</em>, <em>tmax=100</em>, <em>tcount=1001</em>, <em>edge_label=None</em>, <em>recovery_label=None</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#SIS_individual_based"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.SIS_individual_based" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">EoN.</code><code class="descname">SIS_individual_based</code><span class="sig-paren">(</span><em>G</em>, <em>nodelist</em>, <em>Y0</em>, <em>tau</em>, <em>gamma</em>, <em>tmin=0</em>, <em>tmax=100</em>, <em>tcount=1001</em>, <em>transmission_weight=None</em>, <em>recovery_weight=None</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#SIS_individual_based"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.SIS_individual_based" title="Permalink to this definition">¶</a></dt>
 <dd><p>Encodes System (3.7) of Kiss, Miller, &amp; Simon.  Please cite the
 book if using this algorithm.</p>
 <p>See also:
@@ -1793,25 +1826,22 @@ Epidemic control analysis: Desigining targeted intervention</p>
 <dd>list of nodes in G in the same order as in Y0</dd>
 <dt>tau <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
 <dd>transmission rate of disease</dd>
-<dt>gamma <span class="classifier-delimiter">:</span> <span class="classifier">number      (default None)</span></dt>
-<dd>global recovery rate 
-(incompatible with recovery_label!=None)</dd>
+<dt>gamma <span class="classifier-delimiter">:</span> <span class="classifier">number </span></dt>
+<dd>global recovery rate</dd>
 <dt>tmin <span class="classifier-delimiter">:</span> <span class="classifier">number       (default 0)</span></dt>
 <dd>minimum report time</dd>
 <dt>tmax <span class="classifier-delimiter">:</span> <span class="classifier">number       (default 100)</span></dt>
 <dd>maximum report time</dd>
 <dt>tcount <span class="classifier-delimiter">:</span> <span class="classifier">integer       (default 1001)</span></dt>
 <dd>number of reports</dd>
-<dt>edge_label <span class="classifier-delimiter">:</span> <span class="classifier">string       (default None)</span></dt>
+<dt>transmission_weight <span class="classifier-delimiter">:</span> <span class="classifier">string       (default None)</span></dt>
 <dd>the label for a weight given to the edges.
-G.edge[i][j][edge_label] = g_{ij}</dd>
-<dt>recovery_label <span class="classifier-delimiter">:</span> <span class="classifier">string       (default None)</span></dt>
-<dd><p class="first">a label for a weight given to the nodes for their recovery 
-rates</p>
-<blockquote>
-<div>G.node[i][recovery_label] = gamma_i</div></blockquote>
-<p class="last">We cannot define both gamma and recovery_label.  
-This will raise an error.</p>
+G.edge[i][j][transmission_weight] = g_{ij}</dd>
+<dt>recovery_weight <span class="classifier-delimiter">:</span> <span class="classifier">string       (default None)</span></dt>
+<dd><p class="first">a label for a weight given to the nodes to scale their 
+recovery rates</p>
+<blockquote class="last">
+<div>gamma_i = G.node[i][recovery_weight]*gamma</div></blockquote>
 </dd>
 <dt>return_full_data       (default False)</dt>
 <dd>If True, returns times, Ss, Is
@@ -1850,7 +1880,7 @@ t, S, I = EoN.SIS_individual_based(G, nodelist, Y, 0.3, gamma=1,</p>
 
 <dl class="function">
 <dt id="EoN.SIS_individual_based_pure_IC">
-<code class="descclassname">EoN.</code><code class="descname">SIS_individual_based_pure_IC</code><span class="sig-paren">(</span><em>G</em>, <em>index_nodes</em>, <em>nodelist</em>, <em>tau</em>, <em>gamma=None</em>, <em>tmin=0</em>, <em>tmax=100</em>, <em>tcount=1001</em>, <em>edge_label=None</em>, <em>recovery_label=None</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#SIS_individual_based_pure_IC"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.SIS_individual_based_pure_IC" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">EoN.</code><code class="descname">SIS_individual_based_pure_IC</code><span class="sig-paren">(</span><em>G</em>, <em>index_nodes</em>, <em>nodelist</em>, <em>tau</em>, <em>gamma</em>, <em>tmin=0</em>, <em>tmax=100</em>, <em>tcount=1001</em>, <em>transmission_weight=None</em>, <em>recovery_weight=None</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#SIS_individual_based_pure_IC"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.SIS_individual_based_pure_IC" title="Permalink to this definition">¶</a></dt>
 <dd><p>Encodes System (3.7) of Kiss, Miller, &amp; Simon.  Please cite the
 book if using this algorithm.</p>
 <p>The difference between this and SIS_individual_based is that this 
@@ -1867,23 +1897,22 @@ index_nodes : list or set</p>
 <dt>tau <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
 <dd>transmission rate of disease</dd>
 <dt>gamma <span class="classifier-delimiter">:</span> <span class="classifier">number      (default None)</span></dt>
-<dd>global recovery rate  
-(incompatible with recovery_label!=None)</dd>
+<dd>global recovery rate</dd>
 <dt>tmin <span class="classifier-delimiter">:</span> <span class="classifier">number       (default 0)</span></dt>
 <dd>minimum report time</dd>
 <dt>tmax <span class="classifier-delimiter">:</span> <span class="classifier">number       (default 100)</span></dt>
 <dd>maximum report time</dd>
 <dt>tcount <span class="classifier-delimiter">:</span> <span class="classifier">integer       (default 1001)</span></dt>
 <dd>number of reports</dd>
-<dt>edge_label <span class="classifier-delimiter">:</span> <span class="classifier">string       (default None)</span></dt>
+<dt>transmission_weight <span class="classifier-delimiter">:</span> <span class="classifier">string       (default None)</span></dt>
 <dd>the label for a weight given to the edges.
-G.edge[i][j][edge_label] = g_{ij}</dd>
-<dt>recovery_label <span class="classifier-delimiter">:</span> <span class="classifier">string       (default None)</span></dt>
-<dd>a label for a weight given to the nodes for their recovery 
-rates
-G.node[i][recovery_label] = gamma_i
-We cannot define both gamma and recovery_label.  
-This will raise an error</dd>
+G.edge[i][j][transmission_weight] = g_{ij}</dd>
+<dt>recovery_weight <span class="classifier-delimiter">:</span> <span class="classifier">string       (default None)</span></dt>
+<dd><p class="first">a label for a weight given to the nodes to scale their 
+recovery rates</p>
+<blockquote class="last">
+<div>gamma_i = G.node[i][recovery_weight]*gamma</div></blockquote>
+</dd>
 </dl>
 <p>return_full_data : boolean      (default False)</p>
 <blockquote>
@@ -1909,7 +1938,7 @@ t, S, I = EoN.SIS_individual_based(G, index_nodes, nodelist, 0.3,</p>
 
 <dl class="function">
 <dt id="EoN.SIS_pair_based">
-<code class="descclassname">EoN.</code><code class="descname">SIS_pair_based</code><span class="sig-paren">(</span><em>G</em>, <em>nodelist</em>, <em>Y0</em>, <em>tau</em>, <em>gamma=None</em>, <em>XY0=None</em>, <em>XX0=None</em>, <em>tmin=0</em>, <em>tmax=100</em>, <em>tcount=1001</em>, <em>edge_label=None</em>, <em>recovery_label=None</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#SIS_pair_based"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.SIS_pair_based" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">EoN.</code><code class="descname">SIS_pair_based</code><span class="sig-paren">(</span><em>G</em>, <em>nodelist</em>, <em>Y0</em>, <em>tau</em>, <em>gamma</em>, <em>XY0=None</em>, <em>XX0=None</em>, <em>tmin=0</em>, <em>tmax=100</em>, <em>tcount=1001</em>, <em>transmission_weight=None</em>, <em>recovery_weight=None</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#SIS_pair_based"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.SIS_pair_based" title="Permalink to this definition">¶</a></dt>
 <dd><p>Encodes System (3.26) of Kiss, Miller, &amp; Simon.  Please cite the
 book if using this algorithm.</p>
 <p>This system solves equations for an SIS disease model spreading on a 
@@ -1926,19 +1955,17 @@ this is unlikely to significantly affect the calculation time.</p>
 <p class="last">We track pairs in both directions: e.g., XX[1,2] and XX[2,1].</p>
 </dd>
 </dl>
-<p>G : Networkx graph
-nodelist : list</p>
-<blockquote>
-<div>list of nodes in G in the same order as in Y0</div></blockquote>
+<p>G : Networkx graph</p>
 <dl class="docutils">
+<dt>nodelist <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd>list of nodes in G in the same order as in Y0</dd>
 <dt>Y0 <span class="classifier-delimiter">:</span> <span class="classifier">scipy array</span></dt>
 <dd>the array of initial infection probabilities for each node in 
 order as in nodelist</dd>
 <dt>tau <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
 <dd>transmission rate of disease</dd>
 <dt>gamma <span class="classifier-delimiter">:</span> <span class="classifier">number (default None)</span></dt>
-<dd>global recovery rate  
-(incompatible with recovery_label!=None)</dd>
+<dd>global recovery rate</dd>
 <dt>XY0 <span class="classifier-delimiter">:</span> <span class="classifier">2D scipy array (default None)</span></dt>
 <dd>(each dimension has length number of nodes of G)
 XY0[i,j] is probability node i is susceptible and j is 
@@ -1956,15 +1983,15 @@ randomly according to Y0.</dd>
 <dd>maximum report time</dd>
 <dt>tcount <span class="classifier-delimiter">:</span> <span class="classifier">integer (default 1001)</span></dt>
 <dd>number of reports</dd>
-<dt>edge_label <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dt>transmission_weight <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
 <dd>the label for a weight given to the edges.
-G.edge[i][j][edge_label] = g_{ij}</dd>
-<dt>recovery_label <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
-<dd>a label for a weight given to the nodes for their recovery 
-rates
-G.node[i][recovery_label] = gamma_i
-We cannot define both gamma and recovery_label.  
-This will raise an error.</dd>
+G.edge[i][j][transmission_weight] = g_{ij}</dd>
+<dt>recovery_weight <span class="classifier-delimiter">:</span> <span class="classifier">string       (default None)</span></dt>
+<dd><p class="first">a label for a weight given to the nodes to scale their 
+recovery rates</p>
+<blockquote class="last">
+<div>gamma_i = G.node[i][recovery_weight]*gamma</div></blockquote>
+</dd>
 <dt>return_full_data <span class="classifier-delimiter">:</span> <span class="classifier">boolean      (default False)</span></dt>
 <dd><dl class="first last docutils">
 <dt>if True:</dt>
@@ -2033,7 +2060,7 @@ import EoN</p>
 
 <dl class="function">
 <dt id="EoN.basic_discrete_SIR_epidemic">
-<code class="descclassname">EoN.</code><code class="descname">basic_discrete_SIR_epidemic</code><span class="sig-paren">(</span><em>G</em>, <em>p</em>, <em>initial_infecteds=None</em>, <em>return_node_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#basic_discrete_SIR_epidemic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.basic_discrete_SIR_epidemic" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">EoN.</code><code class="descname">basic_discrete_SIR_epidemic</code><span class="sig-paren">(</span><em>G</em>, <em>p</em>, <em>initial_infecteds=None</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#basic_discrete_SIR_epidemic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.basic_discrete_SIR_epidemic" title="Permalink to this definition">¶</a></dt>
 <dd><p>From figure 6.8 of Kiss, Miller, &amp; Simon.  Please cite the book if 
 using this algorithm.</p>
 <p>Does a simulation of the simple case of all nodes transmitting
@@ -2048,7 +2075,7 @@ recovering.</p>
 <dd>if a single node, then this node is initially infected
 if an iterable, then whole set is initially infected
 if None, then a randomly chosen node is initially infected.</dd>
-<dt>return_node_data: boolean (default False)</dt>
+<dt>return_full_data: boolean (default False)</dt>
 <dd><p class="first">Tells whether the infection and recovery times of each 
 individual node should be returned.  
 It is returned in the form of two dicts,</p>
@@ -2059,7 +2086,7 @@ recovery_time[node] is the recovery time</p>
 </dd>
 </dl>
 <dl class="docutils">
-<dt>if return_node_data is False:</dt>
+<dt>if return_full_data is False:</dt>
 <dd>the scipy arrays: t, S, I, R</dd>
 <dt>else:</dt>
 <dd>the scipy arrays: t, S, I, R 
@@ -2117,7 +2144,7 @@ H = EoN.directed_percolate_network(G, 2, 1)</p>
 
 <dl class="function">
 <dt id="EoN.discrete_SIR_epidemic">
-<code class="descclassname">EoN.</code><code class="descname">discrete_SIR_epidemic</code><span class="sig-paren">(</span><em>G</em>, <em>test_transmission=&lt;function _simple_test_transmission_&gt;</em>, <em>args=()</em>, <em>initial_infecteds=None</em>, <em>return_node_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#discrete_SIR_epidemic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.discrete_SIR_epidemic" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">EoN.</code><code class="descname">discrete_SIR_epidemic</code><span class="sig-paren">(</span><em>G</em>, <em>test_transmission=&lt;function _simple_test_transmission_&gt;</em>, <em>args=()</em>, <em>initial_infecteds=None</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#discrete_SIR_epidemic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.discrete_SIR_epidemic" title="Permalink to this definition">¶</a></dt>
 <dd><p>From figure 6.8 of Kiss, Miller, &amp; Simon.  Please cite the book
 if using this algorithm.</p>
 <p>Return details of epidemic curve from a discrete time simulation.</p>
@@ -2165,7 +2192,7 @@ tuple]</p>
 <dd>if a single node, then this node is initially infected
 if an iterable, then whole set is initially infected
 if None, then a randomly chosen node is initially infected.</dd>
-<dt>return_node_data: boolean  (default False)</dt>
+<dt>return_full_data: boolean  (default False)</dt>
 <dd><dl class="first docutils">
 <dt>Tells whether the infection and recovery times of each </dt>
 <dd>individual node should be returned.</dd>
@@ -2177,7 +2204,7 @@ recovery_time[node] is the recovery time</p>
 </dd>
 </dl>
 <dl class="docutils">
-<dt>if return_node_data is False:</dt>
+<dt>if return_full_data is False:</dt>
 <dd>the scipy arrays: t, S, I, R</dd>
 <dt>else:</dt>
 <dd>the scipy arrays: t, S, I, R 
@@ -2258,7 +2285,9 @@ PE, AR = EoN.estimate_SIR_prob_size_from_dir_perc(H)</p>
 <dl class="function">
 <dt id="EoN.estimate_directed_SIR_prob_size">
 <code class="descclassname">EoN.</code><code class="descname">estimate_directed_SIR_prob_size</code><span class="sig-paren">(</span><em>G</em>, <em>tau</em>, <em>gamma</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#estimate_directed_SIR_prob_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.estimate_directed_SIR_prob_size" title="Permalink to this definition">¶</a></dt>
-<dd><p>Predicts probability and attack rate assuming continuous-time 
+<dd><p>From figure 6.17 of Kiss, Miller, &amp; Simon.  Please cite the book if 
+using this algorithm</p>
+<p>Predicts probability and attack rate assuming continuous-time 
 Markovian SIR disease on network G</p>
 <p>estimate_nonMarkov_SIR_prob_size which handles nonMarkovian versions</p>
 <dl class="docutils">
@@ -2284,7 +2313,10 @@ PE, AR = EoN.estimate_directed_SIR_prob_size(G, 2, 1)</p>
 <dl class="function">
 <dt id="EoN.estimate_nonMarkov_SIR_prob_size">
 <code class="descclassname">EoN.</code><code class="descname">estimate_nonMarkov_SIR_prob_size</code><span class="sig-paren">(</span><em>G</em>, <em>xi</em>, <em>zeta</em>, <em>transmission</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#estimate_nonMarkov_SIR_prob_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.estimate_nonMarkov_SIR_prob_size" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
+<dd><p>This is not directly described in Kiss, Miller, &amp; Simon.  It uses
+nonMarkov_directed_percolate_network  (fig 6.18) to predict 
+epidemic probability and size.</p>
+<dl class="docutils">
 <dt>G <span class="classifier-delimiter">:</span> <span class="classifier">NetworkX Graph</span></dt>
 <dd>The input graph</dd>
 <dt>xi <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
@@ -2333,8 +2365,8 @@ if infection_duration &gt; random.expovariate(trans_rate):</p>
 
 <dl class="function">
 <dt id="EoN.fast_SIR">
-<code class="descclassname">EoN.</code><code class="descname">fast_SIR</code><span class="sig-paren">(</span><em>G</em>, <em>tau</em>, <em>gamma</em>, <em>initial_infecteds=None</em>, <em>tmax=inf</em>, <em>return_node_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#fast_SIR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.fast_SIR" title="Permalink to this definition">¶</a></dt>
-<dd><p>From figure A.2 of Kiss, Miller, &amp; Simon.  Please cite the
+<code class="descclassname">EoN.</code><code class="descname">fast_SIR</code><span class="sig-paren">(</span><em>G</em>, <em>tau</em>, <em>gamma</em>, <em>initial_infecteds=None</em>, <em>tmax=inf</em>, <em>transmission_weight=None</em>, <em>recovery_weight=None</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#fast_SIR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.fast_SIR" title="Permalink to this definition">¶</a></dt>
+<dd><p>From figure A.3 of Kiss, Miller, &amp; Simon.  Please cite the
 book if using this algorithm.</p>
 <p>fast SIR simulation assuming exponentially distributed infection and
 recovery times</p>
@@ -2349,11 +2381,21 @@ recovery times</p>
 <dd>if a single node, then this node is initially infected
 if an iterable, then whole set is initially infected
 if None, then a randomly chosen node is initially infected.</dd>
-<dt>tmax <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
+<dt>tmax <span class="classifier-delimiter">:</span> <span class="classifier">number   (default float(&#8216;Inf&#8217;))</span></dt>
 <dd>maximum time after which simulation will stop.
-default float(&#8216;Inf&#8217;) to set to infinity.  
-Okay for SIR, not for SIS.</dd>
-<dt>return_node_data: boolean</dt>
+the default of running to infinity is okay for SIR, 
+but not for SIS.</dd>
+<dt>transmission_weight <span class="classifier-delimiter">:</span> <span class="classifier">string       (default None)</span></dt>
+<dd>the label for a weight given to the edges.
+transmission rate is
+G.edge[i][j][transmission_weight]*tau</dd>
+<dt>recovery_weight <span class="classifier-delimiter">:</span> <span class="classifier">string       (default None)</span></dt>
+<dd><p class="first">a label for a weight given to the nodes to scale their 
+recovery rates</p>
+<blockquote class="last">
+<div>gamma_i = G.node[i][recovery_weight]*gamma</div></blockquote>
+</dd>
+<dt>return_full_data: boolean</dt>
 <dd>Tells whether the infection and recovery times of each 
 individual node should be returned.  
 It is returned in the form of two dicts, infection_time and 
@@ -2365,7 +2407,7 @@ recovery_time[node] is the recovery time</dd>
 <dt>times, S, I, R <span class="classifier-delimiter">:</span> <span class="classifier">each a scipy array</span></dt>
 <dd>giving times and number in each status for corresponding time</dd>
 </dl>
-<p>OR if return_node_data=True:
+<p>OR if return_full_data=True:
 times, S, I, R, infection_time, recovery_time</p>
 <blockquote>
 <div>first four are scipy arrays as above.  New objects are dicts
@@ -2387,7 +2429,7 @@ t, S, I, R = EoN.fast_SIR(G, tau, gamma,</p>
 
 <dl class="function">
 <dt id="EoN.fast_SIS">
-<code class="descclassname">EoN.</code><code class="descname">fast_SIS</code><span class="sig-paren">(</span><em>G</em>, <em>tau</em>, <em>gamma</em>, <em>initial_infecteds=None</em>, <em>tmax=100</em>, <em>return_node_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#fast_SIS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.fast_SIS" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">EoN.</code><code class="descname">fast_SIS</code><span class="sig-paren">(</span><em>G</em>, <em>tau</em>, <em>gamma</em>, <em>initial_infecteds=None</em>, <em>tmax=100</em>, <em>transmission_weight=None</em>, <em>recovery_weight=None</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#fast_SIS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.fast_SIS" title="Permalink to this definition">¶</a></dt>
 <dd><p>From figure A.5 of Kiss, Miller, &amp; Simon.  Please cite the
 book if using this algorithm.</p>
 <dl class="docutils">
@@ -2403,7 +2445,17 @@ if an iterable, then whole set is initially infected
 if None, then a randomly chosen node is initially infected.</dd>
 <dt>tmax <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
 <dd>stop time</dd>
-<dt>return_node_data: boolean</dt>
+<dt>transmission_weight <span class="classifier-delimiter">:</span> <span class="classifier">string       (default None)</span></dt>
+<dd>the label for a weight given to the edges.
+transmission rate is
+G.edge[i][j][transmission_weight]*tau</dd>
+<dt>recovery_weight <span class="classifier-delimiter">:</span> <span class="classifier">string       (default None)</span></dt>
+<dd><p class="first">a label for a weight given to the nodes to scale their 
+recovery rates</p>
+<blockquote class="last">
+<div>gamma_i = G.node[i][recovery_weight]*gamma</div></blockquote>
+</dd>
+<dt>return_full_data: boolean</dt>
 <dd>Tells whether the infection and recovery times of each 
 individual node should be returned.  
 It is returned in the form of two dicts, infection_time and 
@@ -2415,7 +2467,7 @@ recovery_time[node] is the recovery time.</dd>
 <dt>times, S, I <span class="classifier-delimiter">:</span> <span class="classifier">each a scipy array</span></dt>
 <dd>giving times and number in each status for corresponding time</dd>
 </dl>
-<p>OR if return_node_data=True:
+<p>OR if return_full_data=True:
 times, S, I, infection_time, recovery_time</p>
 <blockquote>
 <div>first four are scipy arrays as above.  New objects are dicts
@@ -2437,8 +2489,8 @@ t, S, I = EoN.fast_SIS(G, tau, gamma, tmax = 10,</p>
 
 <dl class="function">
 <dt id="EoN.fast_nonMarkov_SIR">
-<code class="descclassname">EoN.</code><code class="descname">fast_nonMarkov_SIR</code><span class="sig-paren">(</span><em>G</em>, <em>process_trans=&lt;function _process_trans_SIR_&gt;</em>, <em>args=()</em>, <em>initial_infecteds=None</em>, <em>tmax=inf</em>, <em>return_node_data=False</em>, <em>Q=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#fast_nonMarkov_SIR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.fast_nonMarkov_SIR" title="Permalink to this definition">¶</a></dt>
-<dd><p>A modification of the algorithm in figure A.2 of Kiss, Miller, &amp; 
+<code class="descclassname">EoN.</code><code class="descname">fast_nonMarkov_SIR</code><span class="sig-paren">(</span><em>G</em>, <em>process_trans=&lt;function _process_trans_SIR_&gt;</em>, <em>args=()</em>, <em>initial_infecteds=None</em>, <em>tmax=inf</em>, <em>return_full_data=False</em>, <em>Q=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#fast_nonMarkov_SIR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.fast_nonMarkov_SIR" title="Permalink to this definition">¶</a></dt>
+<dd><p>A modification of the algorithm in figure A.3 of Kiss, Miller, &amp; 
 Simon to allow for user-defined rules governing time of 
 transmission.</p>
 <p>Please cite the book if using this algorithm.</p>
@@ -2480,7 +2532,7 @@ if an iterable, then whole set is initially infected
 if None, then a randomly chosen node is initially infected.</dd>
 <dt>tmax <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
 <dd>stop time</dd>
-<dt>return_node_data: boolean</dt>
+<dt>return_full_data: boolean</dt>
 <dd><p class="first">Tells whether the infection and recovery times of each 
 individual node should be returned.  
 It is returned in the form of two dicts, infection_time and 
@@ -2500,10 +2552,10 @@ already.</dd>
 <dt>tmax <span class="classifier-delimiter">:</span> <span class="classifier">(default infinity)</span></dt>
 <dd>final time</dd>
 </dl>
-<p>return_node_data : boolean (default False)
-Q : If user wants to predefine some events, this can be done.  This</p>
-<blockquote>
-<div><p>can be input as a heap or as a list (it will be heapified and 
+<p>return_full_data : boolean (default False)</p>
+<dl class="docutils">
+<dt>Q <span class="classifier-delimiter">:</span> <span class="classifier">If user wants to predefine some events, this can be done.  This </span></dt>
+<dd><p class="first">can be input as a heap or as a list (it will be heapified and 
 modified).</p>
 <p>User should understand the Event class and use it.</p>
 <p>Currently there is no guarantee this is properly supported,
@@ -2513,15 +2565,16 @@ the source code before trying it.</p>
 <p>When Q is input, initial_infecteds should be the of nodes in 
 I class <strong>PRIOR</strong> to t=0, and the events in Q must have all of 
 their recoveries.</p>
-<p>The best way to handle nodes that should be already recovered is 
+<p class="last">The best way to handle nodes that should be already recovered is 
 to put them in initial_infecteds and give them a recovery event 
 at t=0.</p>
-</div></blockquote>
+</dd>
+</dl>
 <dl class="docutils">
 <dt>times, S, I, R <span class="classifier-delimiter">:</span> <span class="classifier">each a scipy array</span></dt>
 <dd>giving times and number in each status for corresponding time</dd>
 </dl>
-<p>OR if return_node_data=True:
+<p>OR if return_full_data=True:
 times, S, I, R, infection_time, recovery_time</p>
 <blockquote>
 <div>first four are scipy arrays as above.  New objects are dicts
@@ -2682,6 +2735,10 @@ tau and recovery with rate gamma.</p>
 <p>This code has similar run-time whether an epidemic occurs or not.
 There are much faster ways to implement an algorithm giving the same 
 output, for example by actually running an epidemic.</p>
+<p>why are you using this command? If it&#8217;s to better understand some
+concept, that&#8217;s fine.  But this command IS NOT an efficient way to
+calculate anything.  Don&#8217;t do it like this.  Use one of the other
+algorithms.  Try fast_SIR, for example.</p>
 <dl class="docutils">
 <dt>G <span class="classifier-delimiter">:</span> <span class="classifier">NetworkX Graph</span></dt>
 <dd>The network the disease will transmit through.</dd>
@@ -2723,28 +2780,6 @@ Useful for shifting times.</p>
 <dt>t <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
 <dd>the first time at which L reaches or exceeds a threshold.</dd>
 </dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="EoN.my_odeint">
-<code class="descclassname">EoN.</code><code class="descname">my_odeint</code><span class="sig-paren">(</span><em>dfunc</em>, <em>V0</em>, <em>times</em>, <em>args=()</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#my_odeint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.my_odeint" title="Permalink to this definition">¶</a></dt>
-<dd><p>For some of the systems odeint will switch to the BDF solver.
-In large enough systems, it then gets stuck trying to estimate the 
-Jacobian.</p>
-<p>This routine has identical inputs to integrate.odeint, but relies on 
-integrate.ode.  It avoids BDF.</p>
-<p>In particular, this seems to be important for SIS heterogeneous 
-pairwise where the number of equations is very large.  I have found 
-that near equilibrium, this often is interpreted as being a stiff 
-system and it switches to bdf, which requires calculating a 
-Jacobian.  In some systems this is impractically large.</p>
-<dl class="docutils">
-<dt>See this question: </dt>
-<dd><a class="reference external" href="http://stackoverflow.com/q/40317096/2966723">http://stackoverflow.com/q/40317096/2966723</a>,</dd>
-<dt>with the answer by </dt>
-<dd>Phillip: <a class="reference external" href="http://stackoverflow.com/users/1881610/phillip">http://stackoverflow.com/users/1881610/phillip</a></dd>
-</dl>
-<p>INPUT and OUTPUT are as integrate.odeint</p>
 </dd></dl>
 
 <dl class="function">
@@ -2801,7 +2836,7 @@ H = EoN.percolate_network(G, 0.6)</p>
 
 <dl class="function">
 <dt id="EoN.percolation_based_discrete_SIR_epidemic">
-<code class="descclassname">EoN.</code><code class="descname">percolation_based_discrete_SIR_epidemic</code><span class="sig-paren">(</span><em>G</em>, <em>p</em>, <em>initial_infecteds=None</em>, <em>return_node_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#percolation_based_discrete_SIR_epidemic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.percolation_based_discrete_SIR_epidemic" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">EoN.</code><code class="descname">percolation_based_discrete_SIR_epidemic</code><span class="sig-paren">(</span><em>G</em>, <em>p</em>, <em>initial_infecteds=None</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#percolation_based_discrete_SIR_epidemic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.percolation_based_discrete_SIR_epidemic" title="Permalink to this definition">¶</a></dt>
 <dd><p>From figure 6.10 of Kiss, Miller, &amp; Simon.  Please cite the book
 if using this algorithm.</p>
 <p>The simple case of all nodes transmitting with probability p 
@@ -2822,7 +2857,7 @@ can see that the outputs of the two are equivalent.</p>
 <dd>if a single node, then this node is initially infected
 if an iterable, then whole set is initially infected
 if None, then a randomly chosen node is initially infected.</dd>
-<dt>return_node_data: boolean</dt>
+<dt>return_full_data: boolean</dt>
 <dd><p class="first">Tells whether the infection and recovery times of each 
 individual node should be returned.  
 It is returned in the form of two dicts,</p>
@@ -2833,7 +2868,7 @@ recovery_time[node] is the recovery time</p>
 </dd>
 </dl>
 <dl class="docutils">
-<dt>if return_node_data is False:</dt>
+<dt>if return_full_data is False:</dt>
 <dd>the lists: t, S, I, R</dd>
 <dt>else:</dt>
 <dd>the lists: t, S, I, R 
@@ -2938,7 +2973,7 @@ number of nodes in given status.</dd>
         <li class="right" >
           <a href="quickstart.html" title="QuickStart Guide"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Epidemics on Networks 0.9 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Epidemics on Networks 0.91 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
