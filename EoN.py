@@ -2197,7 +2197,7 @@ def _Gillespie_Recover_SIS_(G, S, I, times, infected, current_time, status,
     if return_full_data:
         recovery_times[recovering_node].append(current_time)
 
-def Gillespie_SIR(G, tau, gamma, initial_infecteds=None, tmax=float('Inf'), 
+def Gillespie_SIR(G, tau, gamma, initial_infecteds=None, rho = None, tmax=float('Inf'), 
                     return_full_data = False):
     #tested in test_SIR_dynamics
     r'''
@@ -2231,16 +2231,27 @@ def Gillespie_SIR(G, tau, gamma, initial_infecteds=None, tmax=float('Inf'),
     ------
     G : NetworkX Graph
        The underlying network
+       
     tau : number
        transmission rate per edge
+       
     gamma : number
        recovery rate per node
+       
     initial_infecteds: node or iterable of nodes
        if a single node, then this node is initially infected
        if an iterable, then whole set is initially infected
-       if None, then a randomly chosen node is initially infected.
+       if None, then choose randomly based on rho.  If rho is also
+       None, a random single node is chosen.
+       If both initial_infecteds and rho are assigned, then there
+       is an error.
+       
+    rho : number
+       initial fraction infected. number is int(round(G.order()*rho))
+
     tmax : number
         stop time
+
     return_full_data: boolean
         Tells whether the infection and recovery times of each 
         individual node should be returned.  
@@ -2278,6 +2289,10 @@ def Gillespie_SIR(G, tau, gamma, initial_infecteds=None, tmax=float('Inf'),
 
     '''
 
+    if rho is not None and initial_infecteds is not None:
+        raise EoNError("cannot define both initial_infecteds and rho")
+
+    
     infection_times = defaultdict(lambda: []) #defaults to an empty list for each node
     recovery_times = defaultdict(lambda: [])
 
@@ -2285,7 +2300,11 @@ def Gillespie_SIR(G, tau, gamma, initial_infecteds=None, tmax=float('Inf'),
     gamma = float(gamma)
     
     if initial_infecteds is None:
-        initial_infecteds=[random.choice(G.nodes())]
+        if rho is None:
+            initial_number = 1
+        else:
+            initial_number = int(round(G.order()*rho))
+        initial_infecteds=random.sample(G.nodes(), initial_number)
     elif G.has_node(initial_infecteds):
         initial_infecteds=[initial_infecteds]
 
@@ -2330,7 +2349,7 @@ def Gillespie_SIR(G, tau, gamma, initial_infecteds=None, tmax=float('Inf'),
 
 
 
-def Gillespie_SIS(G, tau, gamma, initial_infecteds=None, tmax=100, 
+def Gillespie_SIS(G, tau, gamma, initial_infecteds=None, rho = None, tmax=100, 
                     return_full_data = False):
     r'''
     
@@ -2360,16 +2379,27 @@ def Gillespie_SIS(G, tau, gamma, initial_infecteds=None, tmax=100,
     ------
     G : NetworkX Graph
        The underlying network
+
     tau : number
        transmission rate per edge
+
     gamma : number
        recovery rate per node
+
     initial_infecteds: node or iterable of nodes
        if a single node, then this node is initially infected
        if an iterable, then whole set is initially infected
-       if None, then a randomly chosen node is initially infected.
+       if None, then choose randomly based on rho.  If rho is also
+       None, a random single node is chosen.
+       If both initial_infecteds and rho are assigned, then there
+       is an error.
+       
+    rho : number
+       initial fraction infected. number is int(round(G.order()*rho))
+
     tmax : number
         stop time
+
     return_full_data: boolean
         Tells whether the infection and recovery times of each 
         individual node should be returned.  
@@ -2378,6 +2408,7 @@ def Gillespie_SIS(G, tau, gamma, initial_infecteds=None, tmax=100,
         infection_time[node] is the time of infection and 
         recovery_time[node] is the recovery time.
         
+
     SAMPLE USE
     ----------
     import networkx as nx
@@ -2394,6 +2425,9 @@ def Gillespie_SIS(G, tau, gamma, initial_infecteds=None, tmax=100,
     plt.plot(t, I)
 
     '''
+    if rho is not None and initial_infecteds is not None:
+        raise EoNError("cannot define both initial_infecteds and rho")
+
     infection_times = defaultdict(lambda: []) #defaults to an empty list 
     recovery_times = defaultdict(lambda: [])  #for each node
 
@@ -2401,7 +2435,11 @@ def Gillespie_SIS(G, tau, gamma, initial_infecteds=None, tmax=100,
     gamma = float(gamma)
     
     if initial_infecteds is None:
-        initial_infecteds=[random.choice(G.nodes())]
+        if rho is None:
+            initial_number = 1
+        else:
+            initial_number = int(round(G.order()*rho))
+        initial_infecteds=random.sample(G.nodes(), initial_number)
     elif G.has_node(initial_infecteds):
         initial_infecteds=[initial_infecteds]
 
