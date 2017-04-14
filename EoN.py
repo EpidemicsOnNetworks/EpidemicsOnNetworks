@@ -64,24 +64,47 @@ class Event(object): #for fast_SIR and fast_SIS
     fast_SIS) as an event which will be put into a priority queue.  
     
     It is sortable based on event time.
+    
+    An event object consists of
+    self.time 
+    self.function
+    self.args
+    
+    
+    When self.function is called, it is called by:
+        self.function(self.time, *self.args)
+    
+    
         
     I wonder about whether it would be better to do this as a dict.
     
     The ability to sort based on time is why I am leaving it as a class.
-    
-    An alternative would be to give it a time, a function to call, and 
-    arguments for the function.
     '''
-    
-    def __init__(self, time, action, node, source = None):
+    def __init__(self, time, function, args = ()):
         self.time = time
-        self.action = action
-        self.node = node
-        self.source = source #not needed for fast_SIR or recoveries
+        self.function = function
+        self.args = args
+        
 
     def __lt__(self, other): #used to sort Q
         return self.time < other.time
     
+class myQueue(object):
+    r'''
+    This class is used to store a priority queue of events
+    for event-driven simulations.
+    '''
+    def __init__(self, tmax=float("Inf")):
+        self._Q_ = []
+        self.tmax=tmax
+    def add(self, event):
+        if event.time<self.tmax:
+            heapq.heappush(self._Q_, event)
+    def pop_and_run(self):
+        event = heapq.heappop(self._Q_)
+        event.function(event.time, *event.args)
+    def __len__(self): #this will allow for something like "while Q:" 
+        return len(self._Q_)
 
 class _ListDict_(object):
     r'''
@@ -441,6 +464,9 @@ def subsample(report_times, times, status1, status2=None,
             next_observation_index += 1
         report_status1.append(candidate)
         next_report_index +=1
+        
+    report_status1= scipy.array(report_status1)
+    
     if status2 is not None:
         if status3 is not None:
             report_status2, report_status3 = subsample(report_times, times, status2, status3)
@@ -1290,7 +1316,7 @@ def nonMarkov_directed_percolate_network(G, xi, zeta, transmission):
 ### Code starting here does event-driven simulations###
 
 def _find_trans_SIR_(Q, t, tau, source, target, status, pred_inf_time, 
-                        cutoff_time):
+                        source_rec_time, trans_event_args=()):
     r'''
     From figure A.4 of Kiss, Miller, & Simon.  Please cite the book if 
     using this algorithm.
@@ -1306,8 +1332,10 @@ def _find_trans_SIR_(Q, t, tau, source, target, status, pred_inf_time,
 
     INPUTS
     ----------
-    Q : A priority queue of events
-    t : current time
+    Q : myQueue
+        A priority queue of events
+    t : number
+        current time
     tau : transmission rate
     source : infected node that may transmit
     target : the possibly susceptible node that may receive a 
@@ -1315,7 +1343,13 @@ def _find_trans_SIR_(Q, t, tau, source, target, status, pred_inf_time,
     status : a dict giving the current status of every node
     pred_inf_time : a dict giving a predicted infection time of 
                     susceptible nodes (defaults to inf)
-    cutoff_time : either tmax or rec_time[source], whichever is first.
+    source_rec_time :  time source will recover (a bound on when transmission
+                        can occur)
+    trans_event_args: tuple
+                      the arguments [other than time] passed on to 
+                      _process_trans_SIR_.  That is:
+                      (G, node, times, S, I, R, Q, status, rec_time, 
+                        pred_inf_time, trans_rate_fxn, rec_rate_fxn)
 
     RETURNS
     -------
@@ -1329,13 +1363,14 @@ def _find_trans_SIR_(Q, t, tau, source, target, status, pred_inf_time,
     if status[target] == 'S':
         delay = random.expovariate(tau)
         inf_time = t + delay
-        if inf_time< cutoff_time and inf_time < pred_inf_time[target]:
-            event = Event(inf_time, 'transmit', target)
-            heapq.heappush(Q, event)
+        if inf_time< min(source_rec_time, pred_inf_time[target]):
+            event = Event(inf_time, _process_trans_SIR_, 
+                          args = trans_event_args)
+            Q.add(event)
             pred_inf_time[target] = inf_time
 
-def _process_trans_SIR_(G, event, times, S, I, R, Q, status, rec_time, 
-                            pred_inf_time, tmax, trans_rate_fxn, 
+def _process_trans_SIR_(time, G, node, times, S, I, R, Q, status, rec_time, 
+                            pred_inf_time, trans_rate_fxn, 
                             rec_rate_fxn):
     r'''
     From figure A.4 of Kiss, Miller, & Simon.  Please cite the book if 
@@ -1344,13 +1379,15 @@ def _process_trans_SIR_(G, event, times, S, I, R, Q, status, rec_time,
     INPUTS
     ----------
     G : NetworkX Graph
-    event : event
-         has details on node and time
+    time : number
+         time of transmission
+    node : node
+         node receiving transmission.
     times : list
         list of times at which events have happened
     S, I, R : lists
         lists of numbers of nodes of each status at each time
-    Q : heapq heap
+    Q : myQueue
         the queue of events
     status : dict
         dictionary giving status of each node
@@ -1358,8 +1395,6 @@ def _process_trans_SIR_(G, event, times, S, I, R, Q, status, rec_time,
         dictionary giving recovery time of each node
     pred_inf_time : dict
         dictionary giving predicted infeciton time of nodes 
-    tmax : number
-        max time allowed
     trans_rate_fxn : function
         transmission rate trans_rate_fxn(u,v) gives transmission rate from
         u to v
@@ -1382,28 +1417,29 @@ def _process_trans_SIR_(G, event, times, S, I, R, Q, status, rec_time,
     pred_inf_time : updated for nodes that will receive transmission
                     update happens in _find_trans_SIR_
 
-    Entry requirement:
-    -------
-    Only enter this if the node is SUSCEPTIBLE and is becoming INFECTED.
     '''
-    node = event.node  #The node that is receiving transmission
-    time = event.time  #current time
-    assert(status[node]=='S')
-    status[node] = 'I' 
-    times.append(time)
-    S.append(S[-1]-1) #one less susceptible
-    I.append(I[-1]+1) #one more infected
-    R.append(R[-1])   #no change to recovered
-    rec_time[node] = time + random.expovariate(rec_rate_fxn(node))
-    if rec_time[node] < tmax:
-        newevent = Event(rec_time[node], 'recover', node)
-        heapq.heappush(Q,newevent)
-    cutoff_time = min(tmax, rec_time[node])
-    for v in G.neighbors(node):
-        _find_trans_SIR_(Q, time, trans_rate_fxn(node,v), node, v, status, 
-                            pred_inf_time, cutoff_time)
+    if status[node] == 'S':  #nothing happens if already infected.
+        status[node] = 'I' 
+        times.append(time)
+        S.append(S[-1]-1) #one less susceptible
+        I.append(I[-1]+1) #one more infected
+        R.append(R[-1])   #no change to recovered
+        rec_time[node] = time + random.expovariate(rec_rate_fxn(node))
+        
+        newevent = Event(rec_time[node], _process_rec_SIR_, 
+                            args = (node, times, S, I, R, status))
+        Q.add(newevent) #note Q.add tests that event is before tmax
+        
+        for v in G.neighbors(node):
+            _find_trans_SIR_(Q, time, trans_rate_fxn(node,v), node, v, status, 
+                                pred_inf_time, rec_time[node],
+                                trans_event_args = (G, v, times, S, I, R, Q, 
+                                        status, rec_time, pred_inf_time, 
+                                        trans_rate_fxn, rec_rate_fxn
+                                    )
+                            )
     
-def _process_rec_SIR_(event, times, S, I, R, status):
+def _process_rec_SIR_(time, node, times, S, I, R, status):
     r'''From figure A.3 of Kiss, Miller, & Simon.  Please cite the
     book if using this algorithm.
 
@@ -1431,8 +1467,6 @@ def _process_rec_SIR_(event, times, S, I, R, status):
     I : appends new I (decreased by 1)
     R : appends new R (increased by 1)
     '''
-    node = event.node
-    time = event.time
     times.append(time)
     S.append(S[-1])   #no change to number susceptible
     I.append(I[-1]-1) #one less infected
@@ -1465,7 +1499,13 @@ def fast_SIR(G, tau, gamma, initial_infecteds = None, rho = None,
     initial_infecteds: node or iterable of nodes
        if a single node, then this node is initially infected
        if an iterable, then whole set is initially infected
-       if None, then a randomly chosen node is initially infected.
+       if None, then choose randomly based on rho.  If rho is also
+       None, a random single node is chosen.
+       If both initial_infecteds and rho are assigned, then there
+       is an error.
+       
+    rho : number
+       initial fraction infected. number is int(round(G.order()*rho))
 
     tmax : number   (default float('Inf'))
        maximum time after which simulation will stop.
@@ -1551,8 +1591,8 @@ def fast_nonMarkov_SIR(G, process_trans = _process_trans_SIR_,
     
     process_trans : a function that handles a transmission event.
                     Called by 
-                        process_trans(G, event, times, S, I, R, Q, 
-                           status, rec_time, pred_inf_time, tmax, *args)
+                        process_trans(G, time, node, times, S, I, R, Q, 
+                           status, rec_time, pred_inf_time, *args)
                     must update :   status, rec_time, times, S, I, R,
                     must also update : Q, pred_inf_time.
                     In updating these last two, it calculates the 
@@ -1571,10 +1611,16 @@ def fast_nonMarkov_SIR(G, process_trans = _process_trans_SIR_,
     initial_infecteds: node or iterable of nodes
        if a single node, then this node is initially infected
        if an iterable, then whole set is initially infected
-       if None, then a randomly chosen node is initially infected.
+       if None, then choose randomly based on rho.  If rho is also
+       None, a random single node is chosen.
+       If both initial_infecteds and rho are assigned, then there
+       is an error.
+       
+    rho : number
+       initial fraction infected. number is int(round(G.order()*rho))
 
-    tmax : number
-        stop time
+    tmax : (default infinity)
+        final time
 
     return_full_data: boolean
         Tells whether the infection and recovery times of each 
@@ -1591,10 +1637,6 @@ def fast_nonMarkov_SIR(G, process_trans = _process_trans_SIR_,
              Those infected at t=0 will be handled by being in Q 
              already.
 
-    tmax : (default infinity)
-        final time
-
-    return_full_data : boolean (default False)
 
     Q : If user wants to predefine some events, this can be done.  This 
         can be input as a heap or as a list (it will be heapified and 
@@ -1644,23 +1686,28 @@ def fast_nonMarkov_SIR(G, process_trans = _process_trans_SIR_,
         #probably with a slight improvement to performance.
     
     if Q is None:
-        Q = []
+        Q = myQueue(tmax)
 
-        if initial_infecteds is None:
+        if initial_infecteds is None:  #create initial infecteds list if not given
             if rho is None:
                 initial_number = 1
             else:
-                initial_number = scipy.random.binomial(G.order(),rho)
+                initial_number = int(round(G.order()*rho))
             initial_infecteds=random.sample(G.nodes(), initial_number)
         elif G.has_node(initial_infecteds):
             initial_infecteds=[initial_infecteds]
         #else it is assumed to be a list of nodes.
         
-        for u in initial_infecteds:
-            newevent = Event(0, 'transmit', u)
-            pred_inf_time[u] = 0
-            heapq.heappush(Q,newevent)
         times, S, I, R= ([0], [G.order()], [0], [0])  
+
+        for u in initial_infecteds:
+            newevent = Event(0, process_trans, args=(G, u, times, S, I, R, Q, 
+                                                        status, rec_time, 
+                                                        pred_inf_time
+                                                    ) + args
+                            )
+            pred_inf_time[u] = 0
+            Q.add(newevent)
 
     else:
         raise EoNError("inputting Q is not currently tested.\n \
@@ -1695,14 +1742,8 @@ def fast_nonMarkov_SIR(G, process_trans = _process_trans_SIR_,
     #and rec_time is correct.  
     #So if return_full_data is true, these are correct
 
-    while Q:
-        event = heapq.heappop(Q)
-        if event.action == 'transmit':
-            if status[event.node] == 'S': 
-                process_trans(G, event, times, S, I, R, Q, status, 
-                                rec_time, pred_inf_time, tmax, *args)
-        else:
-            _process_rec_SIR_(event, times, S, I, R, status)
+    while Q:  #all the work is done in this while loop.
+        Q.pop_and_run()
 
     #the initial infections were treated as ordinary infection events at 
     #time 0.
@@ -1727,26 +1768,24 @@ def fast_nonMarkov_SIR(G, process_trans = _process_trans_SIR_,
                 scipy.array(R), infection_time, recovery_time
 
 
-def _process_trans_SIS_(G, event, trans_rate_fxn, rec_rate_fxn, times, 
-                        S, I, Q, status, rec_time, tmax):
+def _process_trans_SIS_(time, G, source, target, times, infection_times, S, I, Q, status, rec_time, trans_rate_fxn, rec_rate_fxn):
     r'''From figure A.6 of Kiss, Miller, & Simon.  Please cite the
     book if using this algorithm.
 
     INPUTS
     ----------
+    time : number
+            current time
     G : NetworkX Graph
-    event: event
-        has details on node and time
-    trans_rate_fxn : function
-        transmission rate trans_rate_fxn(u,v) gives transmission rate 
-        from u to v
-    rec_rate_fxn : function
-        recovery rate rec_rate_fxn(u) is recovery rate of u.
+    source : node
+        node causing transmission
+    target : node
+        node receiving transmission.
     times : list
         list of times at which events have happened
     S, I: lists
         lists of numbers of nodes of each status at each time
-    Q : heapq heap
+    Q : myQueue
         the queue of events
     status : dict
         dictionary giving status of each node
@@ -1754,7 +1793,11 @@ def _process_trans_SIS_(G, event, trans_rate_fxn, rec_rate_fxn, times,
         dictionary giving recovery time of each node
     pred_inf_time : dict
         dictionary giving predicted infeciton time of nodes 
-    tmax : max time allowed
+    trans_rate_fxn : function
+        transmission rate trans_rate_fxn(u,v) gives transmission rate 
+        from u to v
+    rec_rate_fxn : function
+        recovery rate rec_rate_fxn(u) is recovery rate of u.
 
     RETURNS
     -------
@@ -1762,35 +1805,48 @@ def _process_trans_SIS_(G, event, trans_rate_fxn, rec_rate_fxn, times,
 
     MODIFIES
     --------
-    status : updates status of newly infected node
-    rec_time : adds recovery time for node
+    status : updates status of target
+    rec_time : adds recovery time for target
     times : appends time of event
     S : appends new S (reduced by 1 from last)
     I : appends new I (increased by 1)
-    Q : adds recovery and transmission events for newly infected node.
+    Q : adds recovery and transmission events for target.
 
-    Entry requirement:
-    -------
-    Only enter this if the node is SUSCEPTIBLE and is becoming INFECTED.
     '''
-    node = event.node  #The node that is receiving transmission
-    time = event.time  #current time
 
-    assert(status[node]=='S')
-    status[node] = 'I'
-    I.append(I[-1]+1) #one more infected
-    S.append(S[-1]-1) #one less susceptible
-    times.append(time)
-    rec_time[node] = time + random.expovariate(rec_rate_fxn(node))
-    if rec_time[node] < tmax:
-        newevent = Event(rec_time[node], 'recover', node)
-        heapq.heappush(Q, newevent)
-    for v in G.neighbors(node):
-        _find_next_trans_SIS_(Q, time, trans_rate_fxn(node, v), node, v, 
-                                status, rec_time, tmax)
+    if status[target] == 'S':
+        status[target] = 'I'
+        I.append(I[-1]+1) #one more infected
+        S.append(S[-1]-1) #one less susceptible
+        times.append(time)
+        rec_time[target] = time + random.expovariate(rec_rate_fxn(target))
+        
+        newevent = Event(rec_time[target], _process_rec_SIS_, 
+                                args = (target, times, S, I, status))
+        Q.add(newevent) #fails if time>tmax
+        for v in G.neighbors(target): #target plays role of source here
+            _find_next_trans_SIS_(Q, time, trans_rate_fxn(target, v), target, v, 
+                                    status, rec_time,
+                                    trans_event_args = (G, target, v, times, 
+                                            infection_times, S, I, Q, status, 
+                                            rec_time, trans_rate_fxn,
+                                            rec_rate_fxn
+                                            )
+                                  )
+        infection_times[target].append(time)
+    if source != 'initial_condition':
+        _find_next_trans_SIS_(Q, time, trans_rate_fxn(source, target), 
+                                source, target, status, rec_time, 
+                                trans_event_args = (G, source, target, times, 
+                                            infection_times, S, I, Q, status, 
+                                            rec_time, trans_rate_fxn, 
+                                            rec_rate_fxn
+                                            )
+                             )
+
 
 def _find_next_trans_SIS_(Q, time, tau, source, target, status, rec_time, 
-                            tmax):
+                            trans_event_args=()):
     r'''From figure A.6 of Kiss, Miller, & Simon.  Please cite the
     book if using this algorithm.
 
@@ -1800,7 +1856,8 @@ def _find_next_trans_SIS_(Q, time, tau, source, target, status, rec_time,
 
     INPUTS
     ----------
-    Q : A priority queue of events
+    Q : myQueue
+        A priority queue of events
     t : current time
     tau : transmission rate
     source : infected node that may transmit
@@ -1808,8 +1865,7 @@ def _find_next_trans_SIS_(Q, time, tau, source, target, status, rec_time,
              transmission
     status : a dict giving the current status of every node
     rec_time : a dict giving the recovery time of every node that has 
-               been infected.  
-    tmax : max time for simulation.
+               been infected.
 
     RETURNS
     -------
@@ -1829,33 +1885,29 @@ def _find_next_trans_SIS_(Q, time, tau, source, target, status, rec_time,
     Only enter this if the source node is INFECTED.
 
     '''
-
+    
     assert(status[source]=='I')
     if rec_time[target]<rec_time[source]: 
         #if target is susceptible, then rec_time[target]<time
         transmission_time = max(time, rec_time[target]) \
                             + random.expovariate(tau)
-        if transmission_time < rec_time[source] and transmission_time<tmax:
-            newEvent = Event(transmission_time, 'transmit', target, source)
-            heapq.heappush(Q, newEvent)
-
+        if transmission_time < rec_time[source]:
+            newEvent = Event(transmission_time, _process_trans_SIS_, 
+                                args = trans_event_args
+                            )
+            Q.add(newEvent) #note Q checks that it's before tmax
 
  
-def _process_rec_SIS_(event, times, S, I, status):
+def _process_rec_SIS_(time, node, times, S, I, status):
     r'''From figure A.6 of Kiss, Miller, & Simon.  Please cite the
     book if using this algorithm.
 
     '''
-    node = event.node
-    time = event.time
 
     times.append(time)
     S.append(S[-1]+1)   #no change to number susceptible
     I.append(I[-1]-1) #one less infected
     status[node] = 'S'
-
-
-
 
 def fast_SIS(G, tau, gamma, initial_infecteds=None, rho = None, tmax=100, 
                 transmission_weight = None, recovery_weight = None, 
@@ -1879,9 +1931,11 @@ def fast_SIS(G, tau, gamma, initial_infecteds=None, rho = None, tmax=100,
        if an iterable, then whole set is initially infected
        if None, then choose randomly based on rho.  If rho is also
        None, a random single node is chosen.
+       If both initial_infecteds and rho are assigned, then there
+       is an error.
        
     rho : number
-       initial fraction infected.
+       initial fraction infected. number is int(round(G.order()*rho))
        
     tmax : number
         stop time
@@ -1943,7 +1997,7 @@ def fast_SIS(G, tau, gamma, initial_infecteds=None, rho = None, tmax=100,
         if rho is None:
             initial_number = 1
         else:
-            initial_number = scipy.random.binomial(G.order(),rho)
+            initial_number = int(round(G.order()*rho))
         initial_infecteds=random.sample(G.nodes(), initial_number)
     elif G.has_node(initial_infecteds):
         initial_infecteds=[initial_infecteds]
@@ -1951,38 +2005,24 @@ def fast_SIS(G, tau, gamma, initial_infecteds=None, rho = None, tmax=100,
     times = [0]
     S = [G.order()]
     I = [0]
-    Q = []
+    Q = myQueue(tmax)
     status = defaultdict(lambda: 'S') #node status defaults to 'S'
     rec_time = defaultdict(lambda: -1) #node recovery time defaults to -1
     rec_time['initial_condition'] = 0
 
     infection_times = defaultdict(lambda: []) #defaults to empty list
     recovery_times = defaultdict(lambda: [])
-
     for u in initial_infecteds:
-        newevent = Event(0, 'transmit', u, source='initial_condition')
-        Q.append(newevent)  #okay to append rather than heappush since 
-                            #all are at same time
+        newevent = Event(0, _process_trans_SIS_, 
+                            args = (G, 'initial_condition', u, times, 
+                                    infection_times, S, I, Q, 
+                                    status, rec_time, trans_rate_fxn, 
+                                    rec_rate_fxn)
+                        )
+        Q.add(newevent)  #fails if >tmax
+        
     while Q:
-        event = heapq.heappop(Q)
-        assert(event.time<= tmax)
-        node = event.node
-        time = event.time
-        if event.action == 'transmit':
-            source = event.source
-            if status[node] == 'S':
-                _process_trans_SIS_(G, event, trans_rate_fxn, 
-                                    rec_rate_fxn, times, S, I, Q, 
-                                    status, rec_time, tmax)
-                infection_times[node].append(time)
-            if source != 'initial_condition':
-                _find_next_trans_SIS_(Q, time, 
-                                        trans_rate_fxn(source, node), 
-                                        source, node, status, rec_time, 
-                                        tmax)
-        else:
-            _process_rec_SIS_(event, times, S, I, status)
-            recovery_times[node].append(time)
+        Q.pop_and_run()
 
     #the initial infections were treated as ordinary infection events at 
     #time 0.
