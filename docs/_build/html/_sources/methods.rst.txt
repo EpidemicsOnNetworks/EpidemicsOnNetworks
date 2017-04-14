@@ -8,6 +8,5 @@ EON documentation
 
 .. autosummary::
    :toctree: functions
-
    fast_SIR
    fast_SIS

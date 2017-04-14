@@ -221,24 +221,29 @@ def get_Nk_and_IC_as_arrays(G, rho, SIR=True):
     initial conditions and number of nodes of each degree as needed
     by many of the differential equations models.
     
-    INPUT
-    -----
+    :INPUTS:
+
     G : networkx graph
+
     rho : number between 0 and 1
           fraction of nodes to infect at time 0.
+
     SIR : boolean
           says whether the system will be SIR or SIS.
 
-    RETURNS
-    -------
+    :RETURNS:
+
     Nk : scipy array
          NUMBER (not proportion) of nodes of each degree.
+
     Sk0 : scipy array
           NUMBER of susceptible nodes of each degree at t=0, 
           = (1-rho)Nk
+
     Ik0 : scipy array    
           NUMBER of infected nodes of each degree at t=0,   
           = rho Nk
+
     if SIR, also returns
     Rk0 : scipy array
           NUMBER of recovered nodes of each degree at t=0,    
@@ -283,8 +288,8 @@ def get_NkNl_and_IC_as_arrays(G, rho, withKs = False, SIR=True):
     SIR : boolean
           says whether the system will be SIR or SIS.
 
-    RETURNS
-    -------
+    :RETURNS:
+
     NkNl : 2D scipy array
          NUMBER (not proportion) of edges between each pair of degrees.
     SkSl0 : 2D scipy array
@@ -338,12 +343,12 @@ def get_Pk(G):
     Used in several places so that we can input a graph and then we 
     can call the methods that depend on the degree distribution
 
-    INPUTS
-    ------
+    :INPUTS:
+
     G : networkx Graph
 
-    RETURNS
-    -------
+    :RETURNS:
+
     Pk : dict
          Pk[k] is the proportion of nodes with degree k.
     '''
@@ -356,13 +361,13 @@ def get_Psi(Pk):
     r'''
     Given a degree distribution (as a dict), returns the function psi
     
-    INPUTS
-    ------
+    :INPUTS:
+
     Pk : dict
          Pk[k] is the proportion of nodes with degree k.
 
-    RETURNS
-    -------
+    :RETURNS:
+
     psi : function.
           psi(x) = \sum_k Pk[k] x^k
     '''
@@ -375,13 +380,13 @@ def get_PsiPrime(Pk):
     Given a degree distribution (as a dict) returns the function
     dPsi(x)/dx
     
-    INPUTS
-    ------
+    :INPUTS:
+
     Pk : dict
          Pk[k] is the proportion of nodes with degree k.
 
-    RETURNS
-    -------
+    :RETURNS:
+
     psiPrime : function.
           \sum_k k Pk[k] x^{k-1}
     '''
@@ -396,13 +401,13 @@ def get_PsiDPrime(Pk):
     
     d^2Psi(x)/dx^2
     
-    INPUTS
-    ------
+    :INPUTS:
+
     Pk : dict
          Pk[k] is the proportion of nodes with degree k.
 
-    RETURNS
-    -------
+    :RETURNS:
+
     psiDPrime : function.
           \sum_k k(k-1)Pk[k] x^{k-2}
     '''
@@ -420,8 +425,9 @@ def subsample(report_times, times, status1, status2=None,
     returns them 
       subsampled at specific report_times.
       
-    If more than one is given, does so as a list in order given, but 
-        skipping whichever was not included (if any not included)
+    If more than one argument is given, does so as a list in order given, but 
+    skipping whichever was not included (if any not included)
+
     If only one is given then returns just that.
 
     If report_times goes longer than times, then this simply assumes the 
@@ -429,18 +435,20 @@ def subsample(report_times, times, status1, status2=None,
     
     This uses a recursive approach if multiple arguments are defined.
 
-    INPUTS
-    ------
+    :INPUTS:
+
     report_times : iterable (ordered)
                    times at which we want to know state of system
+                   
     times : iterable (ordered)
             times at which we have the system state (assumed no change 
             between these times)
+            
     statusX (X one of 1, 2 or 3) : iterable (order corresponds to times)
                           generally S, I, or R
                           number of nodes in given status.
-    RETURNS
-    -------
+    :RETURNS:
+
     If only status1 is defined
         report_status1 : scipy array gives status1 subsampled just at 
                          report_times.
@@ -484,8 +492,8 @@ def get_time_shift(times, L, threshold):
     Identifies the first time at which L crosses a threshold.  
     Useful for shifting times.
     
-    INPUTS
-    ------
+    :INPUTS:
+
     times : list or scipy array (ordered)
             the times we have observations
     L : a list or scipy array
@@ -493,8 +501,8 @@ def get_time_shift(times, L, threshold):
     threshold : number
         a threshold value
 
-    RETURNS
-    -------
+    :RETURNS:
+
     t : number
         the first time at which L reaches or exceeds a threshold.
     '''
@@ -524,8 +532,8 @@ def _simple_test_transmission_(u, v, p):
     This handles the simple case where transmission occurs with 
     probability p.
 
-    INPUTS
-    ------
+    :INPUTS:
+
     u : node
         the infected node
     v : node
@@ -533,8 +541,8 @@ def _simple_test_transmission_(u, v, p):
     p : number between 0 and 1
         the transmission probability
 
-    RETURNS
-    -------
+    :RETURNS:
+
     True if u will infect v (given opportunity)
     False otherwise
     '''
@@ -565,8 +573,8 @@ def discrete_SIR_epidemic(G,
         _simple_test_transmission_
     in which case args should be entered as (p,)
 
-    INPUTS
-    ----------
+    :INPUTS:
+
     G: NetworkX Graph (or some other structure which quacks like a 
         NetworkX Graph)
         The network on which the epidemic will be simulated.
@@ -605,8 +613,8 @@ def discrete_SIR_epidemic(G,
         infection_time[node] is the time of infection and 
         recovery_time[node] is the recovery time
 
-    RETURNS
-    ------------
+    :RETURNS:
+
     if return_full_data is False:
        the scipy arrays: t, S, I, R
     else:
@@ -617,15 +625,17 @@ def discrete_SIR_epidemic(G,
     state at each time.  The dicts give times at which each node changed 
     status.
     
-    SAMPLE USE
-    ----------
-    import networkx as nx
-    import EoN
-    import matplotlib.pyplot as plt
-    G = nx.fast_gnp_random_graph(1000,0.002)
-    t, S, I, R = EoN.discrete_SIR_epidemic(G, args = (0.6,), 
+    :SAMPLE USE:
+
+    ::
+
+        import networkx as nx
+        import EoN
+        import matplotlib.pyplot as plt
+        G = nx.fast_gnp_random_graph(1000,0.002)
+        t, S, I, R = EoN.discrete_SIR_epidemic(G, args = (0.6,), 
                                             initial_infecteds=range(20))
-    plt.plot(t,S)
+        plt.plot(t,S)
     
     
     Because this sample uses the defaults, it is equivalent to a call to 
@@ -688,8 +698,8 @@ def basic_discrete_SIR_epidemic(G, p, initial_infecteds=None,
     with probability p independently to each neighbor and then
     recovering.
 
-    INPUTS
-    ----------
+    :INPUTS:
+
     G : NetworkX Graph
         The network the disease will transmit through.
     p : number
@@ -706,8 +716,8 @@ def basic_discrete_SIR_epidemic(G, p, initial_infecteds=None,
         infection_time[node] is the time of infection and 
         recovery_time[node] is the recovery time
 
-    RETURNS
-    -------
+    :RETURNS:
+
     if return_full_data is False:
         the scipy arrays: t, S, I, R
     else:
@@ -718,14 +728,17 @@ def basic_discrete_SIR_epidemic(G, p, initial_infecteds=None,
     each state at each time.  The dicts give times at which each node 
     changed status.
     
-    SAMPLE USE
-    ----------
-    import networkx as nx
-    import EoN
-    import matplotlib.pyplot as plt
-    G = nx.fast_gnp_random_graph(1000,0.002)
-    t, S, I, R = EoN.basic_discrete_SIR_epidemic(G, 0.6)
-    plt.plot(t,S)
+    :SAMPLE USE:
+
+    ::
+
+
+        import networkx as nx
+        import EoN
+        import matplotlib.pyplot as plt
+        G = nx.fast_gnp_random_graph(1000,0.002)
+        t, S, I, R = EoN.basic_discrete_SIR_epidemic(G, 0.6)
+        plt.plot(t,S)
     
     
     This sample may be boring if the randomly chosen initial infection
@@ -746,28 +759,30 @@ def percolate_network(G, p):
     Performs bond percolation on the network G, keeping edges with 
     probability p
 
-    INPUTS
-    ----------
+    :INPUTS:
+
     G : NetworkX Graph
     p : number between 0 and 1
         the probability of keeping edge
 
-    RETURNS
-    -------
+    :RETURNS:
+
     H : NetworkX Graph
         A network with same nodes as G, but with each edge retained 
         independently with probability p.
         
-    SAMPLE USE
-    ----------
-    import networkx as nx
-    import EoN
-    import matplotlib.pyplot as plt
-    G = nx.fast_gnp_random_graph(1000,0.002)
-    H = EoN.percolate_network(G, 0.6)
+    :SAMPLE USE:
+
+    ::
 
 
-    H is now a graph with 60% of the edges of G
+        import networkx as nx
+        import EoN
+        import matplotlib.pyplot as plt
+        G = nx.fast_gnp_random_graph(1000,0.002)
+        H = EoN.percolate_network(G, 0.6)
+
+        #H is now a graph with 60% of the edges of G
 '''
 
     H = nx.Graph()
@@ -783,8 +798,8 @@ def _edge_exists_(u, v, H):
 
     Tests whether H has an edge from u to v.
 
-    INPUTS
-    ----------
+    :INPUTS:
+
     u : node
     v : node
     H : graph
@@ -819,8 +834,8 @@ def percolation_based_discrete_SIR_epidemic(G, p,
     This algorithm leads to a better understanding of the theory.
 
 
-    INPUTS
-    ----------
+    :INPUTS:
+
     G : NetworkX Graph
         The network the disease will transmit through.
     p : number
@@ -837,8 +852,8 @@ def percolation_based_discrete_SIR_epidemic(G, p,
         infection_time[node] is the time of infection and 
         recovery_time[node] is the recovery time
 
-    RETURNS
-    ------------
+    :RETURNS:
+
     if return_full_data is False:
         the lists: t, S, I, R
     else:
@@ -849,17 +864,19 @@ def percolation_based_discrete_SIR_epidemic(G, p,
         at each time.  
     The dicts give times at which each node changed status.
     
-    SAMPLE USE
-    ----------
-    import networkx as nx
-    import EoN
-    import matplotlib.pyplot as plt
-    G = nx.fast_gnp_random_graph(1000,0.002)
-    t, S, I, R = EoN.percolation_based_discrete_SIR_epidemic(G, p)
-    plt.plot(t,S)
+    :SAMPLE USE:
+
+    ::
+
+        import networkx as nx
+        import EoN
+        import matplotlib.pyplot as plt
+        G = nx.fast_gnp_random_graph(1000,0.002)
+        t, S, I, R = EoN.percolation_based_discrete_SIR_epidemic(G, p)
+        plt.plot(t,S)
     
     This is equivalent to basic_discrete_epidemic (but many simulations
-        may be needed before it's clear, since these are stochastic)
+    may be needed before it's clear, since these are stochastic)
 
 '''
 
@@ -889,15 +906,15 @@ def estimate_SIR_prob_size(G, p):
     several densely connected components with very weak connections 
     between these components.
 
-    INPUTS
-    ----------
+    :INPUTS:
+
     G : NetworkX Graph
         The network the disease will transmit through.
     p : number
         transmission probability
 
-    RETURNS
-    -------
+    :RETURNS:
+
     PE, AR : 
         (numbers) estimates of the probability and proportion 
            infected (attack rate) in epidemics
@@ -905,13 +922,16 @@ def estimate_SIR_prob_size(G, p):
            estimate_directed_SIR_prob_size)
           
             
-    SAMPLE USE
-    ----------
-    import networkx as nx
-    import EoN
+    :SAMPLE USE:
+
+    ::
+
+        import networkx as nx
+        import EoN
     
-    G = nx.fast_gnp_random_graph(1000,0.002)
-    PE, AR = EoN.estimate_SIR_prob_size(G, 0.6)
+        G = nx.fast_gnp_random_graph(1000,0.002)
+        PE, AR = EoN.estimate_SIR_prob_size(G, 0.6)
+
     '''
     H = percolate_network(G, p)
     size = max((len(CC) for CC in nx.connected_components(H)))
@@ -933,13 +953,13 @@ def directed_percolate_network(G, tau, gamma):
     assuming that transmission is at rate tau and recovery at rate 
     gamma
 
-    SEE ALSO
-    --------
+    :SEE ALSO:
+
     nonMarkov_directed_percolate_network which allows for more complex
     transmission and recovery rules.
     
-    INPUTS
-    ----------
+    :INPUTS:
+
     G : NetworkX Graph
         The network the disease will transmit through.
     tau : number
@@ -947,8 +967,8 @@ def directed_percolate_network(G, tau, gamma):
     gamma : number
         recovery rate
 
-    RETURNS
-    -------
+    :RETURNS:
+
     H : networkx DiGraph  (directed graph)
         a u->v edge exists in H if u would transmit to v if ever 
         infected.
@@ -959,13 +979,16 @@ def directed_percolate_network(G, tau, gamma):
         Each node u has a time attribute (duration) which gives the 
         duration of its infectious period.
         
-    SAMPLE USE
-    ----------
-    import networkx as nx
-    import EoN
-    
-    G = nx.fast_gnp_random_graph(1000,0.002)
-    H = EoN.directed_percolate_network(G, 2, 1)
+    :SAMPLE USE:
+
+
+    ::
+
+        import networkx as nx
+        import EoN
+        
+        G = nx.fast_gnp_random_graph(1000,0.002)
+        H = EoN.directed_percolate_network(G, 2, 1)
 
     '''
     H = nx.DiGraph()
@@ -987,8 +1010,8 @@ def _out_component_(G, source):
     finds the set of nodes (including source) which are reachable from 
     nodes in source.
 
-    INPUTS
-    ----------
+    :INPUTS:
+
     G : NetworkX Graph
         The network the disease will transmit through.
     source : either a node or an iterable of nodes (set, list, tuple)
@@ -996,8 +1019,8 @@ def _out_component_(G, source):
         will ever have a name that is an iterable of other node names.
         It will run, but may not use source user expects.
 
-    RETURNS
-    -------
+    :RETURNS:
+
     reachable_nodes : set
         the set of nodes reachable from source (including source).
 
@@ -1023,8 +1046,8 @@ def _in_component_(G, target):
     r'''
     creates the _in_component_ by basically reversing _out_component_.
 
-    INPUTS
-    ----------
+    :INPUTS:
+
     G : NetworkX Graph
         The network the disease will transmit through.
     target : a target node (or iterable of target nodes)
@@ -1034,15 +1057,17 @@ def _in_component_(G, target):
         would be finding those possible sources whose infection leads to 
         infection of at least one target, not all.
 
-    RETURNS
-    -------
+    :RETURNS:
+
     source_nodes : (set)
         the set of nodes (including target) from which target is 
         reachable
 
-    Warning: if the graph G has nodes like 1, 2, 3, and (1,2,3), then a
-        target of (1,2,3) is potentially ambiguous.  It will interpret
-        the target as the single node (1,2,3)
+    :WARNING: 
+        
+    if the graph G has nodes like 1, 2, 3, and (1,2,3), then a
+    target of (1,2,3) is potentially ambiguous.  It will interpret
+    the target as the single node (1,2,3)
 
     '''
     if G.has_node(target):
@@ -1077,15 +1102,15 @@ def get_infected_nodes(G, tau, gamma, initial_infecteds=None):
     There are much faster ways to implement an algorithm giving the same 
     output, for example by actually running an epidemic.
     
-    WARNING
-    ---------
+    :WARNING:
+    
     why are you using this command? If it's to better understand some
     concept, that's fine.  But this command IS NOT an efficient way to
     calculate anything.  Don't do it like this.  Use one of the other
     algorithms.  Try fast_SIR, for example.
     
-    INPUTS
-    ----------
+    :INPUTS:
+
     G : NetworkX Graph
         The network the disease will transmit through.
     tau : number
@@ -1097,18 +1122,18 @@ def get_infected_nodes(G, tau, gamma, initial_infecteds=None):
        if an iterable, then whole set is initially infected
        if None, then a randomly chosen node is initially infected.
 
-    RETURNS
-    -------
+    :RETURNS:
+
     infected_nodes : set
         the set of nodes infected eventually in a simulation.
         
-    SAMPLE USE
-    ----------
-    import networkx as nx
-    import EoN
+    :SAMPLE USE:
+
+        import networkx as nx
+        import EoN
     
-    G = nx.fast_gnp_random_graph(1000,0.002)
-    finalR = EoN.get_infected_nodes(G, 2, 1, initial_infecteds=[0, 5])
+        G = nx.fast_gnp_random_graph(1000,0.002)
+        finalR = EoN.get_infected_nodes(G, 2, 1, initial_infecteds=[0, 5])
     
     
     finds the nodes infected if 0 and 5 are the initial nodes infected
@@ -1132,12 +1157,12 @@ def estimate_directed_SIR_prob_size(G, tau, gamma):
     Predicts probability and attack rate assuming continuous-time 
     Markovian SIR disease on network G
     
-    SEE ALSO
-    --------
+    :SEE ALSO:
+
     estimate_nonMarkov_SIR_prob_size which handles nonMarkovian versions
 
-    INPUTS
-    ----------
+    :INPUTS:
+
     G : NetworkX Graph
         The network the disease will transmit through.
     tau : number
@@ -1145,19 +1170,23 @@ def estimate_directed_SIR_prob_size(G, tau, gamma):
     gamma : number
         recovery rate
 
-    RETURNS
-    -------
+    :RETURNS:
+
     PE, AR  :  numbers (between 0 and 1)
         Estimates of epidemic probability and attack rate found by 
         performing directed percolation, finding largest strongly 
         connected component and finding its in/out components.
         
-    SAMPLE USE
-    ----------
-    import networkx as nx
-    import EoN
-    G = nx.fast_gnp_random_graph(1000,0.003)
-    PE, AR = EoN.estimate_directed_SIR_prob_size(G, 2, 1)
+    :SAMPLE USE:
+
+    ::
+
+
+        import networkx as nx
+        import EoN
+    
+        G = nx.fast_gnp_random_graph(1000,0.003)
+        PE, AR = EoN.estimate_directed_SIR_prob_size(G, 2, 1)
     
     '''
     
@@ -1170,25 +1199,29 @@ def estimate_SIR_prob_size_from_dir_perc(H):
     From figure 6.17 of Kiss, Miller, & Simon.  Please cite the book if 
     using this algorithm
 
-    INPUTS
-    ----------
+    :INPUTS:
+
     H:  directed graph (assumed to be from directed percolation on 
         previous graph G)
 
-    RETURNS
-    -------
+    :RETURNS:
+
     PE, AR  :  numbers
         Estimates of epidemic probability and attack rate found by 
         finding largest strongly connected component and finding in/out 
         components.
         
-    SAMPLE USE
-    ----------
-    import networkx as nx
-    import EoN
-    G = nx.fast_gnp_random_graph(1000,0.003)
-    H = some_user_defined_operation_to_do_percolation(G, argument)
-    PE, AR = EoN.estimate_SIR_prob_size_from_dir_perc(H)
+    :SAMPLE USE:
+
+
+    ::
+
+        import networkx as nx
+        import EoN
+
+        G = nx.fast_gnp_random_graph(1000,0.003)
+        H = some_user_defined_operation_to_do_percolation(G, argument)
+        PE, AR = EoN.estimate_SIR_prob_size_from_dir_perc(H)
 
     '''
 
@@ -1207,8 +1240,8 @@ def estimate_nonMarkov_SIR_prob_size(G, xi, zeta, transmission):
     nonMarkov_directed_percolate_network  (fig 6.18) to predict 
     epidemic probability and size.
     
-    INPUTS
-    ----------
+    :INPUTS:
+
     G : NetworkX Graph
         The input graph
 
@@ -1222,43 +1255,46 @@ def estimate_nonMarkov_SIR_prob_size(G, xi, zeta, transmission):
         transmission(xi[u], zeta[v]) determines whether u transmits to 
         v.
 
-    RETURNS
-    -------
+    :RETURNS:
+
     PE, AR  :  numbers (between 0 and 1)
         Estimates of epidemic probability and attack rate found by 
         finding largest strongly connected component and finding in/out 
         components.
         
-    SAMPLE USE
-    ----------
-    #mimicking the standard version with transmission rate tau
-    #and recovery rate gamma
-    
-    import networkx as nx
-    import EoN
-    import random
-    from collections import defaultdict
-    
-    G=nx.fast_gnp_random_graph(1000,0.002)
-    tau = 2
-    gamma = 1
+    :SAMPLE USE:
 
-    xi = {node:random.expovariate(gamma) for node in G.nodes()}  
-    #xi[node] is duration of infection of node.
-        
-    zeta = defaultdict(lambda : tau) #every node has zeta=tau, so same 
-                                     #transmission rate
+
+    ::
+
+        #mimicking the standard version with transmission rate tau
+        #and recovery rate gamma
     
-    def my_transmission(infection_duration, trans_rate):
-        #infect if duration is longer than time to infection.
-        if infection_duration > random.expovariate(trans_rate):
-            return True
-        else:  
-            return False
+        import networkx as nx
+        import EoN
+        import random
+        from collections import defaultdict
     
-    PE, AR = EoN.estimate_nonMarkov_SIR_prob_size(G, xi, zeta, 
-                                                    my_transmission)
+        G=nx.fast_gnp_random_graph(1000,0.002)
+        tau = 2
+        gamma = 1
+    
+        xi = {node:random.expovariate(gamma) for node in G.nodes()}  
+        #xi[node] is duration of infection of node.
         
+        zeta = defaultdict(lambda : tau) #every node has zeta=tau, so same 
+                                        #transmission rate
+        
+        def my_transmission(infection_duration, trans_rate):
+            #infect if duration is longer than time to infection.
+            if infection_duration > random.expovariate(trans_rate):
+                return True
+            else:  
+                return False
+        
+        PE, AR = EoN.estimate_nonMarkov_SIR_prob_size(G, xi, zeta, 
+                                                        my_transmission)
+            
 
     '''
 
@@ -1277,8 +1313,8 @@ def nonMarkov_directed_percolate_network(G, xi, zeta, transmission):
     transmissision is a user-defined function taking xi[u] and zeta[v] 
     and returning True if a transmission would occur
 
-    INPUTS
-    ----------
+    :INPUTS:
+
     G : NetworkX Graph
         The input graph
 
@@ -1292,13 +1328,13 @@ def nonMarkov_directed_percolate_network(G, xi, zeta, transmission):
         transmission(xi[u], zeta[v]) determines whether u transmits to 
         v.
 
-    RETURNS
-    -------
+    :RETURNS:
+
     networkx DiGraph (directed graph) H.  
     Edge u,v exists in H if it will transmit given the opportunity.
     
-    SAMPLE USE
-    ----------
+    :SAMPLE USE:
+
     for now, I'm being lazy.  
     Look at the sample for estimate_nonMarkov_SIR_prob_size to infer it.
 '''
@@ -1330,8 +1366,8 @@ def _find_trans_SIR_(Q, t, tau, source, target, status, pred_inf_time,
     Determines if a transmission from source to target will occur and if
     so puts into Q
 
-    INPUTS
-    ----------
+    :INPUTS:
+
     Q : myQueue
         A priority queue of events
     t : number
@@ -1351,8 +1387,8 @@ def _find_trans_SIR_(Q, t, tau, source, target, status, pred_inf_time,
                       (G, node, times, S, I, R, Q, status, rec_time, 
                         pred_inf_time, trans_rate_fxn, rec_rate_fxn)
 
-    RETURNS
-    -------
+    :RETURNS:
+
     Nothing returned
 
     MODIFIES
@@ -1376,8 +1412,8 @@ def _process_trans_SIR_(time, G, node, times, S, I, R, Q, status, rec_time,
     From figure A.4 of Kiss, Miller, & Simon.  Please cite the book if 
     using this algorithm.
 
-    INPUTS
-    ----------
+    :INPUTS:
+
     G : NetworkX Graph
     time : number
          time of transmission
@@ -1401,8 +1437,8 @@ def _process_trans_SIR_(time, G, node, times, S, I, R, Q, status, rec_time,
     rec_rate_fxn : function
         recovery rate rec_rate_fxn(u) is recovery rate of u.
         
-    RETURNS
-    -------
+    :RETURNS:
+
     nothing returned
 
     MODIFIES
@@ -1443,8 +1479,8 @@ def _process_rec_SIR_(time, node, times, S, I, R, status):
     r'''From figure A.3 of Kiss, Miller, & Simon.  Please cite the
     book if using this algorithm.
 
-    INPUTS
-    ----------
+    :INPUTS:
+
     event : event
          has details on node and time
     times : list
@@ -1455,8 +1491,8 @@ def _process_rec_SIR_(time, node, times, S, I, R, status):
         dictionary giving status of each node
 
 
-    RETURNS
-    ----------
+    :RETURNS:
+
     Nothing
 
     MODIFIES
@@ -1485,8 +1521,8 @@ def fast_SIR(G, tau, gamma, initial_infecteds = None, rho = None,
     recovery times
     
 
-    INPUTS
-    ------
+    :INPUTS:
+
     G : NetworkX Graph
        The underlying network
 
@@ -1530,8 +1566,8 @@ def fast_SIR(G, tau, gamma, initial_infecteds = None, rho = None,
         infection_time[node] is the time of infection and 
         recovery_time[node] is the recovery time
 
-    RETURNS
-    -------
+    :RETURNS:
+
     times, S, I, R : each a scipy array
          giving times and number in each status for corresponding time
 
@@ -1542,20 +1578,23 @@ def fast_SIR(G, tau, gamma, initial_infecteds = None, rho = None,
          infection_time[node] is time of infection
          recovery_time[node] is time of recovery
     
-    SAMPLE USE
-    ----------
-    import networkx as nx
-    import EoN
-    import matplotlib.pyplot as plt
-    
-    G = nx.configuration_model([1,5,10]*100000)
-    initial_size = 10000
-    gamma = 1.
-    tau = 0.3
-    t, S, I, R = EoN.fast_SIR(G, tau, gamma, 
-                                initial_infecteds = range(initial_size))
-                                
-    plt.plot(t, I)
+    :SAMPLE USE:
+
+    ::
+
+
+        import networkx as nx
+        import EoN
+        import matplotlib.pyplot as plt
+        
+        G = nx.configuration_model([1,5,10]*100000)
+        initial_size = 10000
+        gamma = 1.
+        tau = 0.3
+        t, S, I, R = EoN.fast_SIR(G, tau, gamma, 
+                                    initial_infecteds = range(initial_size))
+                                    
+        plt.plot(t, I)
     '''
     
     trans_rate_fxn, rec_rate_fxn = _get_rate_functions(G, tau, gamma, 
@@ -1585,8 +1624,8 @@ def fast_nonMarkov_SIR(G, process_trans = _process_trans_SIR_,
     For example if there is a mass action style transmission this can be
     incorporated into the process_trans command defined by user.
 
-    INPUTS
-    ------
+    :INPUTS:
+
     G : Networkx Graph
     
     process_trans : a function that handles a transmission event.
@@ -1659,8 +1698,8 @@ def fast_nonMarkov_SIR(G, process_trans = _process_trans_SIR_,
         at t=0.
 
 
-    RETURNS
-    -------
+    :RETURNS:
+
     times, S, I, R : each a scipy array
          giving times and number in each status for corresponding time
 
@@ -1671,8 +1710,8 @@ def fast_nonMarkov_SIR(G, process_trans = _process_trans_SIR_,
          infection_time[node] is time of infection
          recovery_time[node] is time of recovery
 
-    SAMPLE USE
-    ----------
+    :SAMPLE USE:
+
     
     '''
     if rho is not None and initial_infecteds is not None:
@@ -1772,8 +1811,8 @@ def _process_trans_SIS_(time, G, source, target, times, infection_times, S, I, Q
     r'''From figure A.6 of Kiss, Miller, & Simon.  Please cite the
     book if using this algorithm.
 
-    INPUTS
-    ----------
+    :INPUTS:
+
     time : number
             current time
     G : NetworkX Graph
@@ -1799,8 +1838,8 @@ def _process_trans_SIS_(time, G, source, target, times, infection_times, S, I, Q
     rec_rate_fxn : function
         recovery rate rec_rate_fxn(u) is recovery rate of u.
 
-    RETURNS
-    -------
+    :RETURNS:
+
     nothing returned
 
     MODIFIES
@@ -1854,8 +1893,8 @@ def _find_next_trans_SIS_(Q, time, tau, source, target, status, rec_time,
     determines if a transmission from source to target will occur and if 
     so puts into Q
 
-    INPUTS
-    ----------
+    :INPUTS:
+
     Q : myQueue
         A priority queue of events
     t : current time
@@ -1867,8 +1906,8 @@ def _find_next_trans_SIS_(Q, time, tau, source, target, status, rec_time,
     rec_time : a dict giving the recovery time of every node that has 
                been infected.
 
-    RETURNS
-    -------
+    :RETURNS:
+
     nothing returned
 
     MODIFIES
@@ -1915,8 +1954,8 @@ def fast_SIS(G, tau, gamma, initial_infecteds=None, rho = None, tmax=100,
     r'''From figure A.5 of Kiss, Miller, & Simon.  Please cite the
     book if using this algorithm.
 
-    INPUTS
-    -------------
+    :INPUTS:
+    
     G : NetworkX Graph
        The underlying network
 
@@ -1958,33 +1997,36 @@ def fast_SIS(G, tau, gamma, initial_infecteds=None, rho = None, tmax=100,
         infection_time[node] is the time of infection and 
         recovery_time[node] is the recovery time.
 
-    RETURNS
-    -------
+    :RETURNS:
+
     times, S, I : each a scipy array
          giving times and number in each status for corresponding time
 
-    OR if return_full_data=True:
+    or if return_full_data=True:
     times, S, I, infection_time, recovery_time
          first four are scipy arrays as above.  New objects are dicts
          with entries just for those nodes that were infected ever
          infection_time[node] is a list of times of infection
          recovery_time[node] is a list of times of recovery
     
-    SAMPLE USE
-    ----------
-    import networkx as nx
-    import EoN
-    import matplotlib.pyplot as plt
-    
-    G = nx.configuration_model([1,5,10]*100000)
-    initial_size = 10000
-    gamma = 1.
-    tau = 0.2
-    t, S, I = EoN.fast_SIS(G, tau, gamma, tmax = 10,
-                                initial_infecteds = range(initial_size))
-                                
-    plt.plot(t, I)
+    :SAMPLE USE:
+
+    ::
+
+
+        import networkx as nx
+        import EoN
+        import matplotlib.pyplot as plt
         
+        G = nx.configuration_model([1,5,10]*100000)
+        initial_size = 10000
+        gamma = 1.
+        tau = 0.2
+        t, S, I = EoN.fast_SIS(G, tau, gamma, tmax = 10,
+                                    initial_infecteds = range(initial_size))
+                                    
+        plt.plot(t, I)
+            
     '''
     if rho is not None and initial_infecteds is not None:
         raise EoNError("cannot define both initial_infecteds and rho")
@@ -2165,8 +2207,7 @@ def _Gillespie_Recover_SIS_(G, S, I, times, infected, current_time, status,
     r''' From figure A.5 of Kiss, Miller, & Simon.  Please cite the
     book if using this algorithm.
     
-    INPUTS
-    ------
+    :INPUTS:
     '''
     assert(I[-1]==len(infected))
     index = random.randint(0,I[-1]-1)
@@ -2220,15 +2261,15 @@ def Gillespie_SIR(G, tau, gamma, initial_infecteds=None, rho = None, tmax=float(
     more frequently rather than just counting how many exist
     which will slow the code down.  For weights, try fast_SIR
     
-    SEE ALSO
-    --------
+    :SEE ALSO:
+
     fast_SIR which has the same inputs but uses a different method to 
     run much faster
     
     
     
-    INPUTS
-    ------
+    :INPUTS:
+
     G : NetworkX Graph
        The underlying network
        
@@ -2260,8 +2301,8 @@ def Gillespie_SIR(G, tau, gamma, initial_infecteds=None, rho = None, tmax=float(
         infection_time[node] is the time of infection and 
         recovery_time[node] is the recovery time.
 
-    RETURNS
-    -------
+    :RETURNS:
+
     times, S, I, R : each a scipy array
          giving times and number in each status for corresponding time
 
@@ -2272,21 +2313,24 @@ def Gillespie_SIR(G, tau, gamma, initial_infecteds=None, rho = None, tmax=float(
          infection_time[node] is time of infection
          recovery_time[node] is time of recovery
 
-    SAMPLE USE
-    ----------
-    import networkx as nx
-    import EoN
-    import matplotlib.pyplot as plt
-    
-    G = nx.configuration_model([1,5,10]*100000)
-    initial_size = 10000
-    gamma = 1.
-    tau = 0.3
-    t, S, I, R = EoN.fast_SIR(G, tau, gamma, 
-                                initial_infecteds = range(initial_size))
-                                
-    plt.plot(t, I)
+    :SAMPLE USE:
 
+
+    ::
+
+        import networkx as nx
+        import EoN
+        import matplotlib.pyplot as plt
+        
+        G = nx.configuration_model([1,5,10]*100000)
+        initial_size = 10000
+        gamma = 1.
+        tau = 0.3
+        t, S, I, R = EoN.fast_SIR(G, tau, gamma, 
+                                    initial_infecteds = range(initial_size))
+                                    
+        plt.plot(t, I)
+    
     '''
 
     if rho is not None and initial_infecteds is not None:
@@ -2362,7 +2406,9 @@ def Gillespie_SIS(G, tau, gamma, initial_infecteds=None, rho = None, tmax=100,
     This would not be as good if the edges were weighted, but we could 
     put the at_risk nodes into bands.
 
-    Warning: self-edges will cause this to die.  
+    :WARNING: 
+        
+    self-edges will cause this to die.  
     You can remove self-edges by G.remove_edges_from(G.selfloop_edges())
 
     At present, this does not accept recovery or transmission weights.
@@ -2370,13 +2416,13 @@ def Gillespie_SIS(G, tau, gamma, initial_infecteds=None, rho = None, tmax=100,
     more frequently rather than just counting how many exist
     which will slow the code down.  For weights, try fast_SIS
     
-    SEE ALSO
-    --------
+    :SEE ALSO:
+
     fast_SIS which has the same inputs but uses a much faster method.
     
     
-    INPUTS
-    ------
+    :INPUTS:
+
     G : NetworkX Graph
        The underlying network
 
@@ -2409,20 +2455,22 @@ def Gillespie_SIS(G, tau, gamma, initial_infecteds=None, rho = None, tmax=100,
         recovery_time[node] is the recovery time.
         
 
-    SAMPLE USE
-    ----------
-    import networkx as nx
-    import EoN
-    import matplotlib.pyplot as plt
-    
-    G = nx.configuration_model([1,5,10]*100000)
-    initial_size = 10000
-    gamma = 1.
-    tau = 0.2
-    t, S, I = EoN.Gillespie_SIS(G, tau, gamma, tmax = 20,
-                                initial_infecteds = range(initial_size))
+    :SAMPLE USE:
+
+    ::
+
+        import networkx as nx
+        import EoN
+        import matplotlib.pyplot as plt
+        
+        G = nx.configuration_model([1,5,10]*100000)
+        initial_size = 10000
+        gamma = 1.
+        tau = 0.2
+        t, S, I = EoN.Gillespie_SIS(G, tau, gamma, tmax = 20,
+                                    initial_infecteds = range(initial_size))
                                 
-    plt.plot(t, I)
+        plt.plot(t, I)
 
     '''
     if rho is not None and initial_infecteds is not None:
@@ -2555,8 +2603,8 @@ def SIS_individual_based(G, nodelist, Y0, tau, gamma, tmin = 0,
 
     <\dot{Y}_i> = tau \sum_j g_{ij} (1-<Y_i>)<Y_j>  -  gamma_i <Y_i>
 
-    INPUTS
-    -------
+    :INPUTS:
+
     G : Networkx graph
     
     Y0 : scipy array
@@ -2593,8 +2641,8 @@ def SIS_individual_based(G, nodelist, Y0, tau, gamma, tmin = 0,
             If True, returns times, Ss, Is
             if False, returns times, S, I
 
-    RETURNS
-    ---------
+    :RETURNS:
+
     if return_full_data is True:
         returns times, Ss, Is
            where times is a scipy array of times, Ss is a 2D scipy array
@@ -2606,19 +2654,21 @@ def SIS_individual_based(G, nodelist, Y0, tau, gamma, tmin = 0,
              all are scipy arrays.  gives times, and expected number 
              susceptible and expected number infected.
              
-    SAMPLE USE
-    ----------
-    import networkx as nx
-    import EoN as EoN
-    import scipy
-    
-    G = nx.configuration_model([3,10]*1000)
-    nodelist = G.nodes()
-    N = G.order()
-    rho = 1./N
-    Y = rho*scipy.ones(N)
-    t, S, I = EoN.SIS_individual_based(G, nodelist, Y, 0.3, gamma=1, 
-                tmax = 20)
+    :SAMPLE USE:
+
+    ::
+
+        import networkx as nx
+        import EoN as EoN
+        import scipy
+        
+        G = nx.configuration_model([3,10]*1000)
+        nodelist = G.nodes()
+        N = G.order()
+        rho = 1./N
+        Y = rho*scipy.ones(N)
+        t, S, I = EoN.SIS_individual_based(G, nodelist, Y, 0.3, gamma=1, 
+                    tmax = 20)
     '''
     trans_rate_fxn, rec_rate_fxn = _get_rate_functions(G, tau, gamma, 
                                                 transmission_weight,
@@ -2645,8 +2695,8 @@ def SIR_individual_based(G, nodelist, X0, Y0, tau, gamma, tmin = 0,
 
     See also:
 
-    INPUTS
-    -------
+    :INPUTS:
+
     G : Networkx graph
 
     X0 : scipy array
@@ -2685,8 +2735,8 @@ def SIR_individual_based(G, nodelist, X0, Y0, tau, gamma, tmin = 0,
             If True, returns times, S, I, R, Ss, Is, Rs
             if False, returns times, S, I, R
 
-    RETURNS
-    ---------
+    :RETURNS:
+
     if return_full_data is True:
         returns times, Ss, Is, Rs
            where times is a scipy array of times, Ss is a 2D scipy array
@@ -2699,18 +2749,21 @@ def SIR_individual_based(G, nodelist, X0, Y0, tau, gamma, tmin = 0,
              susceptible, expected number infected, and expected number
              recovered
     
-    SAMPLE USE
-    ----------
-    import networkx as nx
-    import EoN
-    import scipy
-    import matplotlib.pyplot as plt
-    
-    G = nx.configuration_model([3,10]*10000)
-    tau = 0.3
-    gamma = 1
-    N = G.order()
-    rho = 1./N
+    :SAMPLE USE:
+
+    ::
+
+
+        import networkx as nx
+        import EoN
+        import scipy
+        import matplotlib.pyplot as plt
+        
+        G = nx.configuration_model([3,10]*10000)
+        tau = 0.3
+        gamma = 1
+        N = G.order()
+        rho = 1./N
 
     nodelist = G.nodes()
     X = (1-rho)*scipy.ones(N)
@@ -2760,8 +2813,8 @@ def SIS_individual_based_pure_IC(G, index_nodes, nodelist, tau, gamma,
     
     <\dot{Y}_i> = tau \sum_j g_{ij} (1-<Y_i>)<Y_j>  -  gamma_i <Y_i>
 
-    INPUTS
-    -------
+    :INPUTS:
+
     G : Networkx graph
     index_nodes : list or set
       the set of nodes initially infected
@@ -2799,19 +2852,22 @@ def SIS_individual_based_pure_IC(G, index_nodes, nodelist, tau, gamma,
                 returns times, Ss, Is
             if return_full_data is False,
                 returns times, S, I
-    SAMPLE USE
-    ----------
-    import networkx as nx
-    import EoN
-    import scipy
-    import matplotlib.pyplot as plt
-    
-    G = nx.configuration_model([3,10]*1000)
-    nodelist = G.nodes()
-    index_nodes = range(100)
-    t, S, I = EoN.SIS_individual_based(G, index_nodes, nodelist, 0.3,  
-                gamma=1, tmax = 20)
-    plt.plot(t,I)
+    :SAMPLE USE:
+
+    ::
+
+
+        import networkx as nx
+        import EoN
+        import scipy
+        import matplotlib.pyplot as plt
+        
+        G = nx.configuration_model([3,10]*1000)
+        nodelist = G.nodes()
+        index_nodes = range(100)
+        t, S, I = EoN.SIS_individual_based(G, index_nodes, nodelist, 0.3,  
+                    gamma=1, tmax = 20)
+        plt.plot(t,I)
 
     '''
     #make Y0[u] be 1 if infected 0 if not
@@ -2838,8 +2894,8 @@ def SIR_individual_based_pure_IC(G, index_nodes, nodelist, tau, gamma,
     
     <\dot{Y}_i> = tau \sum_j g_{ij} (1-<Y_i>)<Y_j>  -  gamma_i <Y_i>
 
-    INPUTS
-    -------
+    :INPUTS:
+
     G : Networkx graph
     
     index_nodes : list or set
@@ -3152,25 +3208,28 @@ def SIS_pair_based(G, nodelist, Y0, tau, gamma, XY0=None, XX0 = None,
             if False:
                 returns times, S, I, R
 
-    RETURNS
-    -------
+    :RETURNS:
+
     if return_full_data is True:
         returns times, S, I, Xs, Ys, XY, XX
     if False:
         returns times, S, I
         
         
-    SAMPLE USE
-    ----------
-    import networkx as nx
-    import EoN
-    
-    G = nx.fast_gnp_random_graph(1000,0.004)
-    nodelist = G.nodes()
-    Y0 = scipy.array([1 if node<10 else 0 for node in nodelist]) #infect first 10
-    t, S, I = EoN.SIS_pair_based(G, nodelist, Y0, 2, 0.5, tmax = 4, tcount = 101)
-    plt.plot(t,I)
-    
+    :SAMPLE USE:
+
+    ::
+
+
+        import networkx as nx
+        import EoN
+        
+        G = nx.fast_gnp_random_graph(1000,0.004)
+        nodelist = G.nodes()
+        Y0 = scipy.array([1 if node<10 else 0 for node in nodelist]) #infect first 10
+        t, S, I = EoN.SIS_pair_based(G, nodelist, Y0, 2, 0.5, tmax = 4, tcount = 101)
+        plt.plot(t,I)
+        
 '''
     trans_rate_fxn, rec_rate_fxn = _get_rate_functions(G, tau, gamma, 
                                                 transmission_weight,
@@ -3312,23 +3371,26 @@ def SIR_pair_based(G, nodelist, Y0, tau, gamma, X0 = None, XY0=None,
             if False:
                 returns times, S, I, R
 
-    RETURNS
-    -------
+    :RETURNS:
+
     if return_full_data is True:
         returns times, S, I, R, Xs, Ys, Zs, XY, XX
     if False:
         returns times, S, I, R
 
-    SAMPLE USE
-    ----------
-    import networkx as nx
-    import EoN
-    
-    G = nx.fast_gnp_random_graph(1000,0.004)
-    nodelist = G.nodes()
-    Y0 = scipy.array([1 if node<10 else 0 for node in nodelist]) #infect first 10
-    t, S, I, R = EoN.SIR_pair_based(G, nodelist, Y0, 2, 0.5, tmax = 4, tcount = 101)
-    plt.plot(t,I)
+    :SAMPLE USE:
+
+    ::
+
+
+        import networkx as nx
+        import EoN
+        
+        G = nx.fast_gnp_random_graph(1000,0.004)
+        nodelist = G.nodes()
+        Y0 = scipy.array([1 if node<10 else 0 for node in nodelist]) #infect first 10
+        t, S, I, R = EoN.SIR_pair_based(G, nodelist, Y0, 2, 0.5, tmax = 4, tcount = 101)
+        plt.plot(t,I)
     '''
 
 
@@ -3581,7 +3643,8 @@ def SIR_pair_based2(G, tau, gamma, rho = None, nodelist=None, X0=None,
     Before I forced the initial conditions for these nonedges to be 0, 
     they caused quite a bit of numerical headaches.
 
-    -------
+    :INPUTS:
+        
     G : Networkx graph
 
     nodelist : list
@@ -3711,8 +3774,8 @@ def SIS_homogeneous_meanfield(S0, I0, n, tau, gamma, tmin=0, tmax=100,
     [\dot{I}] = \tau n[S][I]/N - \gamma [I]
 
 
-    INPUTS
-    --------
+    :INPUTS:
+
     S0 : number
          initial number susceptible
     I0 : number
@@ -3730,20 +3793,23 @@ def SIS_homogeneous_meanfield(S0, I0, n, tau, gamma, tmin=0, tmax=100,
     tcount : integer (default 1001)
              number of reports
 
-    RETURNS
-    -------
+    :RETURNS:
+
     times, S, I, all scipy arrays
     
-    SAMPLE USE
-    ----------
-    import networkx as nx
-    import EoN
-    S0 = 999
-    I0 = 1
-    n = 4 #degree
-    tau = 1
-    gamma = 2
-    t, S, I = EoN.SIS_homogeneous_meanfield(S0, I0, n, tau, gamma)
+    :SAMPLE USE:
+
+    ::
+
+
+        import networkx as nx
+        import EoN
+        S0 = 999
+        I0 = 1
+        n = 4 #degree
+        tau = 1
+        gamma = 2
+        t, S, I = EoN.SIS_homogeneous_meanfield(S0, I0, n, tau, gamma)
     '''
 
     N=S0+I0
@@ -3767,8 +3833,8 @@ def SIR_homogeneous_meanfield(S0, I0, R0, n, tau, gamma, tmin=0, tmax=100,
     [\dot{R}] = \gamma [I]
 
 
-    INPUTS
-    --------
+    :INPUTS:
+
     S0 : number
          initial number susceptible
     I0 : number
@@ -3788,21 +3854,24 @@ def SIR_homogeneous_meanfield(S0, I0, R0, n, tau, gamma, tmin=0, tmax=100,
     tcount : integer (default 1001)
              number of reports
     
-    RETURNS
-    -------
+    :RETURNS:
+
     times, S, I, R : all scipy arrays
     
-    SAMPLE USE
-    ----------
-    import networkx as nx
-    import EoN
-    S0 = 999
-    I0 = 1
-    n = 4 #degree
-    tau = 1
-    gamma = 2
-    t, S, I, R = EoN.SIR_homogeneous_meanfield(S0, I0, 0, n, tau, gamma)
-    
+    :SAMPLE USE:
+
+    ::
+
+
+        import networkx as nx
+        import EoN
+        S0 = 999
+        I0 = 1
+        n = 4 #degree
+        tau = 1
+        gamma = 2
+        t, S, I, R = EoN.SIR_homogeneous_meanfield(S0, I0, 0, n, tau, gamma)
+        
     '''
 
     N=S0+I0+R0
@@ -3864,8 +3933,8 @@ def SIS_homogeneous_pairwise(S0, I0, SI0, SS0, n, tau, gamma, tmin = 0,
     In the text this is often referred to as the 
     "mean-field model closed at the level of triples"
 
-    INPUTS
-    --------
+    :INPUTS:
+
     S0 : number
          initial number susceptible
     I0 : number
@@ -3890,27 +3959,30 @@ def SIS_homogeneous_pairwise(S0, I0, SI0, SS0, n, tau, gamma, tmin = 0,
                        tells whether to just return times, S, I or 
                        all calculated data.
     
-    RETURNS
-    -------
+    :RETURNS:
+
     if return_full_data is True:
         t, S, I, SI, SS, II
     if return_full_data is False:
         t, S, I
         
         
-    SAMPLE USE
-    ----------
-    import networkx as nx
-    import EoN
-    S0 = 990
-    I0 = 10
-    SI0 = 50
-    SS0 = 4900
-    n = 5
-    tau = 1
-    gamma = 2
-    t, S, I = EoN.SIS_homogeneous_pairwise(S0, I0, SI0, SS0, n, tau, gamma, 
-                                            tmax = 20)
+    :SAMPLE USE:
+
+    ::
+
+
+        import networkx as nx
+        import EoN
+        S0 = 990
+        I0 = 10
+        SI0 = 50
+        SS0 = 4900
+        n = 5
+        tau = 1
+        gamma = 2
+        t, S, I = EoN.SIS_homogeneous_pairwise(S0, I0, SI0, SS0, n, tau, gamma, 
+                                                tmax = 20)
     '''
     N = S0+I0
 
@@ -3951,8 +4023,8 @@ def SIR_homogeneous_pairwise(S0, I0, R0, SI0, SS0, n, tau, gamma, tmin = 0,
     conserved quantities: [S]+[I]+[R]  also 
                           [SS]+[II]+[RR] + 2([SI] + [SR] + [IR])
 
-    INPUTS
-    ---------
+    :INPUTS:
+
     S0 : Initial number suusceptible
     I0 : Initial number infected
     R0 : Initial number recovered
@@ -3973,27 +4045,30 @@ def SIR_homogeneous_pairwise(S0, I0, R0, SI0, SS0, n, tau, gamma, tmin = 0,
                        tells whether to just return times, S, I, R or 
                        all calculated data.
                        if True, then returns times, S, I, R, SI, SS
-    RETURNS
-    -------
+    :RETURNS:
+
     if return_full_data is True:
         times, S, I, R, SI, SS
     if return_full_data is False:
         times, S, I, R 
 
-    SAMPLE USE
-    ----------
-    import networkx as nx
-    import EoN
-    S0 = 990
-    I0 = 10
-    R0 = 1
-    SI0 = 45
-    SS0 = 4900
-    n = 5
-    tau = 1
-    gamma = 2
-    t, S, I, R = EoN.SIR_homogeneous_pairwise(S0, I0, R0, SI0, SS0, n, tau, gamma, 
-                                                tmax = 20)
+    :SAMPLE USE:
+
+
+    ::
+
+        import networkx as nx
+        import EoN
+        S0 = 990
+        I0 = 10
+        R0 = 1
+        SI0 = 45
+        SS0 = 4900
+        n = 5
+        tau = 1
+        gamma = 2
+        t, S, I, R = EoN.SIR_homogeneous_pairwise(S0, I0, R0, SI0, SS0, n, tau, gamma, 
+                                                    tmax = 20)
 
     '''
     N = S0+I0+R0
@@ -4018,8 +4093,8 @@ def SIS_homogeneous_pairwise_from_graph(G, tau, gamma, rho = None, tmin = 0,
     Calls SIS_homogeneous_pairwise with a graph, disease parameters, and
     a random fraction rho initially infected.
 
-    INPUTS
-    ------
+    :INPUTS:
+
     G : networkx Graph
     tau : number
           transmission rate
@@ -4037,23 +4112,26 @@ def SIS_homogeneous_pairwise_from_graph(G, tau, gamma, rho = None, tmin = 0,
                        tells whether to just return times, S, I, or 
                        all calculated data.
                        if True, then returns times, S, I, SI, SS
-    RETURNS
-    -------
+    :RETURNS:
+
     if return_full_data is True:
         t, S, I, SI, SS, II
     if return_full_data is False:
         t, S, I
         
         
-    SAMPLE USE
-    ----------
-    import networkx as nx
-    import EoN
-    G = nx.fast_gnp_random_graph(10000,0.0005)
-    tau = 1
-    gamma = 3
-    rho = 0.02
-    t, S, I = EoN.SIS_homogeneous_pairwise_from_graph(G, tau, gamma, rho, tmax = 20)
+    :SAMPLE USE:
+
+    ::
+
+
+        import networkx as nx
+        import EoN
+        G = nx.fast_gnp_random_graph(10000,0.0005)
+        tau = 1
+        gamma = 3
+        rho = 0.02
+        t, S, I = EoN.SIS_homogeneous_pairwise_from_graph(G, tau, gamma, rho, tmax = 20)
     '''
     
     if rho is None:
@@ -4075,8 +4153,8 @@ def SIR_homogeneous_pairwise_from_graph(G, tau, gamma, rho = None, tmin = 0,
     Calls SIS_homogeneous_pairwise with a graph, disease parameters, and
     a random fraction rho initially infected.
 
-    INPUTS
-    ------
+    :INPUTS:
+
     G : networkx Graph
     tau : number
           transmission rate
@@ -4094,24 +4172,27 @@ def SIR_homogeneous_pairwise_from_graph(G, tau, gamma, rho = None, tmin = 0,
                        tells whether to just return times, S, I, R or 
                        all calculated data.
                        if True, then returns times, S, I, R, SI, SS
-    RETURNS
-    -------
+    :RETURNS:
+
     if return_full_data is True:
         t, S, I, SI, SS, II
     if return_full_data is False:
         t, S, I
         
         
-    SAMPLE USE
-    ----------
-    import networkx as nx
-    import EoN
-    G = nx.fast_gnp_random_graph(10000,0.0005)
-    tau = 1
-    gamma = 3
-    rho = 0.02
-    t, S, I, R = EoN.SIR_homogeneous_pairwise_from_graph(G, tau, gamma, rho, 
-                                                            tmax = 20)
+    :SAMPLE USE:
+
+    ::
+
+
+        import networkx as nx
+        import EoN
+        G = nx.fast_gnp_random_graph(10000,0.0005)
+        tau = 1
+        gamma = 3
+        rho = 0.02
+        t, S, I, R = EoN.SIR_homogeneous_pairwise_from_graph(G, tau, gamma, rho, 
+                                                                tmax = 20)
     '''
     if rho is None:
         rho = 1./G.order()
@@ -4187,8 +4268,8 @@ def SIS_heterogeneous_meanfield(Sk0, Ik0, tau, gamma, tmin = 0, tmax=100,
 
 
 
-    INPUTS
-    ---------
+    :INPUTS:
+
     Sk0 : scipy array
           number susceptible for each k
     Ik0 : scipy array
@@ -4208,23 +4289,26 @@ def SIS_heterogeneous_meanfield(Sk0, Ik0, tau, gamma, tmin = 0, tmax=100,
                        calculated data.
                        if True, returns t, S, I, Sk, Ik
 
-    RETURNS
-    -------
+    :RETURNS:
+
     
     if return_full_data is True:
         times, S, I, Sk  (Sk is scipy 2D arrays)
     if return_full_data is False:
         times, S, I      (all scipy arrays)
         
-    SAMPLE USE
-    ----------
-    import networkx as nx
-    import EoN
-    Sk0 = [995, 995, 995, 995, 995]
-    Ik0 = [5, 5, 5, 5, 5]
-    tau = 1
-    gamma = 2
-    t, S, I = EoN.SIS_heterogeneous_meanfield(Sk0, Ik0, tau, gamma, tmax = 10)
+    :SAMPLE USE:
+
+    ::
+
+
+        import networkx as nx
+        import EoN
+        Sk0 = [995, 995, 995, 995, 995]
+        Ik0 = [5, 5, 5, 5, 5]
+        tau = 1
+        gamma = 2
+        t, S, I = EoN.SIS_heterogeneous_meanfield(Sk0, Ik0, tau, gamma, tmax = 10)
     '''
     if len(Sk0) != len(Ik0):
         raise EoNError('length of Sk0 not equal to length of Ik0')
@@ -4265,8 +4349,8 @@ def SIR_heterogeneous_meanfield(Sk0, Ik0, Rk0, tau, gamma, tmin = 0, tmax=100,
     pi_I = \sum_k k[I_k]
 
 
-    INPUTS
-    ------------
+    :INPUTS:
+
     Sk0 : array
           Sk0[k] is the number of
           nodes that are susceptible and have degree k (even if some degrees 
@@ -4287,25 +4371,28 @@ def SIR_heterogeneous_meanfield(Sk0, Ik0, Rk0, tau, gamma, tmin = 0, tmax=100,
                        tells whether to just return times, S, I, R or 
                        all calculated data.
 
-    RETURNS
-    -------
+    :RETURNS:
+
     
     if return_full_data is True:
         times, S, I, R, Sk, Ik, Rk (the Xk are scipy 2D arrays)
     if return_full_data is False:
         times, S, I, R          (all scipy arrays)
         
-    SAMPLE USE
-    ----------
-    import networkx as nx
-    import EoN
-    Sk0 = [995, 995, 995, 995, 995]
-    Ik0 = [5, 5, 5, 5, 5]
-    Rk0 = [0,0,0,0,0]
-    tau = 1
-    gamma = 2
-    t, S, I, R = EoN.SIR_heterogeneous_meanfield(Sk0, Ik0, Rk0, tau, gamma, 
-                                                    tmax = 10)
+    :SAMPLE USE:
+
+
+    ::
+
+        import networkx as nx
+        import EoN
+        Sk0 = [995, 995, 995, 995, 995]
+        Ik0 = [5, 5, 5, 5, 5]
+        Rk0 = [0,0,0,0,0]
+        tau = 1
+        gamma = 2
+        t, S, I, R = EoN.SIR_heterogeneous_meanfield(Sk0, Ik0, Rk0, tau, gamma, 
+                                                        tmax = 10)
     '''
     if len(Sk0) != len(Ik0) or len(Sk0) != len(Rk0):
         raise EoNError('length of Sk0, Ik0, and Rk0 must be the same')
@@ -4338,8 +4425,8 @@ def SIS_heterogeneous_meanfield_from_graph(G, tau, gamma, rho = None,
     Takes a graph and an initial proportion infected rho.  
     Calculates Sk0 and Ik0 and calls the heterogeneous meanfield model
 
-    INPUTS
-    ------------
+    :INPUTS:
+
     G : networkx Graph
     tau : number
           transmission rate
@@ -4358,23 +4445,26 @@ def SIS_heterogeneous_meanfield_from_graph(G, tau, gamma, rho = None,
                        tells whether to just return times, S, I, R or 
                        all calculated data.
 
-    RETURNS
-    -------
+    :RETURNS:
+
     
     if return_full_data is True:
         times, S, I, Sk, Ik, (the Xk are scipy 2D arrays)
     if return_full_data is False:
         times, S, I         (all scipy arrays)
         
-    SAMPLE USE
-    ----------
-    import networkx as nx
-    import EoN
-    G = nx.configuration_model([1,2,3,4]*1000)
-    tau = 1
-    gamma = 2
-    t, S, I = EoN.SIS_heterogeneous_meanfield_from_graph(G, tau, gamma, 
-                                                            tmax = 15)
+    :SAMPLE USE:
+
+
+    ::
+
+        import networkx as nx
+        import EoN
+        G = nx.configuration_model([1,2,3,4]*1000)
+        tau = 1
+        gamma = 2
+        t, S, I = EoN.SIS_heterogeneous_meanfield_from_graph(G, tau, gamma, 
+                                                                tmax = 15)
 
     '''
     if rho is None:
@@ -4391,8 +4481,8 @@ def SIR_heterogeneous_meanfield_from_graph(G, tau, gamma, rho = None,
     Takes a graph and an initial proportion infected rho.  
     Calculates Sk0 and Ik0 and calls the heterogeneous meanfield model
 
-    INPUTS
-    ------------
+    :INPUTS:
+
     G : networkx Graph
     tau : number
           transmission rate
@@ -4412,22 +4502,25 @@ def SIR_heterogeneous_meanfield_from_graph(G, tau, gamma, rho = None,
                        all calculated data.
 
 
-    RETURNS
-    -------
+    :RETURNS:
+
     if return_full_data is True
         times, Sk, Ik, Rk (the Xk are scipy 2D arrays)
     if False,
         times, S, I, R (all scipy arrays)
     
-    SAMPLE USE
-    ----------
-    import networkx as nx
-    import EoN
-    G = nx.configuration_model([1,2,3,4]*1000)
-    tau = 1
-    gamma = 2
-    t, S, I, R = EoN.SIR_heterogeneous_meanfield_from_graph(G, tau, gamma, 
-                                                             tmax = 10)
+    :SAMPLE USE:
+
+    ::
+
+
+        import networkx as nx
+        import EoN
+        G = nx.configuration_model([1,2,3,4]*1000)
+        tau = 1
+        gamma = 2
+        t, S, I, R = EoN.SIR_heterogeneous_meanfield_from_graph(G, tau, gamma, 
+                                                                tmax = 10)
     
     '''
     if rho is None:
@@ -4463,8 +4556,8 @@ def _dSIS_heterogeneous_pairwise_(X, t, Nk, NkNl, tau, gamma, Ks):
     identities: [IkSl] = [SlIk], so where IkSl needed, use SlIk.T
 
 
-    INPUTS
-    ------
+    :INPUTS:
+
     X : current values of variables
     t : current time
     Nk : The number of nodes of each degree; Nk[i] is the number of 
@@ -4560,8 +4653,8 @@ def SIS_heterogeneous_pairwise(Sk0, Ik0, SkSl0, SkIl0, IkIl0, tau, gamma,
     In the text this is often referred to as the 
     "heterogeneous mean-field model closed at the level of triples"
 
-    INPUTS
-    ------------
+    :INPUTS:
+
     Sk0 : array.  Sk0[k] is the number of
                  nodes that are susceptible and have degree k.  If one 
                  is empty, it becomes 0.
@@ -4619,30 +4712,33 @@ def SIS_heterogeneous_pairwise(Sk0, Ik0, SkSl0, SkIl0, IkIl0, tau, gamma,
     others, but for consistency with elsewhere, this is not done here.
     
     
-    RETURNS
-    -------
+    :RETURNS:
+
     if return_full_data is True:
         returns times, S, I, Sk, Ik, SkIl, SkSl, IkIl
     if return_full_data is False:
         returns times, S, I
-    SAMPLE USE
-    ----------
-    import networkx as nx
-    import EoN
-    import scipy
-    Sk0 = 100 * scipy.ones(4)
-    Ik0 = scipy.zeros(4)
-    Ik0[3]=1
-    SkSl0 = scipy.matrix([[0, 0,0,0],[0,100,0,0],[0,0,200,0],[0,0,0,294]])
-    #only interact within a degree class, so the deg 1 and 2 are safe.
-    SkIl0 = scipy.zeros((4,4))
-    SkIl0[3,3] = 3
-    IkIl0 = scipy.zeros((4,4))
-    tau = 1
-    gamma = 1
-    
-    t, S, I = EoN.SIS_heterogeneous_pairwise(Sk0, Ik0, SkSl0, SkIl0, IkIl0, tau, 
-                                                gamma)
+    :SAMPLE USE:
+
+    ::
+
+
+        import networkx as nx
+        import EoN
+        import scipy
+        Sk0 = 100 * scipy.ones(4)
+        Ik0 = scipy.zeros(4)
+        Ik0[3]=1
+        SkSl0 = scipy.matrix([[0, 0,0,0],[0,100,0,0],[0,0,200,0],[0,0,0,294]])
+        #only interact within a degree class, so the deg 1 and 2 are safe.
+        SkIl0 = scipy.zeros((4,4))
+        SkIl0[3,3] = 3
+        IkIl0 = scipy.zeros((4,4))
+        tau = 1
+        gamma = 1
+        
+        t, S, I = EoN.SIS_heterogeneous_pairwise(Sk0, Ik0, SkSl0, SkIl0, IkIl0, tau, 
+                                                    gamma)
     
     '''
 
@@ -4697,8 +4793,8 @@ def SIR_heterogeneous_pairwise(Sk0, Ik0, Rk0, SkSl0, SkIl0, tau, gamma,
     [A_l S_k I] = ((k-1)/k) [A_l S_k] [S_k I]/ [S_k]
     [I S_k A_l] = ((k-1)/k) [I S_k] [S_k A_l]/ [S_k]
 
-    INPUTS
-    ----------
+    :INPUTS:
+
     Sk0 : scipy array, Sk0[k] is number of degree k susceptible at 
           time 0.
     Ik0 : scipy array
@@ -4743,20 +4839,23 @@ def SIR_heterogeneous_pairwise(Sk0, Ik0, Rk0, SkSl0, SkIl0, tau, gamma,
          the Sk0[i] is the number of nodes that are susceptible and
          have degree Ks[i].  Similarly for Ik0 and SkIl0 etc.        
 
-    RETURNS
-    -------
+    :RETURNS:
+
     if return_full_data is True
         returns times, S, I, R, Sk, Ik, Rk, SkIl, SkSl
     if return_full_data is False
         return times, S, I, R
     
-    SAMPLE USE
-    ----------
-    import networkx as nx
-    import EoN
-    
-'''
+    :SAMPLE USE:
 
+    ::
+
+
+        import networkx as nx
+        import EoN
+        
+'''
+    
     if Ks is None:
         Ks = scipy.array(range(len(Sk0)))
 #    print "Ks is ", Ks
@@ -4911,14 +5010,17 @@ def SIS_compact_pairwise(Sk0, Ik0, SI0, SS0, II0, tau, gamma, tmin = 0,
     conserved quantities:  [Sk]+[Ik]     ;     SS + II + 2SI
     
     
-    RETURNS
-    -------
+    :RETURNS:
+
     
-    SAMPLE USE
-    ----------
-    import networkx as nx
-    import EoN
-    
+    :SAMPLE USE:
+
+    ::
+
+
+        import networkx as nx
+        import EoN
+        
     '''
     Nk = Sk0+Ik0
     twoM = SS0+II0+2*SI0
@@ -4955,8 +5057,8 @@ def SIR_compact_pairwise(Sk0, I0, R0, SS0, SI0, tau, gamma, tmin=0, tmax=100,
     [S] = sum [S_k]
     I = N-[S]-R
 
-    INPUTS
-    ------
+    :INPUTS:
+
     Sk0 : scipy array
           initial number of suscetibles of each degree k
     I0 : number
@@ -4981,13 +5083,16 @@ def SIR_compact_pairwise(Sk0, I0, R0, SS0, SI0, tau, gamma, tmin=0, tmax=100,
                        tells whether to just return times, S, I, R or 
                        all calculated data.
 
-    RETURNS
-    -------
+    :RETURNS:
 
-    SAMPLE USE
-    ----------
-    import networkx as nx
-    import EoN
+
+    :SAMPLE USE:
+
+    ::
+
+       
+        import networkx as nx
+        import EoN
     '''
     
     times = scipy.linspace(tmin,tmax,tcount)
@@ -5101,8 +5206,8 @@ def SIS_super_compact_pairwise(S0, I0, SS0, SI0, II0, tau, gamma, k_ave,
     Encodes system (5.20) of Kiss, Miller, & Simon.  Please cite the 
     book if using this algorithm.
 
-    INPUTS
-    -------
+    :INPUTS:
+
     S0 : 
     I0 :
     SS0 :
@@ -5128,15 +5233,15 @@ def SIS_super_compact_pairwise(S0, I0, SS0, SI0, II0, tau, gamma, k_ave,
              tells whether to just return times, S, I, R or all 
              calculated data.
 
-    RETURNS
-    -------
+    :RETURNS:
+
     if return_full_data is True
         returns times, S, I, SS, SI, II
     if return_full_data is False
         returns times, S, I
         
-    SAMPLE USE
-    ----------
+    :SAMPLE USE:
+
     import networkx as nx
     import EoN
     '''
@@ -5172,8 +5277,8 @@ def SIR_super_compact_pairwise(SS0, SI0, R0, N, tau, gamma, psihat,
     Q = psihat_xx(theta)/N(psihat_x(theta))^2
 
     
-    INPUTS
-    ------
+    :INPUTS:
+
     tau : number
           transmission rate
     gamma : number
@@ -5387,8 +5492,8 @@ def SIS_effective_degree(Ssi0, Isi0, tau, gamma, tmin = 0, tmax=100,
     book if using this algorithm.
 
 
-    INPUTS
-    ---------
+    :INPUTS:
+
     Ssi0 and Isi0 : (square) numpy 2D arrays of same shape.
                       Entries are initial number susceptible or infected 
                       with given initial number of susceptible/infected 
@@ -5443,8 +5548,8 @@ def SIR_effective_degree(S_si0, I0, R0, tau, gamma, tmin=0, tmax=100,
     S = \sum_{s,i} S_{s,i}
     I = N-S-R
 
-    INPUTS
-    ---------
+    :INPUTS:
+
     S_si0 : (square) numpy 2-D array
             S_{s,i} at time 0
     I0 : number
@@ -5581,8 +5686,8 @@ def SIR_compact_effective_degree(Skappa0, I0, R0, SI0, tau, gamma, tmin=0,
     S = sum_kappa S_kappa
     I = N - S - R
 
-    INPUTS
-    ---------
+    :INPUTS:
+
     Skappa0 : scipy array
               from S_0(0) up to S_kappamax(0) of number susceptible with 
                   each effective degree
@@ -5663,8 +5768,8 @@ def Epi_Prob_discrete(Pk, p, number_its = 100):
     '''Encodes System (6.2) of Kiss, Miller, & Simon.  Please cite the
     book if using this algorithm.
     
-    INPUTS
-    ---------
+    :INPUTS:
+
     Pk : scipy array Pk[k] is probability a node has degree k.
 
     p : transmission probability
@@ -5672,8 +5777,8 @@ def Epi_Prob_discrete(Pk, p, number_its = 100):
     number_its : number of iterations before assumed converged.
                  default value is 100
 
-    RETURNS
-    ----------
+    :RETURNS:
+
     Calculated Epidemic probability (assuming configuration model)
     '''
     ks = scipy.arange(len(Pk))
@@ -5719,8 +5824,8 @@ def Epi_Prob_cts_time(Pk, tau, gamma, umin=0, umax = 10, ucount = 1001,
     and 
         p(u) = 1-e^{-\tau u/\gamma}
     
-    INPUTS
-    ---------
+    :INPUTS:
+
     Pk : scipy array Pk[k] is probability a node has degree k.
 
     tau : transmission rate
@@ -5736,8 +5841,8 @@ def Epi_Prob_cts_time(Pk, tau, gamma, umin=0, umax = 10, ucount = 1001,
     number_its : number of iterations before assumed converged.
                  default value is 100
 
-    RETURNS
-    ----------
+    :RETURNS:
+
     Calculated Epidemic probability (assuming configuration model)
     '''
     ks = scipy.arange(len(Pk))
@@ -5761,8 +5866,8 @@ def Epi_Prob_non_Markovian(Pk, tau, gamma, Pxidxi, po, umin=0, umax = 10,
     r'''Encodes system (6.5) of Kiss, Miller, & Simon.  Please cite the
     book if using this algorithm.
     
-    INPUTS
-    ---------
+    :INPUTS:
+
     Pk : scipy array Pk[k] is probability a node has degree k.
 
     tau : transmission rate
@@ -5785,8 +5890,8 @@ def Epi_Prob_non_Markovian(Pk, tau, gamma, Pxidxi, po, umin=0, umax = 10,
     number_its : number of iterations before assumed converged.
                  default value is 100
 
-    RETURNS
-    ----------
+    :RETURNS:
+
     Calculated Epidemic probability (assuming configuration model)
     '''
     ks = scipy.arange(len(Pk))
@@ -5813,8 +5918,8 @@ def Attack_rate_discrete(Pk, p, number_its=100, rho = None, Sk0=None,
 
     To use system (6.6), leave rho and Sk0 as None.
 
-    INPUTS
-    ------
+    :INPUTS:
+
     Pk : dict
         Pk[k] is the probability a randomly selected node has degree k.
     tau : number
@@ -5836,8 +5941,8 @@ def Attack_rate_discrete(Pk, p, number_its=100, rho = None, Sk0=None,
           randomly introduced
     phiR0 : number (default 0)
           As with phiS0, only used if Sk0 is not None.
-    OUTPUT
-    ------
+    :RETURNS:
+
     A : number
         the predicted fraction infected.
     '''
@@ -5887,23 +5992,32 @@ def Attack_rate_cts_time(Pk, tau, gamma, number_its =100, rho = None,
     If we look for the limit of a nonzero initial fraction infected, we 
     introduce rho or Sk0
 
-    Args:
-    Pk (dict):  the probability a randomly selected node has degree k.
-    tau (number): per-edge transmission rate.
-    gamma (number): per-node recovery rate
-    number_its (int): The solution is found iteratively, so this determines 
+    :INPUTS:
+        
+    Pk : dict
+        the probability a randomly selected node has degree k.
+
+    tau : number
+        per-edge transmission rate.
+
+    gamma : number
+        per-node recovery rate
+
+    number_its : int
+        The solution is found iteratively, so this determines 
                  the number of iterations.
-    rho (number, optional): The initial proportion infected (defaults to 
-         None)
-    Sk0 (dict): (default None)
+    rho : number, optional
+        The initial proportion infected (defaults to None)
+
+    Sk0 : dict (default None)
           only one of rho and Sk0 can be defined.  
           The other (or both) should remain None.
           rho gives the fraction of nodes randomly infected.
           Sk0 is a dict such that Sk0[k] is the probability that a 
               degree k node is susceptible at start.
 
-    OUTPUT
-    ------
+    :RETURNS:
+
     A : number
         the predicted fraction infected.
     '''
@@ -5970,8 +6084,8 @@ def EBCM_discrete(N, psihat, psihatPrime, p, phiS0, phiR0=0, R0=0, tmax = 100,
     S(t) = N psihat(theta(t))
     I(t) = N-S-R
 
-    INPUTS
-    ------
+    :INPUTS:
+
     N : number
         size of population
     psihat : function
@@ -5996,8 +6110,8 @@ def EBCM_discrete(N, psihat, psihatPrime, p, phiS0, phiR0=0, R0=0, tmax = 100,
                        if True 
                            return t, S, I, R, and theta
 
-    OUTPUTS
-    -------
+    :RETURNS:
+
     if return_full_data == False:
         returns t, S, I, R, all scipy arrays
     if ...== True
@@ -6034,8 +6148,8 @@ def EBCM_discrete_uniform_introduction(N, psi, psiPrime, p, rho, tmax=100,
     Handles the case that the disease is introduced uniformly as opposed
     to depending on degree.
 
-    INPUTS
-    ------
+    :INPUTS:
+
     N : Number
         number of nodes
     psi : function
@@ -6054,8 +6168,8 @@ def EBCM_discrete_uniform_introduction(N, psi, psiPrime, p, rho, tmax=100,
         if True 
             return t, S, I, R, and theta
 
-    OUTPUTS
-    -------
+    :RETURNS:
+
     if return_full_data == False:
         returns t, S, I, R, all scipy arrays
     if ...== True
@@ -6080,8 +6194,8 @@ def EBCM_discrete_from_graph(G, p, rho = None, tmin = 0, tmax=100,
     0, 
     and then uses the discrete EBCM model.
     
-    INPUTS
-    ------
+    :INPUTS:
+
     G : Networkx Graph
     p : number
         per edge transmission probability
@@ -6093,8 +6207,8 @@ def EBCM_discrete_from_graph(G, p, rho = None, tmin = 0, tmax=100,
         if False, 
             return t, S, I, R and if True return t, S, I, R, and theta
 
-    OUTPUTS
-    -------
+    :RETURNS:
+
     if return_full_data == False:
         returns t, S, I, R, all scipy arrays
     if ...== True
@@ -6133,8 +6247,8 @@ def EBCM(N, psihat, psihatPrime, tau, gamma, phiS0, phiR0=0, R0=0, tmin=0,
     note : R0 is R(0), not the reproductive number
 
 
-    INPUTS
-    ------
+    :INPUTS:
+
     N : number
         size of population
     psihat : function
@@ -6165,8 +6279,8 @@ def EBCM(N, psihat, psihatPrime, tau, gamma, phiS0, phiR0=0, R0=0, tmin=0,
         if True 
             return t, S, I, R, and theta
 
-    RETURNS
-    -------
+    :RETURNS:
+
     if return_full_data == False:
         returns t, S, I, R, all scipy arrays
     if ...== True
@@ -6193,8 +6307,8 @@ def EBCM_uniform_introduction(N, psi, psiPrime, tau, gamma, rho, tmin=0,
     Handles the case that the disease is introduced uniformly as opposed
     to depending on degree.
 
-    INPUTS
-    ------
+    :INPUTS:
+
     N : number
         size of population
     psi : function
@@ -6219,8 +6333,8 @@ def EBCM_uniform_introduction(N, psi, psiPrime, tau, gamma, rho, tmin=0,
         if True 
             return t, S, I, R, and theta
 
-    RETURNS
-    -------
+    :RETURNS:
+
     if return_full_data == False:
         returns t, S, I, R, all scipy arrays
     if ...== True

@@ -88,17 +88,30 @@ Markovian SIR disease.</p>
 fraction infected approaches 0.</p>
 <p>If we look for the limit of a nonzero initial fraction infected, we 
 introduce rho or Sk0</p>
-<p>Args:
-Pk (dict):  the probability a randomly selected node has degree k.
-tau (number): per-edge transmission rate.
-gamma (number): per-node recovery rate
-number_its (int): The solution is found iteratively, so this determines</p>
-<blockquote>
-<div>the number of iterations.</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
-<dt>rho (number, optional): The initial proportion infected (defaults to </dt>
-<dd>None)</dd>
-<dt>Sk0 (dict): (default None)</dt>
+<dt>Pk <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd>the probability a randomly selected node has degree k.</dd>
+<dt>tau <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
+<dd>per-edge transmission rate.</dd>
+<dt>gamma <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
+<dd>per-node recovery rate</dd>
+<dt>number_its <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><dl class="first last docutils">
+<dt>The solution is found iteratively, so this determines </dt>
+<dd>the number of iterations.</dd>
+</dl>
+</dd>
+<dt>rho <span class="classifier-delimiter">:</span> <span class="classifier">number, optional</span></dt>
+<dd>The initial proportion infected (defaults to None)</dd>
+<dt>Sk0 <span class="classifier-delimiter">:</span> <span class="classifier">dict (default None)</span></dt>
 <dd><p class="first">only one of rho and Sk0 can be defined.  
 The other (or both) should remain None.
 rho gives the fraction of nodes randomly infected.
@@ -107,6 +120,14 @@ Sk0 is a dict such that Sk0[k] is the probability that a</p>
 <div>degree k node is susceptible at start.</div></blockquote>
 </dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>A <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
 <dd>the predicted fraction infected.</dd>
@@ -131,6 +152,14 @@ estimate_SIR_prob_size(G, p) - accounts for entire structure of G</p>
 <dd><p>Encodes systems (6.6) and (6.10) of Kiss, Miller, &amp; Simon.  Please 
 cite the book if using this algorithm.</p>
 <p>To use system (6.6), leave rho and Sk0 as None.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>Pk <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
 <dd>Pk[k] is the probability a randomly selected node has degree k.</dd>
@@ -159,6 +188,14 @@ randomly introduced</dd>
 <dt>phiR0 <span class="classifier-delimiter">:</span> <span class="classifier">number (default 0)</span></dt>
 <dd>As with phiS0, only used if Sk0 is not None.</dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>A <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
 <dd>the predicted fraction infected.</dd>
@@ -178,6 +215,14 @@ book if using this algorithm.</p>
 <dd><p>Encodes system (6.12) of Kiss, Miller, &amp; Simon.  Please cite the
 book if using this algorithm.</p>
 <p>note : R0 is R(0), not the reproductive number</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>N <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
 <dd>size of population</dd>
@@ -212,6 +257,14 @@ connecting to recovered nodes</dd>
 </dl>
 </dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>if return_full_data == False:</dt>
 <dd>returns t, S, I, R, all scipy arrays</dd>
@@ -263,6 +316,14 @@ book if using this algorithm.</p>
 <p>R(t) = R(t-1) + I(t-1)
 S(t) = N psihat(theta(t))
 I(t) = N-S-R</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>N <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
 <dd>size of population</dd>
@@ -291,6 +352,14 @@ connecting to recovered nodes</dd>
 </dl>
 </dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>if return_full_data == False:</dt>
 <dd>returns t, S, I, R, all scipy arrays</dd>
@@ -307,6 +376,14 @@ connecting to recovered nodes</dd>
 assumes a constant proportion of the population is infected at time 
 0, 
 and then uses the discrete EBCM model.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <p>G : Networkx Graph
 p : number</p>
 <blockquote>
@@ -323,6 +400,14 @@ p : number</p>
 </dl>
 </dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>if return_full_data == False:</dt>
 <dd>returns t, S, I, R, all scipy arrays</dd>
@@ -336,6 +421,14 @@ p : number</p>
 <code class="descclassname">EoN.</code><code class="descname">EBCM_discrete_uniform_introduction</code><span class="sig-paren">(</span><em>N</em>, <em>psi</em>, <em>psiPrime</em>, <em>p</em>, <em>rho</em>, <em>tmax=100</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#EBCM_discrete_uniform_introduction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.EBCM_discrete_uniform_introduction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Handles the case that the disease is introduced uniformly as opposed
 to depending on degree.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>N <span class="classifier-delimiter">:</span> <span class="classifier">Number</span></dt>
 <dd>number of nodes</dd>
@@ -358,6 +451,14 @@ to depending on degree.</p>
 </dl>
 </dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>if return_full_data == False:</dt>
 <dd>returns t, S, I, R, all scipy arrays</dd>
@@ -371,6 +472,14 @@ to depending on degree.</p>
 <code class="descclassname">EoN.</code><code class="descname">EBCM_uniform_introduction</code><span class="sig-paren">(</span><em>N</em>, <em>psi</em>, <em>psiPrime</em>, <em>tau</em>, <em>gamma</em>, <em>rho</em>, <em>tmin=0</em>, <em>tmax=100</em>, <em>tcount=1001</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#EBCM_uniform_introduction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.EBCM_uniform_introduction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Handles the case that the disease is introduced uniformly as opposed
 to depending on degree.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>N <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
 <dd>size of population</dd>
@@ -399,6 +508,14 @@ to depending on degree.</p>
 </dl>
 </dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>if return_full_data == False:</dt>
 <dd>returns t, S, I, R, all scipy arrays</dd>
@@ -452,6 +569,14 @@ alpha(u) = 1-p(u) + p(u)</p>
 <dt>and </dt>
 <dd>p(u) = 1-e^{-tau u/gamma}</dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <p>Pk : scipy array Pk[k] is probability a node has degree k.</p>
 <p>tau : transmission rate</p>
 <p>gamma : recovery rate</p>
@@ -465,6 +590,14 @@ sum.</div></blockquote>
 <dt>number_its <span class="classifier-delimiter">:</span> <span class="classifier">number of iterations before assumed converged.</span></dt>
 <dd>default value is 100</dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <p>Calculated Epidemic probability (assuming configuration model)</p>
 </dd></dl>
 
@@ -473,12 +606,28 @@ sum.</div></blockquote>
 <code class="descclassname">EoN.</code><code class="descname">Epi_Prob_discrete</code><span class="sig-paren">(</span><em>Pk</em>, <em>p</em>, <em>number_its=100</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#Epi_Prob_discrete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.Epi_Prob_discrete" title="Permalink to this definition">¶</a></dt>
 <dd><p>Encodes System (6.2) of Kiss, Miller, &amp; Simon.  Please cite the
 book if using this algorithm.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <p>Pk : scipy array Pk[k] is probability a node has degree k.</p>
 <p>p : transmission probability</p>
 <dl class="docutils">
 <dt>number_its <span class="classifier-delimiter">:</span> <span class="classifier">number of iterations before assumed converged.</span></dt>
 <dd>default value is 100</dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <p>Calculated Epidemic probability (assuming configuration model)</p>
 </dd></dl>
 
@@ -487,6 +636,14 @@ book if using this algorithm.</p>
 <code class="descclassname">EoN.</code><code class="descname">Epi_Prob_non_Markovian</code><span class="sig-paren">(</span><em>Pk</em>, <em>tau</em>, <em>gamma</em>, <em>Pxidxi</em>, <em>po</em>, <em>umin=0</em>, <em>umax=10</em>, <em>ucount=1001</em>, <em>number_its=100</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#Epi_Prob_non_Markovian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.Epi_Prob_non_Markovian" title="Permalink to this definition">¶</a></dt>
 <dd><p>Encodes system (6.5) of Kiss, Miller, &amp; Simon.  Please cite the
 book if using this algorithm.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <p>Pk : scipy array Pk[k] is probability a node has degree k.</p>
 <p>tau : transmission rate</p>
 <p>gamma : recovery rate</p>
@@ -508,24 +665,38 @@ sum.</div></blockquote>
 <dt>number_its <span class="classifier-delimiter">:</span> <span class="classifier">number of iterations before assumed converged.</span></dt>
 <dd>default value is 100</dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <p>Calculated Epidemic probability (assuming configuration model)</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="EoN.Event">
-<em class="property">class </em><code class="descclassname">EoN.</code><code class="descname">Event</code><span class="sig-paren">(</span><em>time</em>, <em>action</em>, <em>node</em>, <em>source=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#Event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.Event" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">EoN.</code><code class="descname">Event</code><span class="sig-paren">(</span><em>time</em>, <em>function</em>, <em>args=()</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#Event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.Event" title="Permalink to this definition">¶</a></dt>
 <dd><p>This class is used in event-driven simulations (fast_SIR and 
 fast_SIS) as an event which will be put into a priority queue.</p>
 <p>It is sortable based on event time.</p>
+<p>An event object consists of
+self.time 
+self.function
+self.args</p>
+<dl class="docutils">
+<dt>When self.function is called, it is called by:</dt>
+<dd>self.function(self.time, <a href="#id1"><span class="problematic" id="id2">*</span></a>self.args)</dd>
+</dl>
 <p>I wonder about whether it would be better to do this as a dict.</p>
 <p>The ability to sort based on time is why I am leaving it as a class.</p>
-<p>An alternative would be to give it a time, a function to call, and 
-arguments for the function.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="EoN.Gillespie_SIR">
-<code class="descclassname">EoN.</code><code class="descname">Gillespie_SIR</code><span class="sig-paren">(</span><em>G</em>, <em>tau</em>, <em>gamma</em>, <em>initial_infecteds=None</em>, <em>tmax=inf</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#Gillespie_SIR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.Gillespie_SIR" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">EoN.</code><code class="descname">Gillespie_SIR</code><span class="sig-paren">(</span><em>G</em>, <em>tau</em>, <em>gamma</em>, <em>initial_infecteds=None</em>, <em>rho=None</em>, <em>tmax=inf</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#Gillespie_SIR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.Gillespie_SIR" title="Permalink to this definition">¶</a></dt>
 <dd><p>From figure A.1 of Kiss, Miller, &amp; Simon.  Please cite the
 book if using this algorithm.</p>
 <p>Assumes that the network is unweighted.</p>
@@ -539,8 +710,24 @@ and the benefit would increase if the network were weighted.</p>
 This is because including that will force us to sum up these weights
 more frequently rather than just counting how many exist
 which will slow the code down.  For weights, try fast_SIR</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SEE ALSO:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <p>fast_SIR which has the same inputs but uses a different method to 
 run much faster</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>G <span class="classifier-delimiter">:</span> <span class="classifier">NetworkX Graph</span></dt>
 <dd>The underlying network</dd>
@@ -551,7 +738,12 @@ run much faster</p>
 <dt>initial_infecteds: node or iterable of nodes</dt>
 <dd>if a single node, then this node is initially infected
 if an iterable, then whole set is initially infected
-if None, then a randomly chosen node is initially infected.</dd>
+if None, then choose randomly based on rho.  If rho is also
+None, a random single node is chosen.
+If both initial_infecteds and rho are assigned, then there
+is an error.</dd>
+<dt>rho <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
+<dd>initial fraction infected. number is int(round(G.order()*rho))</dd>
 <dt>tmax <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
 <dd>stop time</dd>
 <dt>return_full_data: boolean</dt>
@@ -562,6 +754,14 @@ recovery_time.
 infection_time[node] is the time of infection and 
 recovery_time[node] is the recovery time.</dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>times, S, I, R <span class="classifier-delimiter">:</span> <span class="classifier">each a scipy array</span></dt>
 <dd>giving times and number in each status for corresponding time</dd>
@@ -573,35 +773,70 @@ times, S, I, R, infection_time, recovery_time</p>
 with entries just for those nodes that were infected ever
 infection_time[node] is time of infection
 recovery_time[node] is time of recovery</div></blockquote>
-<p>import networkx as nx
-import EoN
-import matplotlib.pyplot as plt</p>
-<p>G = nx.configuration_model([1,5,10]*100000)
-initial_size = 10000
-gamma = 1.
-tau = 0.3
-t, S, I, R = EoN.fast_SIR(G, tau, gamma,</p>
-<blockquote>
-<div>initial_infecteds = range(initial_size))</div></blockquote>
-<p>plt.plot(t, I)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">EoN</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">configuration_model</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">10</span><span class="p">]</span><span class="o">*</span><span class="mi">100000</span><span class="p">)</span>
+<span class="n">initial_size</span> <span class="o">=</span> <span class="mi">10000</span>
+<span class="n">gamma</span> <span class="o">=</span> <span class="mf">1.</span>
+<span class="n">tau</span> <span class="o">=</span> <span class="mf">0.3</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">I</span><span class="p">,</span> <span class="n">R</span> <span class="o">=</span> <span class="n">EoN</span><span class="o">.</span><span class="n">fast_SIR</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> 
+                            <span class="n">initial_infecteds</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">initial_size</span><span class="p">))</span>
+                            
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">I</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
 <dt id="EoN.Gillespie_SIS">
-<code class="descclassname">EoN.</code><code class="descname">Gillespie_SIS</code><span class="sig-paren">(</span><em>G</em>, <em>tau</em>, <em>gamma</em>, <em>initial_infecteds=None</em>, <em>tmax=100</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#Gillespie_SIS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.Gillespie_SIS" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">EoN.</code><code class="descname">Gillespie_SIS</code><span class="sig-paren">(</span><em>G</em>, <em>tau</em>, <em>gamma</em>, <em>initial_infecteds=None</em>, <em>rho=None</em>, <em>tmax=100</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#Gillespie_SIS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.Gillespie_SIS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Based on figure A.1 of Kiss, Miller, &amp; Simon.  Please cite the
 book if using this algorithm.</p>
 <p>This could be made more efficient if we divide the at_risk nodes 
 into groups based on how at risk they are.</p>
 <p>This would not be as good if the edges were weighted, but we could 
 put the at_risk nodes into bands.</p>
-<p>Warning: self-edges will cause this to die.  
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">WARNING:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<p>self-edges will cause this to die.  
 You can remove self-edges by G.remove_edges_from(G.selfloop_edges())</p>
 <p>At present, this does not accept recovery or transmission weights.
 This is because including that will force us to sum up these weights
 more frequently rather than just counting how many exist
 which will slow the code down.  For weights, try fast_SIS</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SEE ALSO:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <p>fast_SIS which has the same inputs but uses a much faster method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>G <span class="classifier-delimiter">:</span> <span class="classifier">NetworkX Graph</span></dt>
 <dd>The underlying network</dd>
@@ -612,7 +847,12 @@ which will slow the code down.  For weights, try fast_SIS</p>
 <dt>initial_infecteds: node or iterable of nodes</dt>
 <dd>if a single node, then this node is initially infected
 if an iterable, then whole set is initially infected
-if None, then a randomly chosen node is initially infected.</dd>
+if None, then choose randomly based on rho.  If rho is also
+None, a random single node is chosen.
+If both initial_infecteds and rho are assigned, then there
+is an error.</dd>
+<dt>rho <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
+<dd>initial fraction infected. number is int(round(G.order()*rho))</dd>
 <dt>tmax <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
 <dd>stop time</dd>
 <dt>return_full_data: boolean</dt>
@@ -623,17 +863,28 @@ recovery_time.
 infection_time[node] is the time of infection and 
 recovery_time[node] is the recovery time.</dd>
 </dl>
-<p>import networkx as nx
-import EoN
-import matplotlib.pyplot as plt</p>
-<p>G = nx.configuration_model([1,5,10]*100000)
-initial_size = 10000
-gamma = 1.
-tau = 0.2
-t, S, I = EoN.Gillespie_SIS(G, tau, gamma, tmax = 20,</p>
-<blockquote>
-<div>initial_infecteds = range(initial_size))</div></blockquote>
-<p>plt.plot(t, I)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">EoN</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">configuration_model</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">10</span><span class="p">]</span><span class="o">*</span><span class="mi">100000</span><span class="p">)</span>
+<span class="n">initial_size</span> <span class="o">=</span> <span class="mi">10000</span>
+<span class="n">gamma</span> <span class="o">=</span> <span class="mf">1.</span>
+<span class="n">tau</span> <span class="o">=</span> <span class="mf">0.2</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">I</span> <span class="o">=</span> <span class="n">EoN</span><span class="o">.</span><span class="n">Gillespie_SIS</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">tmax</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
+                            <span class="n">initial_infecteds</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">initial_size</span><span class="p">))</span>
+                        
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">I</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -657,6 +908,14 @@ book if using this algorithm.</p>
 &lt;I&gt; = [SI]/sum_kappa kappa S_kappa
 S = sum_kappa S_kappa
 I = N - S - R</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>Skappa0 <span class="classifier-delimiter">:</span> <span class="classifier">scipy array</span></dt>
 <dd><dl class="first last docutils">
@@ -710,6 +969,14 @@ book if using this algorithm.</p>
 Q = (1/[SX]^2) sum_k (k-1) k [S_k]
 [S] = sum [S_k]
 I = N-[S]-R</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>Sk0 <span class="classifier-delimiter">:</span> <span class="classifier">scipy array</span></dt>
 <dd>initial number of suscetibles of each degree k</dd>
@@ -735,8 +1002,20 @@ I = N-[S]-R</p>
 <dd>tells whether to just return times, S, I, R or 
 all calculated data.</dd>
 </dl>
-<p>import networkx as nx
-import EoN</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+<tr class="field-even field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">EoN</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -754,6 +1033,14 @@ book if using this algorithm.</p>
 <p>dot{R} = gamma I
 S = sum_{s,i} S_{s,i}
 I = N-S-R</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>S_si0 <span class="classifier-delimiter">:</span> <span class="classifier">(square) numpy 2-D array</span></dt>
 <dd>S_{s,i} at time 0</dd>
@@ -782,11 +1069,21 @@ all calculated data.</dd>
 <code class="descclassname">EoN.</code><code class="descname">SIR_heterogeneous_meanfield</code><span class="sig-paren">(</span><em>Sk0</em>, <em>Ik0</em>, <em>Rk0</em>, <em>tau</em>, <em>gamma</em>, <em>tmin=0</em>, <em>tmax=100</em>, <em>tcount=1001</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#SIR_heterogeneous_meanfield"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.SIR_heterogeneous_meanfield" title="Permalink to this definition">¶</a></dt>
 <dd><p>Encodes System (5.11) of Kiss, Miller, &amp; Simon.  Please cite the
 book if using this algorithm.</p>
+<p>In the text this is often referred to as the 
+&#8220;heterogeneous mean-field model closed at the level of pairs&#8221;</p>
 <p>Ik0 and Rk0 are similar to Sk0.</p>
 <p>[S_k] = [S_k](0) theta^k
 [I_k] = [N_k] - [S_k] - [R_k]
 [dot{R}_k] = gamma [I_k]
 pi_I = sum_k k[I_k]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>Sk0 <span class="classifier-delimiter">:</span> <span class="classifier">array</span></dt>
 <dd>Sk0[k] is the number of
@@ -811,22 +1108,39 @@ tau : number</p>
 <dd>tells whether to just return times, S, I, R or 
 all calculated data.</dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>if return_full_data is True:</dt>
 <dd>times, S, I, R, Sk, Ik, Rk (the Xk are scipy 2D arrays)</dd>
 <dt>if return_full_data is False:</dt>
 <dd>times, S, I, R          (all scipy arrays)</dd>
 </dl>
-<p>import networkx as nx
-import EoN
-Sk0 = [995, 995, 995, 995, 995]
-Ik0 = [5, 5, 5, 5, 5]
-Rk0 = [0,0,0,0,0]
-tau = 1
-gamma = 2
-t, S, I, R = EoN.SIR_heterogeneous_meanfield(Sk0, Ik0, Rk0, tau, gamma,</p>
-<blockquote>
-<div>tmax = 10)</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">EoN</span>
+<span class="n">Sk0</span> <span class="o">=</span> <span class="p">[</span><span class="mi">995</span><span class="p">,</span> <span class="mi">995</span><span class="p">,</span> <span class="mi">995</span><span class="p">,</span> <span class="mi">995</span><span class="p">,</span> <span class="mi">995</span><span class="p">]</span>
+<span class="n">Ik0</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+<span class="n">Rk0</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">tau</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">gamma</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">I</span><span class="p">,</span> <span class="n">R</span> <span class="o">=</span> <span class="n">EoN</span><span class="o">.</span><span class="n">SIR_heterogeneous_meanfield</span><span class="p">(</span><span class="n">Sk0</span><span class="p">,</span> <span class="n">Ik0</span><span class="p">,</span> <span class="n">Rk0</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> 
+                                                <span class="n">tmax</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -834,6 +1148,14 @@ t, S, I, R = EoN.SIR_heterogeneous_meanfield(Sk0, Ik0, Rk0, tau, gamma,</p>
 <code class="descclassname">EoN.</code><code class="descname">SIR_heterogeneous_meanfield_from_graph</code><span class="sig-paren">(</span><em>G</em>, <em>tau</em>, <em>gamma</em>, <em>rho=None</em>, <em>tmin=0</em>, <em>tmax=100</em>, <em>tcount=1001</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#SIR_heterogeneous_meanfield_from_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.SIR_heterogeneous_meanfield_from_graph" title="Permalink to this definition">¶</a></dt>
 <dd><p>Takes a graph and an initial proportion infected rho.  
 Calculates Sk0 and Ik0 and calls the heterogeneous meanfield model</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <p>G : networkx Graph
 tau : number</p>
 <blockquote>
@@ -854,20 +1176,37 @@ If None, then rho=1/N is used where N = G.order()</dd>
 <dd>tells whether to just return times, S, I, R or 
 all calculated data.</dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>if return_full_data is True</dt>
 <dd>times, Sk, Ik, Rk (the Xk are scipy 2D arrays)</dd>
 <dt>if False,</dt>
 <dd>times, S, I, R (all scipy arrays)</dd>
 </dl>
-<p>import networkx as nx
-import EoN
-G = nx.configuration_model([1,2,3,4]*1000)
-tau = 1
-gamma = 2
-t, S, I, R = EoN.SIR_heterogeneous_meanfield_from_graph(G, tau, gamma,</p>
-<blockquote>
-<div>tmax = 10)</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">EoN</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">configuration_model</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span><span class="o">*</span><span class="mi">1000</span><span class="p">)</span>
+<span class="n">tau</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">gamma</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">I</span><span class="p">,</span> <span class="n">R</span> <span class="o">=</span> <span class="n">EoN</span><span class="o">.</span><span class="n">SIR_heterogeneous_meanfield_from_graph</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> 
+                                                        <span class="n">tmax</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -875,6 +1214,8 @@ t, S, I, R = EoN.SIR_heterogeneous_meanfield_from_graph(G, tau, gamma,</p>
 <code class="descclassname">EoN.</code><code class="descname">SIR_heterogeneous_pairwise</code><span class="sig-paren">(</span><em>Sk0</em>, <em>Ik0</em>, <em>Rk0</em>, <em>SkSl0</em>, <em>SkIl0</em>, <em>tau</em>, <em>gamma</em>, <em>tmin=0</em>, <em>tmax=100</em>, <em>tcount=1001</em>, <em>return_full_data=False</em>, <em>Ks=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#SIR_heterogeneous_pairwise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.SIR_heterogeneous_pairwise" title="Permalink to this definition">¶</a></dt>
 <dd><p>Encodes System (5.15) of Kiss, Miller, &amp; Simon.  Please cite the
 book if using this algorithm.</p>
+<p>In the text this is often referred to as the 
+&#8220;heterogeneous mean-field model closed at the level of triples&#8221;</p>
 <p>[dot{S}_k] = -tau [S_k I]
 [dot{I}_k] = tau [S_k I] - gamma [I_k]
 [dot{R}_k] = gamma [I_k]  (but using Rk=Nk-Sk-Ik for this equation)
@@ -887,6 +1228,14 @@ book if using this algorithm.</p>
 <p>[dot{S_kS_l}] = -tau([S_k S_l I] + [I S_k S_l])</p>
 <p>[A_l S_k I] = ((k-1)/k) [A_l S_k] [S_k I]/ [S_k]
 [I S_k A_l] = ((k-1)/k) [I S_k] [S_k A_l]/ [S_k]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>Sk0 <span class="classifier-delimiter">:</span> <span class="classifier">scipy array, Sk0[k] is number of degree k susceptible at </span></dt>
 <dd>time 0.</dd>
@@ -931,14 +1280,32 @@ ordered vector stating which Ks are actually observed.  Then
 the Sk0[i] is the number of nodes that are susceptible and
 have degree Ks[i].  Similarly for Ik0 and SkIl0 etc.</dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>if return_full_data is True</dt>
 <dd>returns times, S, I, R, Sk, Ik, Rk, SkIl, SkSl</dd>
 <dt>if return_full_data is False</dt>
 <dd>return times, S, I, R</dd>
 </dl>
-<p>import networkx as nx
-import EoN</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">EoN</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -946,9 +1313,19 @@ import EoN</p>
 <code class="descclassname">EoN.</code><code class="descname">SIR_homogeneous_meanfield</code><span class="sig-paren">(</span><em>S0</em>, <em>I0</em>, <em>R0</em>, <em>n</em>, <em>tau</em>, <em>gamma</em>, <em>tmin=0</em>, <em>tmax=100</em>, <em>tcount=1001</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#SIR_homogeneous_meanfield"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.SIR_homogeneous_meanfield" title="Permalink to this definition">¶</a></dt>
 <dd><p>Encodes System (4.9) of Kiss, Miller, &amp; Simon.  Please cite the
 book if using this algorithm.</p>
+<p>In the text this is often referred to as the 
+&#8220;mean-field model closed at the level of pairs&#8221;</p>
 <p>[dot{S}] = - tau n[S][I]/N
 [dot{I}] =         au n[S][I]/N - gamma [I]
 [dot{R}] = gamma [I]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>S0 <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
 <dd>initial number susceptible</dd>
@@ -969,15 +1346,33 @@ book if using this algorithm.</p>
 <dt>tcount <span class="classifier-delimiter">:</span> <span class="classifier">integer (default 1001)</span></dt>
 <dd>number of reports</dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <p>times, S, I, R : all scipy arrays</p>
-<p>import networkx as nx
-import EoN
-S0 = 999
-I0 = 1
-n = 4 #degree
-tau = 1
-gamma = 2
-t, S, I, R = EoN.SIR_homogeneous_meanfield(S0, I0, 0, n, tau, gamma)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">EoN</span>
+<span class="n">S0</span> <span class="o">=</span> <span class="mi">999</span>
+<span class="n">I0</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">4</span> <span class="c1">#degree</span>
+<span class="n">tau</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">gamma</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">I</span><span class="p">,</span> <span class="n">R</span> <span class="o">=</span> <span class="n">EoN</span><span class="o">.</span><span class="n">SIR_homogeneous_meanfield</span><span class="p">(</span><span class="n">S0</span><span class="p">,</span> <span class="n">I0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">gamma</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -985,6 +1380,8 @@ t, S, I, R = EoN.SIR_homogeneous_meanfield(S0, I0, 0, n, tau, gamma)</p>
 <code class="descclassname">EoN.</code><code class="descname">SIR_homogeneous_pairwise</code><span class="sig-paren">(</span><em>S0</em>, <em>I0</em>, <em>R0</em>, <em>SI0</em>, <em>SS0</em>, <em>n</em>, <em>tau</em>, <em>gamma</em>, <em>tmin=0</em>, <em>tmax=100</em>, <em>tcount=1001</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#SIR_homogeneous_pairwise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.SIR_homogeneous_pairwise" title="Permalink to this definition">¶</a></dt>
 <dd><p>Encodes System (4.11) of Kiss, Miller, &amp; Simon.  Please cite the
 book if using this algorithm.</p>
+<p>In the text this is often referred to as the 
+&#8220;mean-field model closed at the level of triples&#8221;</p>
 <p>[dot{S}] = - tau [SI]
 [dot{I}] =         au [SI] - gamma [I]
 [dot{R}] = gamma [I]    ;    [R] = N-[S]-[I]
@@ -999,6 +1396,14 @@ book if using this algorithm.</p>
 <dt>conserved quantities: [S]+[I]+[R]  also </dt>
 <dd>[SS]+[II]+[RR] + 2([SI] + [SR] + [IR])</dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <p>S0 : Initial number suusceptible
 I0 : Initial number infected
 R0 : Initial number recovered
@@ -1022,25 +1427,42 @@ tau : number</p>
 all calculated data.
 if True, then returns times, S, I, R, SI, SS</dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>if return_full_data is True:</dt>
 <dd>times, S, I, R, SI, SS</dd>
 <dt>if return_full_data is False:</dt>
 <dd>times, S, I, R</dd>
 </dl>
-<p>import networkx as nx
-import EoN
-S0 = 990
-I0 = 10
-R0 = 1
-SI0 = 45
-SS0 = 4900
-n = 5
-tau = 1
-gamma = 2
-t, S, I, R = EoN.SIR_homogeneous_pairwise(S0, I0, R0, SI0, SS0, n, tau, gamma,</p>
-<blockquote>
-<div>tmax = 20)</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">EoN</span>
+<span class="n">S0</span> <span class="o">=</span> <span class="mi">990</span>
+<span class="n">I0</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">R0</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">SI0</span> <span class="o">=</span> <span class="mi">45</span>
+<span class="n">SS0</span> <span class="o">=</span> <span class="mi">4900</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">tau</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">gamma</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">I</span><span class="p">,</span> <span class="n">R</span> <span class="o">=</span> <span class="n">EoN</span><span class="o">.</span><span class="n">SIR_homogeneous_pairwise</span><span class="p">(</span><span class="n">S0</span><span class="p">,</span> <span class="n">I0</span><span class="p">,</span> <span class="n">R0</span><span class="p">,</span> <span class="n">SI0</span><span class="p">,</span> <span class="n">SS0</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> 
+                                            <span class="n">tmax</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -1048,6 +1470,14 @@ t, S, I, R = EoN.SIR_homogeneous_pairwise(S0, I0, R0, SI0, SS0, n, tau, gamma,</
 <code class="descclassname">EoN.</code><code class="descname">SIR_homogeneous_pairwise_from_graph</code><span class="sig-paren">(</span><em>G</em>, <em>tau</em>, <em>gamma</em>, <em>rho=None</em>, <em>tmin=0</em>, <em>tmax=100</em>, <em>tcount=1001</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#SIR_homogeneous_pairwise_from_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.SIR_homogeneous_pairwise_from_graph" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calls SIS_homogeneous_pairwise with a graph, disease parameters, and
 a random fraction rho initially infected.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <p>G : networkx Graph
 tau : number</p>
 <blockquote>
@@ -1068,21 +1498,38 @@ tau : number</p>
 all calculated data.
 if True, then returns times, S, I, R, SI, SS</dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>if return_full_data is True:</dt>
 <dd>t, S, I, SI, SS, II</dd>
 <dt>if return_full_data is False:</dt>
 <dd>t, S, I</dd>
 </dl>
-<p>import networkx as nx
-import EoN
-G = nx.fast_gnp_random_graph(10000,0.0005)
-tau = 1
-gamma = 3
-rho = 0.02
-t, S, I, R = EoN.SIR_homogeneous_pairwise_from_graph(G, tau, gamma, rho,</p>
-<blockquote>
-<div>tmax = 20)</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">EoN</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">fast_gnp_random_graph</span><span class="p">(</span><span class="mi">10000</span><span class="p">,</span><span class="mf">0.0005</span><span class="p">)</span>
+<span class="n">tau</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">gamma</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">rho</span> <span class="o">=</span> <span class="mf">0.02</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">I</span><span class="p">,</span> <span class="n">R</span> <span class="o">=</span> <span class="n">EoN</span><span class="o">.</span><span class="n">SIR_homogeneous_pairwise_from_graph</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> 
+                                                        <span class="n">tmax</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -1091,6 +1538,14 @@ t, S, I, R = EoN.SIR_homogeneous_pairwise_from_graph(G, tau, gamma, rho,</p>
 <dd><p>Encodes System (3.30) of Kiss, Miller, &amp; Simon.  Please cite the
 book if using this algorithm.</p>
 <p>See also:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <p>G : Networkx graph</p>
 <dl class="docutils">
 <dt>X0 <span class="classifier-delimiter">:</span> <span class="classifier">scipy array</span></dt>
@@ -1122,6 +1577,14 @@ recovery rates</p>
 <dd>If True, returns times, S, I, R, Ss, Is, Rs
 if False, returns times, S, I, R</dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>if return_full_data is True:</dt>
 <dd><dl class="first last docutils">
@@ -1141,15 +1604,26 @@ recovered</dd>
 </dl>
 </dd>
 </dl>
-<p>import networkx as nx
-import EoN
-import scipy
-import matplotlib.pyplot as plt</p>
-<p>G = nx.configuration_model([3,10]*10000)
-tau = 0.3
-gamma = 1
-N = G.order()
-rho = 1./N</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">EoN</span>
+<span class="kn">import</span> <span class="nn">scipy</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">configuration_model</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span><span class="mi">10</span><span class="p">]</span><span class="o">*</span><span class="mi">10000</span><span class="p">)</span>
+<span class="n">tau</span> <span class="o">=</span> <span class="mf">0.3</span>
+<span class="n">gamma</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">N</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">order</span><span class="p">()</span>
+<span class="n">rho</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="n">N</span>
+</pre></div>
+</div>
 <p>nodelist = G.nodes()
 X = (1-rho)*scipy.ones(N)
 Y = rho*scipy.ones(N)</p>
@@ -1166,6 +1640,14 @@ book if using this algorithm.</p>
 one assumes a &#8220;pure initial condition&#8221;, that is, we know exactly 
 what the statuses of the nodes are at the initial time.</p>
 <p>&lt;dot{Y}_i&gt; = tau sum_j g_{ij} (1-&lt;Y_i&gt;)&lt;Y_j&gt;  -  gamma_i &lt;Y_i&gt;</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <p>G : Networkx graph</p>
 <dl class="docutils">
 <dt>index_nodes <span class="classifier-delimiter">:</span> <span class="classifier">list or set</span></dt>
@@ -1281,19 +1763,38 @@ recovery rates</p>
 </dl>
 </dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>if return_full_data is True:</dt>
 <dd>returns times, S, I, R, Xs, Ys, Zs, XY, XX</dd>
 <dt>if False:</dt>
 <dd>returns times, S, I, R</dd>
 </dl>
-<p>import networkx as nx
-import EoN</p>
-<p>G = nx.fast_gnp_random_graph(1000,0.004)
-nodelist = G.nodes()
-Y0 = scipy.array([1 if node&lt;10 else 0 for node in nodelist]) #infect first 10
-t, S, I, R = EoN.SIR_pair_based(G, nodelist, Y0, 2, 0.5, tmax = 4, tcount = 101)
-plt.plot(t,I)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">EoN</span>
+
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">fast_gnp_random_graph</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span><span class="mf">0.004</span><span class="p">)</span>
+<span class="n">nodelist</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+<span class="n">Y0</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span> <span class="k">if</span> <span class="n">node</span><span class="o">&lt;</span><span class="mi">10</span> <span class="k">else</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodelist</span><span class="p">])</span> <span class="c1">#infect first 10</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">I</span><span class="p">,</span> <span class="n">R</span> <span class="o">=</span> <span class="n">EoN</span><span class="o">.</span><span class="n">SIR_pair_based</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">nodelist</span><span class="p">,</span> <span class="n">Y0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">tmax</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span> <span class="n">tcount</span> <span class="o">=</span> <span class="mi">101</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">I</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -1336,6 +1837,14 @@ derivatives are zero.</p>
 small contribution.</p>
 <p>Before I forced the initial conditions for these nonedges to be 0, 
 they caused quite a bit of numerical headaches.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <p>G : Networkx graph</p>
 <dl class="last docutils">
 <dt>nodelist <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
@@ -1402,6 +1911,14 @@ book if using this algorithm.</p>
 [S] = N psihat(theta)
 [I] = N-[S]-[R]
 Q = psihat_xx(theta)/N(psihat_x(theta))^2</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>tau <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
 <dd>transmission rate</dd>
@@ -1434,7 +1951,7 @@ simply calls SIS_compact_pairwise()</p>
 <dd><p>Encodes system (5.18) of Kiss, Miller, &amp; Simon.  Please cite the
 book if using this algorithm.</p>
 <p>[dot{S}_k] = gamma[I_k] - tau k [S_k] [SI]/[SX]
-[dot{I}_k] = tau * k <a href="#id1"><span class="problematic" id="id2">*</span></a>[S_k] [SI]/SX - gamma [I_k] = -[dot{S}_k]
+[dot{I}_k] = tau * k <a href="#id3"><span class="problematic" id="id4">*</span></a>[S_k] [SI]/SX - gamma [I_k] = -[dot{S}_k]
 [dot{SI}] = gamma([II]-[SI]) + tau([SS]-[SI])[SI]Q - tau[SI]
 [dot{SS}] = 2 gamma[SI] - 2 tau [SS] [SI] Q
 [dot{II}] = 2 tau[SI] = 2 gamma[II] + 2 tau[SI]^2Q
@@ -1466,8 +1983,20 @@ Q = (1/[SX]^2) sum_k (k-1)k[S_k]</p>
 if False,  return times, S, I</dd>
 </dl>
 <p>conserved quantities:  [Sk]+[Ik]     ;     SS + II + 2SI</p>
-<p>import networkx as nx
-import EoN</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+<tr class="field-even field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">EoN</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -1475,6 +2004,14 @@ import EoN</p>
 <code class="descclassname">EoN.</code><code class="descname">SIS_effective_degree</code><span class="sig-paren">(</span><em>Ssi0</em>, <em>Isi0</em>, <em>tau</em>, <em>gamma</em>, <em>tmin=0</em>, <em>tmax=100</em>, <em>tcount=1001</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#SIS_effective_degree"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.SIS_effective_degree" title="Permalink to this definition">¶</a></dt>
 <dd><p>Encodes system (5.36) of Kiss, Miller, &amp; Simon.  Please cite the
 book if using this algorithm.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>Ssi0 and Isi0 <span class="classifier-delimiter">:</span> <span class="classifier">(square) numpy 2D arrays of same shape.</span></dt>
 <dd>Entries are initial number susceptible or infected 
@@ -1509,7 +2046,10 @@ if True,</p>
 <code class="descclassname">EoN.</code><code class="descname">SIS_heterogeneous_meanfield</code><span class="sig-paren">(</span><em>Sk0</em>, <em>Ik0</em>, <em>tau</em>, <em>gamma</em>, <em>tmin=0</em>, <em>tmax=100</em>, <em>tcount=1001</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#SIS_heterogeneous_meanfield"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.SIS_heterogeneous_meanfield" title="Permalink to this definition">¶</a></dt>
 <dd><p>Encodes System (5.10) of Kiss, Miller, &amp; Simon.  Please cite the
 book if using this algorithm.</p>
-<p>Sk0 is an array (or a list).</p>
+<p>In the text this is often referred to as the 
+&#8220;heterogeneous mean-field model closed at the level of pairs&#8221;</p>
+<p>a few notes on the inputs:
+Sk0 is an array (or a list).</p>
 <p>It is not a dict.</p>
 <p>Sk0[k] is the <em>number</em> of nodes that are susceptible and have degree 
 k (even if some degrees missing).</p>
@@ -1521,6 +2061,14 @@ Sk0 = scipy.array([Sk0dict.get(k,0)</p>
 <p>[dot{S}_k] = gamma [I_k] -        au k [S_k] pi_I
 [dot{I}_k] = -(above)
 pi_I = sum_k k [I_k] / sum_k  k [N_k]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>Sk0 <span class="classifier-delimiter">:</span> <span class="classifier">scipy array</span></dt>
 <dd>number susceptible for each k</dd>
@@ -1541,19 +2089,37 @@ pi_I = sum_k k [I_k] / sum_k  k [N_k]</p>
 calculated data.
 if True, returns t, S, I, Sk, Ik</dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>if return_full_data is True:</dt>
 <dd>times, S, I, Sk  (Sk is scipy 2D arrays)</dd>
 <dt>if return_full_data is False:</dt>
 <dd>times, S, I      (all scipy arrays)</dd>
 </dl>
-<p>import networkx as nx
-import EoN
-Sk0 = [995, 995, 995, 995, 995]
-Ik0 = [5, 5, 5, 5, 5]
-tau = 1
-gamma = 2
-t, S, I = EoN.SIS_heterogeneous_meanfield(Sk0, Ik0, tau, gamma, tmax = 10)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">EoN</span>
+<span class="n">Sk0</span> <span class="o">=</span> <span class="p">[</span><span class="mi">995</span><span class="p">,</span> <span class="mi">995</span><span class="p">,</span> <span class="mi">995</span><span class="p">,</span> <span class="mi">995</span><span class="p">,</span> <span class="mi">995</span><span class="p">]</span>
+<span class="n">Ik0</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+<span class="n">tau</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">gamma</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">I</span> <span class="o">=</span> <span class="n">EoN</span><span class="o">.</span><span class="n">SIS_heterogeneous_meanfield</span><span class="p">(</span><span class="n">Sk0</span><span class="p">,</span> <span class="n">Ik0</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">tmax</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -1561,6 +2127,14 @@ t, S, I = EoN.SIS_heterogeneous_meanfield(Sk0, Ik0, tau, gamma, tmax = 10)</p>
 <code class="descclassname">EoN.</code><code class="descname">SIS_heterogeneous_meanfield_from_graph</code><span class="sig-paren">(</span><em>G</em>, <em>tau</em>, <em>gamma</em>, <em>rho=None</em>, <em>tmin=0</em>, <em>tmax=100</em>, <em>tcount=1001</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#SIS_heterogeneous_meanfield_from_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.SIS_heterogeneous_meanfield_from_graph" title="Permalink to this definition">¶</a></dt>
 <dd><p>Takes a graph and an initial proportion infected rho.  
 Calculates Sk0 and Ik0 and calls the heterogeneous meanfield model</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <p>G : networkx Graph
 tau : number</p>
 <blockquote>
@@ -1581,20 +2155,37 @@ If None, then rho=1/N is used where N = G.order()</dd>
 <dd>tells whether to just return times, S, I, R or 
 all calculated data.</dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>if return_full_data is True:</dt>
 <dd>times, S, I, Sk, Ik, (the Xk are scipy 2D arrays)</dd>
 <dt>if return_full_data is False:</dt>
 <dd>times, S, I         (all scipy arrays)</dd>
 </dl>
-<p>import networkx as nx
-import EoN
-G = nx.configuration_model([1,2,3,4]*1000)
-tau = 1
-gamma = 2
-t, S, I = EoN.SIS_heterogeneous_meanfield_from_graph(G, tau, gamma,</p>
-<blockquote>
-<div>tmax = 15)</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">EoN</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">configuration_model</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span><span class="o">*</span><span class="mi">1000</span><span class="p">)</span>
+<span class="n">tau</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">gamma</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">I</span> <span class="o">=</span> <span class="n">EoN</span><span class="o">.</span><span class="n">SIS_heterogeneous_meanfield_from_graph</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> 
+                                                        <span class="n">tmax</span> <span class="o">=</span> <span class="mi">15</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -1602,6 +2193,16 @@ t, S, I = EoN.SIS_heterogeneous_meanfield_from_graph(G, tau, gamma,</p>
 <code class="descclassname">EoN.</code><code class="descname">SIS_heterogeneous_pairwise</code><span class="sig-paren">(</span><em>Sk0</em>, <em>Ik0</em>, <em>SkSl0</em>, <em>SkIl0</em>, <em>IkIl0</em>, <em>tau</em>, <em>gamma</em>, <em>tmin=0</em>, <em>tmax=100</em>, <em>tcount=1001</em>, <em>return_full_data=False</em>, <em>Ks=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#SIS_heterogeneous_pairwise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.SIS_heterogeneous_pairwise" title="Permalink to this definition">¶</a></dt>
 <dd><p>Encodes System (5.13) of Kiss, Miller, &amp; Simon.  Please cite the
 book if using this algorithm.</p>
+<p>In the text this is often referred to as the 
+&#8220;heterogeneous mean-field model closed at the level of triples&#8221;</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>Sk0 <span class="classifier-delimiter">:</span> <span class="classifier">array.  Sk0[k] is the number of</span></dt>
 <dd><p class="first">nodes that are susceptible and have degree k.  If one 
@@ -1655,29 +2256,46 @@ and similarly relating Ik with IkIl and SkIl.T.</p>
 <p>It is assumed the user will ensure acceptible inputs.</p>
 <p>We could also remove Sk0 and Ik0 as inputs and infer them from the 
 others, but for consistency with elsewhere, this is not done here.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>if return_full_data is True:</dt>
 <dd>returns times, S, I, Sk, Ik, SkIl, SkSl, IkIl</dd>
 <dt>if return_full_data is False:</dt>
 <dd>returns times, S, I</dd>
 </dl>
-<p>import networkx as nx
-import EoN
-import scipy
-Sk0 = 100 * scipy.ones(4)
-Ik0 = scipy.zeros(4)
-Ik0[3]=1
-SkSl0 = scipy.matrix([[0, 0,0,0],[0,100,0,0],[0,0,200,0],[0,0,0,294]])
-#only interact within a degree class, so the deg 1 and 2 are safe.
-SkIl0 = scipy.zeros((4,4))
-SkIl0[3,3] = 3
-IkIl0 = scipy.zeros((4,4))
-tau = 1
-gamma = 1</p>
-<dl class="docutils">
-<dt>t, S, I = EoN.SIS_heterogeneous_pairwise(Sk0, Ik0, SkSl0, SkIl0, IkIl0, tau, </dt>
-<dd>gamma)</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">EoN</span>
+<span class="kn">import</span> <span class="nn">scipy</span>
+<span class="n">Sk0</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">scipy</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">Ik0</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">Ik0</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">SkSl0</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">200</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">294</span><span class="p">]])</span>
+<span class="c1">#only interact within a degree class, so the deg 1 and 2 are safe.</span>
+<span class="n">SkIl0</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+<span class="n">SkIl0</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">IkIl0</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+<span class="n">tau</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">gamma</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="n">t</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">I</span> <span class="o">=</span> <span class="n">EoN</span><span class="o">.</span><span class="n">SIS_heterogeneous_pairwise</span><span class="p">(</span><span class="n">Sk0</span><span class="p">,</span> <span class="n">Ik0</span><span class="p">,</span> <span class="n">SkSl0</span><span class="p">,</span> <span class="n">SkIl0</span><span class="p">,</span> <span class="n">IkIl0</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> 
+                                            <span class="n">gamma</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -1685,8 +2303,18 @@ gamma = 1</p>
 <code class="descclassname">EoN.</code><code class="descname">SIS_homogeneous_meanfield</code><span class="sig-paren">(</span><em>S0</em>, <em>I0</em>, <em>n</em>, <em>tau</em>, <em>gamma</em>, <em>tmin=0</em>, <em>tmax=100</em>, <em>tcount=1001</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#SIS_homogeneous_meanfield"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.SIS_homogeneous_meanfield" title="Permalink to this definition">¶</a></dt>
 <dd><p>Encodes System (4.8) of Kiss, Miller, &amp; Simon.  Please cite the
 book if using this algorithm.</p>
+<p>In the text this is often referred to as the 
+&#8220;mean-field model closed at the level of pairs&#8221;</p>
 <p>[dot{S}] = gamma [I] - tau n[S][I]/N
 [dot{I}] =         au n[S][I]/N - gamma [I]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>S0 <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
 <dd>initial number susceptible</dd>
@@ -1705,15 +2333,33 @@ book if using this algorithm.</p>
 <dt>tcount <span class="classifier-delimiter">:</span> <span class="classifier">integer (default 1001)</span></dt>
 <dd>number of reports</dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <p>times, S, I, all scipy arrays</p>
-<p>import networkx as nx
-import EoN
-S0 = 999
-I0 = 1
-n = 4 #degree
-tau = 1
-gamma = 2
-t, S, I = EoN.SIS_homogeneous_meanfield(S0, I0, n, tau, gamma)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">EoN</span>
+<span class="n">S0</span> <span class="o">=</span> <span class="mi">999</span>
+<span class="n">I0</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">4</span> <span class="c1">#degree</span>
+<span class="n">tau</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">gamma</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">I</span> <span class="o">=</span> <span class="n">EoN</span><span class="o">.</span><span class="n">SIS_homogeneous_meanfield</span><span class="p">(</span><span class="n">S0</span><span class="p">,</span> <span class="n">I0</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">gamma</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -1721,6 +2367,16 @@ t, S, I = EoN.SIS_homogeneous_meanfield(S0, I0, n, tau, gamma)</p>
 <code class="descclassname">EoN.</code><code class="descname">SIS_homogeneous_pairwise</code><span class="sig-paren">(</span><em>S0</em>, <em>I0</em>, <em>SI0</em>, <em>SS0</em>, <em>n</em>, <em>tau</em>, <em>gamma</em>, <em>tmin=0</em>, <em>tmax=100</em>, <em>tcount=1001</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#SIS_homogeneous_pairwise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.SIS_homogeneous_pairwise" title="Permalink to this definition">¶</a></dt>
 <dd><p>Encodes System (4.10) of Kiss, Miller, &amp; Simon.  Please cite the
 book if using this algorithm.</p>
+<p>In the text this is often referred to as the 
+&#8220;mean-field model closed at the level of triples&#8221;</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>S0 <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
 <dd>initial number susceptible</dd>
@@ -1746,24 +2402,41 @@ book if using this algorithm.</p>
 <dd>tells whether to just return times, S, I or 
 all calculated data.</dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>if return_full_data is True:</dt>
 <dd>t, S, I, SI, SS, II</dd>
 <dt>if return_full_data is False:</dt>
 <dd>t, S, I</dd>
 </dl>
-<p>import networkx as nx
-import EoN
-S0 = 990
-I0 = 10
-SI0 = 50
-SS0 = 4900
-n = 5
-tau = 1
-gamma = 2
-t, S, I = EoN.SIS_homogeneous_pairwise(S0, I0, SI0, SS0, n, tau, gamma,</p>
-<blockquote>
-<div>tmax = 20)</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">EoN</span>
+<span class="n">S0</span> <span class="o">=</span> <span class="mi">990</span>
+<span class="n">I0</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">SI0</span> <span class="o">=</span> <span class="mi">50</span>
+<span class="n">SS0</span> <span class="o">=</span> <span class="mi">4900</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">tau</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">gamma</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">I</span> <span class="o">=</span> <span class="n">EoN</span><span class="o">.</span><span class="n">SIS_homogeneous_pairwise</span><span class="p">(</span><span class="n">S0</span><span class="p">,</span> <span class="n">I0</span><span class="p">,</span> <span class="n">SI0</span><span class="p">,</span> <span class="n">SS0</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> 
+                                        <span class="n">tmax</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -1771,6 +2444,14 @@ t, S, I = EoN.SIS_homogeneous_pairwise(S0, I0, SI0, SS0, n, tau, gamma,</p>
 <code class="descclassname">EoN.</code><code class="descname">SIS_homogeneous_pairwise_from_graph</code><span class="sig-paren">(</span><em>G</em>, <em>tau</em>, <em>gamma</em>, <em>rho=None</em>, <em>tmin=0</em>, <em>tmax=100</em>, <em>tcount=1001</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#SIS_homogeneous_pairwise_from_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.SIS_homogeneous_pairwise_from_graph" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calls SIS_homogeneous_pairwise with a graph, disease parameters, and
 a random fraction rho initially infected.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <p>G : networkx Graph
 tau : number</p>
 <blockquote>
@@ -1791,19 +2472,37 @@ tau : number</p>
 all calculated data.
 if True, then returns times, S, I, SI, SS</dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>if return_full_data is True:</dt>
 <dd>t, S, I, SI, SS, II</dd>
 <dt>if return_full_data is False:</dt>
 <dd>t, S, I</dd>
 </dl>
-<p>import networkx as nx
-import EoN
-G = nx.fast_gnp_random_graph(10000,0.0005)
-tau = 1
-gamma = 3
-rho = 0.02
-t, S, I = EoN.SIS_homogeneous_pairwise_from_graph(G, tau, gamma, rho, tmax = 20)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">EoN</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">fast_gnp_random_graph</span><span class="p">(</span><span class="mi">10000</span><span class="p">,</span><span class="mf">0.0005</span><span class="p">)</span>
+<span class="n">tau</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">gamma</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">rho</span> <span class="o">=</span> <span class="mf">0.02</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">I</span> <span class="o">=</span> <span class="n">EoN</span><span class="o">.</span><span class="n">SIS_homogeneous_pairwise_from_graph</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">tmax</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -1818,6 +2517,14 @@ Epidemic control analysis: Desigining targeted intervention</p>
 <div>strategies against epidemics propagated on contact networks,</div></blockquote>
 <p>Journal of Theoretical Biology</p>
 <p>&lt;dot{Y}_i&gt; = tau sum_j g_{ij} (1-&lt;Y_i&gt;)&lt;Y_j&gt;  -  gamma_i &lt;Y_i&gt;</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <p>G : Networkx graph</p>
 <dl class="docutils">
 <dt>Y0 <span class="classifier-delimiter">:</span> <span class="classifier">scipy array</span></dt>
@@ -1847,6 +2554,14 @@ recovery rates</p>
 <dd>If True, returns times, Ss, Is
 if False, returns times, S, I</dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>if return_full_data is True:</dt>
 <dd><dl class="first last docutils">
@@ -1865,17 +2580,27 @@ susceptible and expected number infected.</dd>
 </dl>
 </dd>
 </dl>
-<p>import networkx as nx
-import EoN as EoN
-import scipy</p>
-<p>G = nx.configuration_model([3,10]*1000)
-nodelist = G.nodes()
-N = G.order()
-rho = 1./N
-Y = rho*scipy.ones(N)
-t, S, I = EoN.SIS_individual_based(G, nodelist, Y, 0.3, gamma=1,</p>
-<blockquote>
-<div>tmax = 20)</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">EoN</span> <span class="k">as</span> <span class="nn">EoN</span>
+<span class="kn">import</span> <span class="nn">scipy</span>
+
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">configuration_model</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span><span class="mi">10</span><span class="p">]</span><span class="o">*</span><span class="mi">1000</span><span class="p">)</span>
+<span class="n">nodelist</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+<span class="n">N</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">order</span><span class="p">()</span>
+<span class="n">rho</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="n">N</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">rho</span><span class="o">*</span><span class="n">scipy</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">I</span> <span class="o">=</span> <span class="n">EoN</span><span class="o">.</span><span class="n">SIS_individual_based</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">nodelist</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> 
+            <span class="n">tmax</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -1887,6 +2612,14 @@ book if using this algorithm.</p>
 one assumes a &#8220;pure initial condition&#8221;, that is, we know exactly 
 what the statuses of the nodes are at the initial time.</p>
 <p>&lt;dot{Y}_i&gt; = tau sum_j g_{ij} (1-&lt;Y_i&gt;)&lt;Y_j&gt;  -  gamma_i &lt;Y_i&gt;</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <p>G : Networkx graph
 index_nodes : list or set</p>
 <blockquote>
@@ -1923,17 +2656,27 @@ recovery rates</p>
 <dd>returns times, S, I</dd>
 </dl>
 </div></blockquote>
-<p>import networkx as nx
-import EoN
-import scipy
-import matplotlib.pyplot as plt</p>
-<p>G = nx.configuration_model([3,10]*1000)
-nodelist = G.nodes()
-index_nodes = range(100)
-t, S, I = EoN.SIS_individual_based(G, index_nodes, nodelist, 0.3,</p>
-<blockquote>
-<div>gamma=1, tmax = 20)</div></blockquote>
-<p>plt.plot(t,I)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">EoN</span>
+<span class="kn">import</span> <span class="nn">scipy</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">configuration_model</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span><span class="mi">10</span><span class="p">]</span><span class="o">*</span><span class="mi">1000</span><span class="p">)</span>
+<span class="n">nodelist</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+<span class="n">index_nodes</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">I</span> <span class="o">=</span> <span class="n">EoN</span><span class="o">.</span><span class="n">SIS_individual_based</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">index_nodes</span><span class="p">,</span> <span class="n">nodelist</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span>  
+            <span class="n">gamma</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">tmax</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">I</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -2001,19 +2744,38 @@ recovery rates</p>
 </dl>
 </dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>if return_full_data is True:</dt>
 <dd>returns times, S, I, Xs, Ys, XY, XX</dd>
 <dt>if False:</dt>
 <dd>returns times, S, I</dd>
 </dl>
-<p>import networkx as nx
-import EoN</p>
-<p>G = nx.fast_gnp_random_graph(1000,0.004)
-nodelist = G.nodes()
-Y0 = scipy.array([1 if node&lt;10 else 0 for node in nodelist]) #infect first 10
-t, S, I = EoN.SIS_pair_based(G, nodelist, Y0, 2, 0.5, tmax = 4, tcount = 101)
-plt.plot(t,I)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">EoN</span>
+
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">fast_gnp_random_graph</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span><span class="mf">0.004</span><span class="p">)</span>
+<span class="n">nodelist</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+<span class="n">Y0</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span> <span class="k">if</span> <span class="n">node</span><span class="o">&lt;</span><span class="mi">10</span> <span class="k">else</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodelist</span><span class="p">])</span> <span class="c1">#infect first 10</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">I</span> <span class="o">=</span> <span class="n">EoN</span><span class="o">.</span><span class="n">SIS_pair_based</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">nodelist</span><span class="p">,</span> <span class="n">Y0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">tmax</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span> <span class="n">tcount</span> <span class="o">=</span> <span class="mi">101</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">I</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -2021,6 +2783,14 @@ plt.plot(t,I)</p>
 <code class="descclassname">EoN.</code><code class="descname">SIS_super_compact_pairwise</code><span class="sig-paren">(</span><em>S0</em>, <em>I0</em>, <em>SS0</em>, <em>SI0</em>, <em>II0</em>, <em>tau</em>, <em>gamma</em>, <em>k_ave</em>, <em>ksquare_ave</em>, <em>kcube_ave</em>, <em>tmin=0</em>, <em>tmax=100</em>, <em>tcount=1001</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#SIS_super_compact_pairwise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.SIS_super_compact_pairwise" title="Permalink to this definition">¶</a></dt>
 <dd><p>Encodes system (5.20) of Kiss, Miller, &amp; Simon.  Please cite the 
 book if using this algorithm.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <p>S0 : 
 I0 :
 SS0 :
@@ -2048,12 +2818,28 @@ tau : number</p>
 <dd>tells whether to just return times, S, I, R or all 
 calculated data.</dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>if return_full_data is True</dt>
 <dd>returns times, S, I, SS, SI, II</dd>
 <dt>if return_full_data is False</dt>
 <dd>returns times, S, I</dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <p>import networkx as nx
 import EoN</p>
 </dd></dl>
@@ -2066,6 +2852,14 @@ using this algorithm.</p>
 <p>Does a simulation of the simple case of all nodes transmitting
 with probability p independently to each neighbor and then
 recovering.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>G <span class="classifier-delimiter">:</span> <span class="classifier">NetworkX Graph</span></dt>
 <dd>The network the disease will transmit through.</dd>
@@ -2085,6 +2879,14 @@ It is returned in the form of two dicts,</p>
 recovery_time[node] is the recovery time</p>
 </dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>if return_full_data is False:</dt>
 <dd>the scipy arrays: t, S, I, R</dd>
@@ -2095,12 +2897,22 @@ and the dicts infection_time and recovery_time</dd>
 <p>these scipy arrays give all the times observed and the number in 
 each state at each time.  The dicts give times at which each node 
 changed status.</p>
-<p>import networkx as nx
-import EoN
-import matplotlib.pyplot as plt
-G = nx.fast_gnp_random_graph(1000,0.002)
-t, S, I, R = EoN.basic_discrete_SIR_epidemic(G, 0.6)
-plt.plot(t,S)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">EoN</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">fast_gnp_random_graph</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span><span class="mf">0.002</span><span class="p">)</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">I</span><span class="p">,</span> <span class="n">R</span> <span class="o">=</span> <span class="n">EoN</span><span class="o">.</span><span class="n">basic_discrete_SIR_epidemic</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">S</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>This sample may be boring if the randomly chosen initial infection
 doesn&#8217;t trigger an epidemic.</p>
 </dd></dl>
@@ -2116,8 +2928,24 @@ are not at present in the figure in the book.</p>
 <p>This performs directed percolation corresponding to an SIR epidemic
 assuming that transmission is at rate tau and recovery at rate 
 gamma</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SEE ALSO:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <p>nonMarkov_directed_percolate_network which allows for more complex
 transmission and recovery rules.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>G <span class="classifier-delimiter">:</span> <span class="classifier">NetworkX Graph</span></dt>
 <dd>The network the disease will transmit through.</dd>
@@ -2126,6 +2954,14 @@ transmission and recovery rules.</p>
 <dt>gamma <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
 <dd>recovery rate</dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>H <span class="classifier-delimiter">:</span> <span class="classifier">networkx DiGraph  (directed graph)</span></dt>
 <dd><p class="first">a u-&gt;v edge exists in H if u would transmit to v if ever 
@@ -2136,10 +2972,21 @@ delay from infection of u until transmission occurs.</p>
 duration of its infectious period.</p>
 </dd>
 </dl>
-<p>import networkx as nx
-import EoN</p>
-<p>G = nx.fast_gnp_random_graph(1000,0.002)
-H = EoN.directed_percolate_network(G, 2, 1)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">EoN</span>
+
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">fast_gnp_random_graph</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span><span class="mf">0.002</span><span class="p">)</span>
+<span class="n">H</span> <span class="o">=</span> <span class="n">EoN</span><span class="o">.</span><span class="n">directed_percolate_network</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -2161,6 +3008,14 @@ time and then recover with immunity.</p>
 <dd>_simple_test_transmission_</dd>
 </dl>
 <p>in which case args should be entered as (p,)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>G: NetworkX Graph (or some other structure which quacks like a </dt>
 <dd>NetworkX Graph)
@@ -2203,6 +3058,14 @@ if None, then a randomly chosen node is initially infected.</dd>
 recovery_time[node] is the recovery time</p>
 </dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>if return_full_data is False:</dt>
 <dd>the scipy arrays: t, S, I, R</dd>
@@ -2213,14 +3076,23 @@ and the dicts infection_time and recovery_time</dd>
 <p>these arrays give all the times observed and the number in each 
 state at each time.  The dicts give times at which each node changed 
 status.</p>
-<p>import networkx as nx
-import EoN
-import matplotlib.pyplot as plt
-G = nx.fast_gnp_random_graph(1000,0.002)
-t, S, I, R = EoN.discrete_SIR_epidemic(G, args = (0.6,),</p>
-<blockquote>
-<div>initial_infecteds=range(20))</div></blockquote>
-<p>plt.plot(t,S)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">EoN</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">fast_gnp_random_graph</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span><span class="mf">0.002</span><span class="p">)</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">I</span><span class="p">,</span> <span class="n">R</span> <span class="o">=</span> <span class="n">EoN</span><span class="o">.</span><span class="n">discrete_SIR_epidemic</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.6</span><span class="p">,),</span> 
+                                    <span class="n">initial_infecteds</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">20</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">S</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>Because this sample uses the defaults, it is equivalent to a call to 
 basic_discrete_SIR_epidemic</p>
 </dd></dl>
@@ -2238,12 +3110,28 @@ finding the largest connected component in the remaining network.</p>
 <p>It will not be an appropriate measure if the network is made up of 
 several densely connected components with very weak connections 
 between these components.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>G <span class="classifier-delimiter">:</span> <span class="classifier">NetworkX Graph</span></dt>
 <dd>The network the disease will transmit through.</dd>
 <dt>p <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
 <dd>transmission probability</dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>PE, AR <span class="classifier-delimiter">:</span> <span class="classifier"></span></dt>
 <dd><dl class="first last docutils">
@@ -2254,10 +3142,21 @@ between these components.</p>
 </dl>
 </dd>
 </dl>
-<p>import networkx as nx
-import EoN</p>
-<p>G = nx.fast_gnp_random_graph(1000,0.002)
-PE, AR = EoN.estimate_SIR_prob_size(G, 0.6)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">EoN</span>
+
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">fast_gnp_random_graph</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span><span class="mf">0.002</span><span class="p">)</span>
+<span class="n">PE</span><span class="p">,</span> <span class="n">AR</span> <span class="o">=</span> <span class="n">EoN</span><span class="o">.</span><span class="n">estimate_SIR_prob_size</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -2265,21 +3164,48 @@ PE, AR = EoN.estimate_SIR_prob_size(G, 0.6)</p>
 <code class="descclassname">EoN.</code><code class="descname">estimate_SIR_prob_size_from_dir_perc</code><span class="sig-paren">(</span><em>H</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#estimate_SIR_prob_size_from_dir_perc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.estimate_SIR_prob_size_from_dir_perc" title="Permalink to this definition">¶</a></dt>
 <dd><p>From figure 6.17 of Kiss, Miller, &amp; Simon.  Please cite the book if 
 using this algorithm</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>H:  directed graph (assumed to be from directed percolation on </dt>
 <dd>previous graph G)</dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>PE, AR <span class="classifier-delimiter">:</span> <span class="classifier">numbers</span></dt>
 <dd>Estimates of epidemic probability and attack rate found by 
 finding largest strongly connected component and finding in/out 
 components.</dd>
 </dl>
-<p>import networkx as nx
-import EoN
-G = nx.fast_gnp_random_graph(1000,0.003)
-H = some_user_defined_operation_to_do_percolation(G, argument)
-PE, AR = EoN.estimate_SIR_prob_size_from_dir_perc(H)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">EoN</span>
+
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">fast_gnp_random_graph</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span><span class="mf">0.003</span><span class="p">)</span>
+<span class="n">H</span> <span class="o">=</span> <span class="n">some_user_defined_operation_to_do_percolation</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">argument</span><span class="p">)</span>
+<span class="n">PE</span><span class="p">,</span> <span class="n">AR</span> <span class="o">=</span> <span class="n">EoN</span><span class="o">.</span><span class="n">estimate_SIR_prob_size_from_dir_perc</span><span class="p">(</span><span class="n">H</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -2289,7 +3215,23 @@ PE, AR = EoN.estimate_SIR_prob_size_from_dir_perc(H)</p>
 using this algorithm</p>
 <p>Predicts probability and attack rate assuming continuous-time 
 Markovian SIR disease on network G</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SEE ALSO:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <p>estimate_nonMarkov_SIR_prob_size which handles nonMarkovian versions</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>G <span class="classifier-delimiter">:</span> <span class="classifier">NetworkX Graph</span></dt>
 <dd>The network the disease will transmit through.</dd>
@@ -2298,16 +3240,35 @@ Markovian SIR disease on network G</p>
 <dt>gamma <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
 <dd>recovery rate</dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>PE, AR <span class="classifier-delimiter">:</span> <span class="classifier">numbers (between 0 and 1)</span></dt>
 <dd>Estimates of epidemic probability and attack rate found by 
 performing directed percolation, finding largest strongly 
 connected component and finding its in/out components.</dd>
 </dl>
-<p>import networkx as nx
-import EoN
-G = nx.fast_gnp_random_graph(1000,0.003)
-PE, AR = EoN.estimate_directed_SIR_prob_size(G, 2, 1)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">EoN</span>
+
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">fast_gnp_random_graph</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span><span class="mf">0.003</span><span class="p">)</span>
+<span class="n">PE</span><span class="p">,</span> <span class="n">AR</span> <span class="o">=</span> <span class="n">EoN</span><span class="o">.</span><span class="n">estimate_directed_SIR_prob_size</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -2316,6 +3277,14 @@ PE, AR = EoN.estimate_directed_SIR_prob_size(G, 2, 1)</p>
 <dd><p>This is not directly described in Kiss, Miller, &amp; Simon.  It uses
 nonMarkov_directed_percolate_network  (fig 6.18) to predict 
 epidemic probability and size.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>G <span class="classifier-delimiter">:</span> <span class="classifier">NetworkX Graph</span></dt>
 <dd>The input graph</dd>
@@ -2328,48 +3297,74 @@ infectiousness is.</dd>
 <dd>transmission(xi[u], zeta[v]) determines whether u transmits to 
 v.</dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>PE, AR <span class="classifier-delimiter">:</span> <span class="classifier">numbers (between 0 and 1)</span></dt>
 <dd>Estimates of epidemic probability and attack rate found by 
 finding largest strongly connected component and finding in/out 
 components.</dd>
 </dl>
-<p>#mimicking the standard version with transmission rate tau
-#and recovery rate gamma</p>
-<p>import networkx as nx
-import EoN
-import random
-from collections import defaultdict</p>
-<p>G=nx.fast_gnp_random_graph(1000,0.002)
-tau = 2
-gamma = 1</p>
-<p>xi = {node:random.expovariate(gamma) for node in G.nodes()}  
-#xi[node] is duration of infection of node.</p>
-<dl class="docutils">
-<dt>zeta = defaultdict(lambda <span class="classifier-delimiter">:</span> <span class="classifier">tau) #every node has zeta=tau, so same </span></dt>
-<dd>#transmission rate</dd>
-<dt>def my_transmission(infection_duration, trans_rate):</dt>
-<dd><p class="first">#infect if duration is longer than time to infection.
-if infection_duration &gt; random.expovariate(trans_rate):</p>
-<blockquote>
-<div>return True</div></blockquote>
-<dl class="last docutils">
-<dt>else:  </dt>
-<dd>return False</dd>
-</dl>
-</dd>
-<dt>PE, AR = EoN.estimate_nonMarkov_SIR_prob_size(G, xi, zeta, </dt>
-<dd>my_transmission)</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1">#mimicking the standard version with transmission rate tau</span>
+<span class="c1">#and recovery rate gamma</span>
+
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">EoN</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">defaultdict</span>
+
+<span class="n">G</span><span class="o">=</span><span class="n">nx</span><span class="o">.</span><span class="n">fast_gnp_random_graph</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span><span class="mf">0.002</span><span class="p">)</span>
+<span class="n">tau</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">gamma</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="n">xi</span> <span class="o">=</span> <span class="p">{</span><span class="n">node</span><span class="p">:</span><span class="n">random</span><span class="o">.</span><span class="n">expovariate</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">()}</span>  
+<span class="c1">#xi[node] is duration of infection of node.</span>
+
+<span class="n">zeta</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span> <span class="p">:</span> <span class="n">tau</span><span class="p">)</span> <span class="c1">#every node has zeta=tau, so same </span>
+                                <span class="c1">#transmission rate</span>
+
+<span class="k">def</span> <span class="nf">my_transmission</span><span class="p">(</span><span class="n">infection_duration</span><span class="p">,</span> <span class="n">trans_rate</span><span class="p">):</span>
+    <span class="c1">#infect if duration is longer than time to infection.</span>
+    <span class="k">if</span> <span class="n">infection_duration</span> <span class="o">&gt;</span> <span class="n">random</span><span class="o">.</span><span class="n">expovariate</span><span class="p">(</span><span class="n">trans_rate</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">else</span><span class="p">:</span>  
+        <span class="k">return</span> <span class="kc">False</span>
+
+<span class="n">PE</span><span class="p">,</span> <span class="n">AR</span> <span class="o">=</span> <span class="n">EoN</span><span class="o">.</span><span class="n">estimate_nonMarkov_SIR_prob_size</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">xi</span><span class="p">,</span> <span class="n">zeta</span><span class="p">,</span> 
+                                                <span class="n">my_transmission</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
 <dt id="EoN.fast_SIR">
-<code class="descclassname">EoN.</code><code class="descname">fast_SIR</code><span class="sig-paren">(</span><em>G</em>, <em>tau</em>, <em>gamma</em>, <em>initial_infecteds=None</em>, <em>tmax=inf</em>, <em>transmission_weight=None</em>, <em>recovery_weight=None</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#fast_SIR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.fast_SIR" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">EoN.</code><code class="descname">fast_SIR</code><span class="sig-paren">(</span><em>G</em>, <em>tau</em>, <em>gamma</em>, <em>initial_infecteds=None</em>, <em>rho=None</em>, <em>tmax=inf</em>, <em>transmission_weight=None</em>, <em>recovery_weight=None</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#fast_SIR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.fast_SIR" title="Permalink to this definition">¶</a></dt>
 <dd><p>From figure A.3 of Kiss, Miller, &amp; Simon.  Please cite the
 book if using this algorithm.</p>
 <p>fast SIR simulation assuming exponentially distributed infection and
 recovery times</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>G <span class="classifier-delimiter">:</span> <span class="classifier">NetworkX Graph</span></dt>
 <dd>The underlying network</dd>
@@ -2380,7 +3375,12 @@ recovery times</p>
 <dt>initial_infecteds: node or iterable of nodes</dt>
 <dd>if a single node, then this node is initially infected
 if an iterable, then whole set is initially infected
-if None, then a randomly chosen node is initially infected.</dd>
+if None, then choose randomly based on rho.  If rho is also
+None, a random single node is chosen.
+If both initial_infecteds and rho are assigned, then there
+is an error.</dd>
+<dt>rho <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
+<dd>initial fraction infected. number is int(round(G.order()*rho))</dd>
 <dt>tmax <span class="classifier-delimiter">:</span> <span class="classifier">number   (default float(&#8216;Inf&#8217;))</span></dt>
 <dd>maximum time after which simulation will stop.
 the default of running to infinity is okay for SIR, 
@@ -2403,6 +3403,14 @@ recovery_time.
 infection_time[node] is the time of infection and 
 recovery_time[node] is the recovery time</dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>times, S, I, R <span class="classifier-delimiter">:</span> <span class="classifier">each a scipy array</span></dt>
 <dd>giving times and number in each status for corresponding time</dd>
@@ -2414,24 +3422,43 @@ times, S, I, R, infection_time, recovery_time</p>
 with entries just for those nodes that were infected ever
 infection_time[node] is time of infection
 recovery_time[node] is time of recovery</div></blockquote>
-<p>import networkx as nx
-import EoN
-import matplotlib.pyplot as plt</p>
-<p>G = nx.configuration_model([1,5,10]*100000)
-initial_size = 10000
-gamma = 1.
-tau = 0.3
-t, S, I, R = EoN.fast_SIR(G, tau, gamma,</p>
-<blockquote>
-<div>initial_infecteds = range(initial_size))</div></blockquote>
-<p>plt.plot(t, I)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">EoN</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">configuration_model</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">10</span><span class="p">]</span><span class="o">*</span><span class="mi">100000</span><span class="p">)</span>
+<span class="n">initial_size</span> <span class="o">=</span> <span class="mi">10000</span>
+<span class="n">gamma</span> <span class="o">=</span> <span class="mf">1.</span>
+<span class="n">tau</span> <span class="o">=</span> <span class="mf">0.3</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">I</span><span class="p">,</span> <span class="n">R</span> <span class="o">=</span> <span class="n">EoN</span><span class="o">.</span><span class="n">fast_SIR</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> 
+                            <span class="n">initial_infecteds</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">initial_size</span><span class="p">))</span>
+                            
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">I</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
 <dt id="EoN.fast_SIS">
-<code class="descclassname">EoN.</code><code class="descname">fast_SIS</code><span class="sig-paren">(</span><em>G</em>, <em>tau</em>, <em>gamma</em>, <em>initial_infecteds=None</em>, <em>tmax=100</em>, <em>transmission_weight=None</em>, <em>recovery_weight=None</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#fast_SIS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.fast_SIS" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">EoN.</code><code class="descname">fast_SIS</code><span class="sig-paren">(</span><em>G</em>, <em>tau</em>, <em>gamma</em>, <em>initial_infecteds=None</em>, <em>rho=None</em>, <em>tmax=100</em>, <em>transmission_weight=None</em>, <em>recovery_weight=None</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#fast_SIS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.fast_SIS" title="Permalink to this definition">¶</a></dt>
 <dd><p>From figure A.5 of Kiss, Miller, &amp; Simon.  Please cite the
 book if using this algorithm.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>G <span class="classifier-delimiter">:</span> <span class="classifier">NetworkX Graph</span></dt>
 <dd>The underlying network</dd>
@@ -2442,7 +3469,12 @@ book if using this algorithm.</p>
 <dt>initial_infecteds: node or iterable of nodes</dt>
 <dd>if a single node, then this node is initially infected
 if an iterable, then whole set is initially infected
-if None, then a randomly chosen node is initially infected.</dd>
+if None, then choose randomly based on rho.  If rho is also
+None, a random single node is chosen.
+If both initial_infecteds and rho are assigned, then there
+is an error.</dd>
+<dt>rho <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
+<dd>initial fraction infected. number is int(round(G.order()*rho))</dd>
 <dt>tmax <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
 <dd>stop time</dd>
 <dt>transmission_weight <span class="classifier-delimiter">:</span> <span class="classifier">string       (default None)</span></dt>
@@ -2463,33 +3495,52 @@ recovery_time.
 infection_time[node] is the time of infection and 
 recovery_time[node] is the recovery time.</dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>times, S, I <span class="classifier-delimiter">:</span> <span class="classifier">each a scipy array</span></dt>
 <dd>giving times and number in each status for corresponding time</dd>
 </dl>
-<p>OR if return_full_data=True:
+<p>or if return_full_data=True:
 times, S, I, infection_time, recovery_time</p>
 <blockquote>
 <div>first four are scipy arrays as above.  New objects are dicts
 with entries just for those nodes that were infected ever
 infection_time[node] is a list of times of infection
 recovery_time[node] is a list of times of recovery</div></blockquote>
-<p>import networkx as nx
-import EoN
-import matplotlib.pyplot as plt</p>
-<p>G = nx.configuration_model([1,5,10]*100000)
-initial_size = 10000
-gamma = 1.
-tau = 0.2
-t, S, I = EoN.fast_SIS(G, tau, gamma, tmax = 10,</p>
-<blockquote>
-<div>initial_infecteds = range(initial_size))</div></blockquote>
-<p>plt.plot(t, I)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">EoN</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">configuration_model</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">10</span><span class="p">]</span><span class="o">*</span><span class="mi">100000</span><span class="p">)</span>
+<span class="n">initial_size</span> <span class="o">=</span> <span class="mi">10000</span>
+<span class="n">gamma</span> <span class="o">=</span> <span class="mf">1.</span>
+<span class="n">tau</span> <span class="o">=</span> <span class="mf">0.2</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">I</span> <span class="o">=</span> <span class="n">EoN</span><span class="o">.</span><span class="n">fast_SIS</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">tmax</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+                            <span class="n">initial_infecteds</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">initial_size</span><span class="p">))</span>
+                            
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">I</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
 <dt id="EoN.fast_nonMarkov_SIR">
-<code class="descclassname">EoN.</code><code class="descname">fast_nonMarkov_SIR</code><span class="sig-paren">(</span><em>G</em>, <em>process_trans=&lt;function _process_trans_SIR_&gt;</em>, <em>args=()</em>, <em>initial_infecteds=None</em>, <em>tmax=inf</em>, <em>return_full_data=False</em>, <em>Q=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#fast_nonMarkov_SIR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.fast_nonMarkov_SIR" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">EoN.</code><code class="descname">fast_nonMarkov_SIR</code><span class="sig-paren">(</span><em>G</em>, <em>process_trans=&lt;function _process_trans_SIR_&gt;</em>, <em>args=()</em>, <em>initial_infecteds=None</em>, <em>rho=None</em>, <em>tmax=inf</em>, <em>return_full_data=False</em>, <em>Q=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#fast_nonMarkov_SIR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.fast_nonMarkov_SIR" title="Permalink to this definition">¶</a></dt>
 <dd><p>A modification of the algorithm in figure A.3 of Kiss, Miller, &amp; 
 Simon to allow for user-defined rules governing time of 
 transmission.</p>
@@ -2498,14 +3549,22 @@ transmission.</p>
 for more elaborate models.</p>
 <p>For example if there is a mass action style transmission this can be
 incorporated into the process_trans command defined by user.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <p>G : Networkx Graph</p>
 <dl class="docutils">
 <dt>process_trans <span class="classifier-delimiter">:</span> <span class="classifier">a function that handles a transmission event.</span></dt>
 <dd><dl class="first docutils">
 <dt>Called by </dt>
 <dd><dl class="first last docutils">
-<dt>process_trans(G, event, times, S, I, R, Q, </dt>
-<dd>status, rec_time, pred_inf_time, tmax, <a href="#id3"><span class="problematic" id="id4">*</span></a>args)</dd>
+<dt>process_trans(G, time, node, times, S, I, R, Q, </dt>
+<dd>status, rec_time, pred_inf_time, <a href="#id5"><span class="problematic" id="id6">*</span></a>args)</dd>
 </dl>
 </dd>
 </dl>
@@ -2529,9 +3588,14 @@ or something similar that is passed as an argument.</dd>
 <dt>initial_infecteds: node or iterable of nodes</dt>
 <dd>if a single node, then this node is initially infected
 if an iterable, then whole set is initially infected
-if None, then a randomly chosen node is initially infected.</dd>
-<dt>tmax <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
-<dd>stop time</dd>
+if None, then choose randomly based on rho.  If rho is also
+None, a random single node is chosen.
+If both initial_infecteds and rho are assigned, then there
+is an error.</dd>
+<dt>rho <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
+<dd>initial fraction infected. number is int(round(G.order()*rho))</dd>
+<dt>tmax <span class="classifier-delimiter">:</span> <span class="classifier">(default infinity)</span></dt>
+<dd>final time</dd>
 <dt>return_full_data: boolean</dt>
 <dd><p class="first">Tells whether the infection and recovery times of each 
 individual node should be returned.  
@@ -2549,11 +3613,6 @@ already.</dd>
 </dl>
 </div></blockquote>
 </dd>
-<dt>tmax <span class="classifier-delimiter">:</span> <span class="classifier">(default infinity)</span></dt>
-<dd>final time</dd>
-</dl>
-<p>return_full_data : boolean (default False)</p>
-<dl class="docutils">
 <dt>Q <span class="classifier-delimiter">:</span> <span class="classifier">If user wants to predefine some events, this can be done.  This </span></dt>
 <dd><p class="first">can be input as a heap or as a list (it will be heapified and 
 modified).</p>
@@ -2570,6 +3629,14 @@ to put them in initial_infecteds and give them a recovery event
 at t=0.</p>
 </dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>times, S, I, R <span class="classifier-delimiter">:</span> <span class="classifier">each a scipy array</span></dt>
 <dd>giving times and number in each status for corresponding time</dd>
@@ -2581,6 +3648,14 @@ times, S, I, R, infection_time, recovery_time</p>
 with entries just for those nodes that were infected ever
 infection_time[node] is time of infection
 recovery_time[node] is time of recovery</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -2611,6 +3686,14 @@ observed.</dd>
 <dt>SIR <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
 <dd>says whether the system will be SIR or SIS.</dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>NkNl <span class="classifier-delimiter">:</span> <span class="classifier">2D scipy array</span></dt>
 <dd>NUMBER (not proportion) of edges between each pair of degrees.</dd>
@@ -2641,14 +3724,29 @@ Ks : scipy array</p>
 <dd><p>Given the graph and initial proportion infected this finds the 
 initial conditions and number of nodes of each degree as needed
 by many of the differential equations models.</p>
-<p>G : networkx graph
-rho : number between 0 and 1</p>
-<blockquote>
-<div>fraction of nodes to infect at time 0.</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<p>G : networkx graph</p>
 <dl class="docutils">
+<dt>rho <span class="classifier-delimiter">:</span> <span class="classifier">number between 0 and 1</span></dt>
+<dd>fraction of nodes to infect at time 0.</dd>
 <dt>SIR <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
 <dd>says whether the system will be SIR or SIS.</dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>Nk <span class="classifier-delimiter">:</span> <span class="classifier">scipy array</span></dt>
 <dd>NUMBER (not proportion) of nodes of each degree.</dd>
@@ -2671,7 +3769,23 @@ Rk0 : scipy array</p>
 <code class="descclassname">EoN.</code><code class="descname">get_Pk</code><span class="sig-paren">(</span><em>G</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#get_Pk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.get_Pk" title="Permalink to this definition">¶</a></dt>
 <dd><p>Used in several places so that we can input a graph and then we 
 can call the methods that depend on the degree distribution</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <p>G : networkx Graph</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>Pk <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
 <dd>Pk[k] is the proportion of nodes with degree k.</dd>
@@ -2682,10 +3796,26 @@ can call the methods that depend on the degree distribution</p>
 <dt id="EoN.get_Psi">
 <code class="descclassname">EoN.</code><code class="descname">get_Psi</code><span class="sig-paren">(</span><em>Pk</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#get_Psi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.get_Psi" title="Permalink to this definition">¶</a></dt>
 <dd><p>Given a degree distribution (as a dict), returns the function psi</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>Pk <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
 <dd>Pk[k] is the proportion of nodes with degree k.</dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>psi <span class="classifier-delimiter">:</span> <span class="classifier">function.</span></dt>
 <dd>psi(x) = sum_k Pk[k] x^k</dd>
@@ -2697,10 +3827,26 @@ can call the methods that depend on the degree distribution</p>
 <code class="descclassname">EoN.</code><code class="descname">get_PsiDPrime</code><span class="sig-paren">(</span><em>Pk</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#get_PsiDPrime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.get_PsiDPrime" title="Permalink to this definition">¶</a></dt>
 <dd><p>Given a degree distribution (as a dict) returns the function</p>
 <p>d^2Psi(x)/dx^2</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>Pk <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
 <dd>Pk[k] is the proportion of nodes with degree k.</dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>psiDPrime <span class="classifier-delimiter">:</span> <span class="classifier">function.</span></dt>
 <dd>sum_k k(k-1)Pk[k] x^{k-2}</dd>
@@ -2712,10 +3858,26 @@ can call the methods that depend on the degree distribution</p>
 <code class="descclassname">EoN.</code><code class="descname">get_PsiPrime</code><span class="sig-paren">(</span><em>Pk</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#get_PsiPrime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.get_PsiPrime" title="Permalink to this definition">¶</a></dt>
 <dd><p>Given a degree distribution (as a dict) returns the function
 dPsi(x)/dx</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>Pk <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
 <dd>Pk[k] is the proportion of nodes with degree k.</dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>psiPrime <span class="classifier-delimiter">:</span> <span class="classifier">function.</span></dt>
 <dd>sum_k k Pk[k] x^{k-1}</dd>
@@ -2735,10 +3897,26 @@ tau and recovery with rate gamma.</p>
 <p>This code has similar run-time whether an epidemic occurs or not.
 There are much faster ways to implement an algorithm giving the same 
 output, for example by actually running an epidemic.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">WARNING:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <p>why are you using this command? If it&#8217;s to better understand some
 concept, that&#8217;s fine.  But this command IS NOT an efficient way to
 calculate anything.  Don&#8217;t do it like this.  Use one of the other
 algorithms.  Try fast_SIR, for example.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>G <span class="classifier-delimiter">:</span> <span class="classifier">NetworkX Graph</span></dt>
 <dd>The network the disease will transmit through.</dd>
@@ -2751,14 +3929,30 @@ algorithms.  Try fast_SIR, for example.</p>
 if an iterable, then whole set is initially infected
 if None, then a randomly chosen node is initially infected.</dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>infected_nodes <span class="classifier-delimiter">:</span> <span class="classifier">set</span></dt>
 <dd>the set of nodes infected eventually in a simulation.</dd>
 </dl>
-<p>import networkx as nx
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"><p class="first">import networkx as nx
 import EoN</p>
-<p>G = nx.fast_gnp_random_graph(1000,0.002)
+<p class="last">G = nx.fast_gnp_random_graph(1000,0.002)
 finalR = EoN.get_infected_nodes(G, 2, 1, initial_infecteds=[0, 5])</p>
+</td>
+</tr>
+</tbody>
+</table>
 <p>finds the nodes infected if 0 and 5 are the initial nodes infected
 and tau=2, gamma=1</p>
 </dd></dl>
@@ -2768,6 +3962,14 @@ and tau=2, gamma=1</p>
 <code class="descclassname">EoN.</code><code class="descname">get_time_shift</code><span class="sig-paren">(</span><em>times</em>, <em>L</em>, <em>threshold</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#get_time_shift"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.get_time_shift" title="Permalink to this definition">¶</a></dt>
 <dd><p>Identifies the first time at which L crosses a threshold.  
 Useful for shifting times.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>times <span class="classifier-delimiter">:</span> <span class="classifier">list or scipy array (ordered)</span></dt>
 <dd>the times we have observations</dd>
@@ -2776,10 +3978,47 @@ Useful for shifting times.</p>
 <dt>threshold <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
 <dd>a threshold value</dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>t <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
 <dd>the first time at which L reaches or exceeds a threshold.</dd>
 </dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="EoN.myQueue">
+<em class="property">class </em><code class="descclassname">EoN.</code><code class="descname">myQueue</code><span class="sig-paren">(</span><em>tmax=inf</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#myQueue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.myQueue" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class is used to store a priority queue of events
+for event-driven simulations.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="EoN.my_odeint">
+<code class="descclassname">EoN.</code><code class="descname">my_odeint</code><span class="sig-paren">(</span><em>dfunc</em>, <em>V0</em>, <em>times</em>, <em>args=()</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#my_odeint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.my_odeint" title="Permalink to this definition">¶</a></dt>
+<dd><p>For some of the systems odeint will switch to the BDF solver.
+In large enough systems, it then gets stuck trying to estimate the 
+Jacobian.</p>
+<p>This routine has identical inputs to integrate.odeint, but relies on 
+integrate.ode.  It avoids BDF.</p>
+<p>In particular, this seems to be important for SIS heterogeneous 
+pairwise where the number of equations is very large.  I have found 
+that near equilibrium, this often is interpreted as being a stiff 
+system and it switches to bdf, which requires calculating a 
+Jacobian.  In some systems this is impractically large.</p>
+<dl class="docutils">
+<dt>See this question: </dt>
+<dd><a class="reference external" href="http://stackoverflow.com/q/40317096/2966723">http://stackoverflow.com/q/40317096/2966723</a>,</dd>
+<dt>with the answer by </dt>
+<dd>Phillip: <a class="reference external" href="http://stackoverflow.com/users/1881610/phillip">http://stackoverflow.com/users/1881610/phillip</a></dd>
+</dl>
+<p>INPUT and OUTPUT are as integrate.odeint</p>
 </dd></dl>
 
 <dl class="function">
@@ -2792,6 +4031,14 @@ xi[u] and zeta[v]
 are enough to determine the probability of a u-v transmission.</p>
 <p>transmissision is a user-defined function taking xi[u] and zeta[v] 
 and returning True if a transmission would occur</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>G <span class="classifier-delimiter">:</span> <span class="classifier">NetworkX Graph</span></dt>
 <dd>The input graph</dd>
@@ -2804,8 +4051,24 @@ infectiousness is.</dd>
 <dd>transmission(xi[u], zeta[v]) determines whether u transmits to 
 v.</dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <p>networkx DiGraph (directed graph) H.  
 Edge u,v exists in H if it will transmit given the opportunity.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <p>for now, I&#8217;m being lazy.  
 Look at the sample for estimate_nonMarkov_SIR_prob_size to infer it.</p>
 </dd></dl>
@@ -2817,21 +4080,48 @@ Look at the sample for estimate_nonMarkov_SIR_prob_size to infer it.</p>
 if using this algorithm.</p>
 <p>Performs bond percolation on the network G, keeping edges with 
 probability p</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <p>G : NetworkX Graph
 p : number between 0 and 1</p>
 <blockquote>
 <div>the probability of keeping edge</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>H <span class="classifier-delimiter">:</span> <span class="classifier">NetworkX Graph</span></dt>
 <dd>A network with same nodes as G, but with each edge retained 
 independently with probability p.</dd>
 </dl>
-<p>import networkx as nx
-import EoN
-import matplotlib.pyplot as plt
-G = nx.fast_gnp_random_graph(1000,0.002)
-H = EoN.percolate_network(G, 0.6)</p>
-<p>H is now a graph with 60% of the edges of G</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">EoN</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">fast_gnp_random_graph</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span><span class="mf">0.002</span><span class="p">)</span>
+<span class="n">H</span> <span class="o">=</span> <span class="n">EoN</span><span class="o">.</span><span class="n">percolate_network</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">)</span>
+
+<span class="c1">#H is now a graph with 60% of the edges of G</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -2848,6 +4138,14 @@ outputs.</p>
 <p>The value of this function is that by performing many simulations we 
 can see that the outputs of the two are equivalent.</p>
 <p>This algorithm leads to a better understanding of the theory.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>G <span class="classifier-delimiter">:</span> <span class="classifier">NetworkX Graph</span></dt>
 <dd>The network the disease will transmit through.</dd>
@@ -2867,6 +4165,14 @@ It is returned in the form of two dicts,</p>
 recovery_time[node] is the recovery time</p>
 </dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>if return_full_data is False:</dt>
 <dd>the lists: t, S, I, R</dd>
@@ -2877,16 +4183,24 @@ and the dicts infection_time and recovery_time</dd>
 <dd>at each time.</dd>
 </dl>
 <p>The dicts give times at which each node changed status.</p>
-<p>import networkx as nx
-import EoN
-import matplotlib.pyplot as plt
-G = nx.fast_gnp_random_graph(1000,0.002)
-t, S, I, R = EoN.percolation_based_discrete_SIR_epidemic(G, p)
-plt.plot(t,S)</p>
-<dl class="docutils">
-<dt>This is equivalent to basic_discrete_epidemic (but many simulations</dt>
-<dd>may be needed before it&#8217;s clear, since these are stochastic)</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">EoN</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">fast_gnp_random_graph</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span><span class="mf">0.002</span><span class="p">)</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">I</span><span class="p">,</span> <span class="n">R</span> <span class="o">=</span> <span class="n">EoN</span><span class="o">.</span><span class="n">percolation_based_discrete_SIR_epidemic</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">S</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This is equivalent to basic_discrete_epidemic (but many simulations
+may be needed before it&#8217;s clear, since these are stochastic)</p>
 </dd></dl>
 
 <dl class="function">
@@ -2905,6 +4219,14 @@ given status at given times</dd>
 <p>If report_times goes longer than times, then this simply assumes the 
 system freezes in the final state.</p>
 <p>This uses a recursive approach if multiple arguments are defined.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>report_times <span class="classifier-delimiter">:</span> <span class="classifier">iterable (ordered)</span></dt>
 <dd>times at which we want to know state of system</dd>
@@ -2915,6 +4237,14 @@ between these times)</dd>
 <dd>generally S, I, or R
 number of nodes in given status.</dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>If only status1 is defined</dt>
 <dd><dl class="first last docutils">
