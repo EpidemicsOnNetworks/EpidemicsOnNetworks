@@ -3665,6 +3665,9 @@ def SIS_homogeneous_meanfield(S0, I0, n, tau, gamma, tmin=0, tmax=100,
                                 tcount=1001):
     '''Encodes System (4.8) of Kiss, Miller, & Simon.  Please cite the
     book if using this algorithm.
+    
+    In the text this is often referred to as the 
+    "mean-field model closed at the level of pairs"
 
     [\dot{S}] = \gamma [I] - tau n[S][I]/N
     [\dot{I}] = \tau n[S][I]/N - \gamma [I]
@@ -3717,6 +3720,9 @@ def SIR_homogeneous_meanfield(S0, I0, R0, n, tau, gamma, tmin=0, tmax=100,
                                 tcount=1001):
     '''Encodes System (4.9) of Kiss, Miller, & Simon.  Please cite the
     book if using this algorithm.
+
+    In the text this is often referred to as the 
+    "mean-field model closed at the level of pairs"
 
     [\dot{S}] = - tau n[S][I]/N
     [\dot{I}] = \tau n[S][I]/N - \gamma [I]
@@ -3817,7 +3823,9 @@ def SIS_homogeneous_pairwise(S0, I0, SI0, SS0, n, tau, gamma, tmin = 0,
     r'''Encodes System (4.10) of Kiss, Miller, & Simon.  Please cite the
     book if using this algorithm.
 
-    
+    In the text this is often referred to as the 
+    "mean-field model closed at the level of triples"
+
     INPUTS
     --------
     S0 : number
@@ -3891,6 +3899,9 @@ def SIR_homogeneous_pairwise(S0, I0, R0, SI0, SS0, n, tau, gamma, tmin = 0,
                                 return_full_data=False):
     '''Encodes System (4.11) of Kiss, Miller, & Simon.  Please cite the
     book if using this algorithm.
+
+    In the text this is often referred to as the 
+    "mean-field model closed at the level of triples"
 
     [\dot{S}] = - tau [SI]
     [\dot{I}] = \tau [SI] - \gamma [I]
@@ -4114,6 +4125,10 @@ def SIS_heterogeneous_meanfield(Sk0, Ik0, tau, gamma, tmin = 0, tmax=100,
     '''Encodes System (5.10) of Kiss, Miller, & Simon.  Please cite the
     book if using this algorithm.
 
+    In the text this is often referred to as the 
+    "heterogeneous mean-field model closed at the level of pairs"
+
+    a few notes on the inputs:
     Sk0 is an array (or a list). 
     
     It is not a dict.  
@@ -4201,6 +4216,8 @@ def SIR_heterogeneous_meanfield(Sk0, Ik0, Rk0, tau, gamma, tmin = 0, tmax=100,
     Encodes System (5.11) of Kiss, Miller, & Simon.  Please cite the
     book if using this algorithm.
 
+    In the text this is often referred to as the 
+    "heterogeneous mean-field model closed at the level of pairs"
 
     Ik0 and Rk0 are similar to Sk0.
 
@@ -4502,6 +4519,9 @@ def SIS_heterogeneous_pairwise(Sk0, Ik0, SkSl0, SkIl0, IkIl0, tau, gamma,
     '''Encodes System (5.13) of Kiss, Miller, & Simon.  Please cite the
     book if using this algorithm.
 
+    In the text this is often referred to as the 
+    "heterogeneous mean-field model closed at the level of triples"
+
     INPUTS
     ------------
     Sk0 : array.  Sk0[k] is the number of
@@ -4625,6 +4645,9 @@ def SIR_heterogeneous_pairwise(Sk0, Ik0, Rk0, SkSl0, SkIl0, tau, gamma,
                                 return_full_data=False, Ks = None):
     '''Encodes System (5.15) of Kiss, Miller, & Simon.  Please cite the
     book if using this algorithm.
+
+    In the text this is often referred to as the 
+    "heterogeneous mean-field model closed at the level of triples"
 
     [\dot{S}_k] = -tau [S_k I]
     [\dot{I}_k] = tau [S_k I] - gamma [I_k]
