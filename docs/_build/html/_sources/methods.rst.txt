@@ -4,7 +4,13 @@ EON documentation
 .. automodule:: EoN
    :members:
 
-.. currentmodule:: EoN
+.. automodule:: simulation
+   :members:
+
+.. automodule:: analytic
+   :members:
+      
+.. currentmodule:: simulation
 
 .. autosummary::
    :toctree: functions

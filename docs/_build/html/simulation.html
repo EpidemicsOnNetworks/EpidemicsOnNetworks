@@ -6,15 +6,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>&lt;no title&gt; &#8212; Epidemics on Networks 0.9 documentation</title>
+    <title>EoN Simulation &#8212; Epidemics on Networks 0.91 documentation</title>
     
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.9',
+        VERSION:     '0.91',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -27,34 +27,1350 @@
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-   
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
-
+    <link rel="next" title="EoN Analytic Models" href="analytic.html" />
+    <link rel="prev" title="EoN module" href="EoN.html" /> 
   </head>
   <body role="document">
-  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="analytic.html" title="EoN Analytic Models"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="EoN.html" title="EoN module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Epidemics on Networks 0.91 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  
+  <div class="section" id="eon-simulation">
+<h1>EoN Simulation<a class="headerlink" href="#eon-simulation" title="Permalink to this headline">¶</a></h1>
+<p>This submodule deals with epidemic simulation.</p>
+<span class="target" id="module-EoN.simulation"></span><dl class="class">
+<dt id="EoN.simulation.Event">
+<em class="property">class </em><code class="descclassname">EoN.simulation.</code><code class="descname">Event</code><span class="sig-paren">(</span><em>time</em>, <em>function</em>, <em>args=()</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN/simulation.html#Event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.simulation.Event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>This class is used in event-driven simulations (fast_SIR and 
+fast_SIS) as an event which will be put into a priority queue.</p>
+<p>It is sortable based on event time.</p>
+<p>An event object consists of
+self.time 
+self.function
+self.args</p>
+<dl class="docutils">
+<dt>When self.function is called, it is called by:</dt>
+<dd>self.function(self.time, <a href="#id1"><span class="problematic" id="id2">*</span></a>self.args)</dd>
+</dl>
+<p>I wonder about whether it would be better to do this as a dict.</p>
+<p>The ability to sort based on time is why I am leaving it as a class.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="EoN.simulation.Gillespie_SIR">
+<code class="descclassname">EoN.simulation.</code><code class="descname">Gillespie_SIR</code><span class="sig-paren">(</span><em>G</em>, <em>tau</em>, <em>gamma</em>, <em>initial_infecteds=None</em>, <em>rho=None</em>, <em>tmax=inf</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN/simulation.html#Gillespie_SIR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.simulation.Gillespie_SIR" title="Permalink to this definition">¶</a></dt>
+<dd><p>From figure A.1 of Kiss, Miller, &amp; Simon.  Please cite the
+book if using this algorithm.</p>
+<p>Assumes that the network is unweighted.</p>
+<p>Thus the risks are quantized: equal to tau times the number of 
+infected neighbors of a node.</p>
+<p>This would not be as good if the edges were weighted, but we could 
+put the at_risk nodes into bands.</p>
+<p>The event-driven simulation is almost certainly faster in all cases, 
+and the benefit would increase if the network were weighted.</p>
+<p>At present, this does not accept recovery or transmission weights.
+This is because including that will force us to sum up these weights
+more frequently rather than just counting how many exist
+which will slow the code down.  For weights, try fast_SIR</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SEE ALSO:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<p>fast_SIR which has the same inputs but uses a different method to 
+run much faster</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>G <span class="classifier-delimiter">:</span> <span class="classifier">NetworkX Graph</span></dt>
+<dd>The underlying network</dd>
+<dt>tau <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
+<dd>transmission rate per edge</dd>
+<dt>gamma <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
+<dd>recovery rate per node</dd>
+<dt>initial_infecteds: node or iterable of nodes</dt>
+<dd>if a single node, then this node is initially infected
+if an iterable, then whole set is initially infected
+if None, then choose randomly based on rho.  If rho is also
+None, a random single node is chosen.
+If both initial_infecteds and rho are assigned, then there
+is an error.</dd>
+<dt>rho <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
+<dd>initial fraction infected. number is int(round(G.order()*rho))</dd>
+<dt>tmax <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
+<dd>stop time</dd>
+<dt>return_full_data: boolean</dt>
+<dd>Tells whether the infection and recovery times of each 
+individual node should be returned.  
+It is returned in the form of two dicts, infection_time and 
+recovery_time.
+infection_time[node] is the time of infection and 
+recovery_time[node] is the recovery time.</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>times, S, I, R <span class="classifier-delimiter">:</span> <span class="classifier">each a scipy array</span></dt>
+<dd>giving times and number in each status for corresponding time</dd>
+</dl>
+<p>OR if return_full_data=True:
+times, S, I, R, infection_time, recovery_time</p>
+<blockquote>
+<div>first four are scipy arrays as above.  New objects are dicts
+with entries just for those nodes that were infected ever
+infection_time[node] is time of infection
+recovery_time[node] is time of recovery</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">EoN</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">configuration_model</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">10</span><span class="p">]</span><span class="o">*</span><span class="mi">100000</span><span class="p">)</span>
+<span class="n">initial_size</span> <span class="o">=</span> <span class="mi">10000</span>
+<span class="n">gamma</span> <span class="o">=</span> <span class="mf">1.</span>
+<span class="n">tau</span> <span class="o">=</span> <span class="mf">0.3</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">I</span><span class="p">,</span> <span class="n">R</span> <span class="o">=</span> <span class="n">EoN</span><span class="o">.</span><span class="n">fast_SIR</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> 
+                            <span class="n">initial_infecteds</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">initial_size</span><span class="p">))</span>
+                            
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">I</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="EoN.simulation.Gillespie_SIS">
+<code class="descclassname">EoN.simulation.</code><code class="descname">Gillespie_SIS</code><span class="sig-paren">(</span><em>G</em>, <em>tau</em>, <em>gamma</em>, <em>initial_infecteds=None</em>, <em>rho=None</em>, <em>tmax=100</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN/simulation.html#Gillespie_SIS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.simulation.Gillespie_SIS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Based on figure A.1 of Kiss, Miller, &amp; Simon.  Please cite the
+book if using this algorithm.</p>
+<p>This could be made more efficient if we divide the at_risk nodes 
+into groups based on how at risk they are.</p>
+<p>This would not be as good if the edges were weighted, but we could 
+put the at_risk nodes into bands.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">WARNING:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<p>self-edges will cause this to die.  
+You can remove self-edges by G.remove_edges_from(G.selfloop_edges())</p>
+<p>At present, this does not accept recovery or transmission weights.
+This is because including that will force us to sum up these weights
+more frequently rather than just counting how many exist
+which will slow the code down.  For weights, try fast_SIS</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SEE ALSO:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<p>fast_SIS which has the same inputs but uses a much faster method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>G <span class="classifier-delimiter">:</span> <span class="classifier">NetworkX Graph</span></dt>
+<dd>The underlying network</dd>
+<dt>tau <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
+<dd>transmission rate per edge</dd>
+<dt>gamma <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
+<dd>recovery rate per node</dd>
+<dt>initial_infecteds: node or iterable of nodes</dt>
+<dd>if a single node, then this node is initially infected
+if an iterable, then whole set is initially infected
+if None, then choose randomly based on rho.  If rho is also
+None, a random single node is chosen.
+If both initial_infecteds and rho are assigned, then there
+is an error.</dd>
+<dt>rho <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
+<dd>initial fraction infected. number is int(round(G.order()*rho))</dd>
+<dt>tmax <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
+<dd>stop time</dd>
+<dt>return_full_data: boolean</dt>
+<dd>Tells whether the infection and recovery times of each 
+individual node should be returned.  
+It is returned in the form of two dicts, infection_time and 
+recovery_time.
+infection_time[node] is the time of infection and 
+recovery_time[node] is the recovery time.</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">EoN</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">configuration_model</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">10</span><span class="p">]</span><span class="o">*</span><span class="mi">100000</span><span class="p">)</span>
+<span class="n">initial_size</span> <span class="o">=</span> <span class="mi">10000</span>
+<span class="n">gamma</span> <span class="o">=</span> <span class="mf">1.</span>
+<span class="n">tau</span> <span class="o">=</span> <span class="mf">0.2</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">I</span> <span class="o">=</span> <span class="n">EoN</span><span class="o">.</span><span class="n">Gillespie_SIS</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">tmax</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
+                            <span class="n">initial_infecteds</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">initial_size</span><span class="p">))</span>
+                        
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">I</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="EoN.simulation.basic_discrete_SIR_epidemic">
+<code class="descclassname">EoN.simulation.</code><code class="descname">basic_discrete_SIR_epidemic</code><span class="sig-paren">(</span><em>G</em>, <em>p</em>, <em>initial_infecteds=None</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN/simulation.html#basic_discrete_SIR_epidemic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.simulation.basic_discrete_SIR_epidemic" title="Permalink to this definition">¶</a></dt>
+<dd><p>From figure 6.8 of Kiss, Miller, &amp; Simon.  Please cite the book if 
+using this algorithm.</p>
+<p>Does a simulation of the simple case of all nodes transmitting
+with probability p independently to each neighbor and then
+recovering.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>G <span class="classifier-delimiter">:</span> <span class="classifier">NetworkX Graph</span></dt>
+<dd>The network the disease will transmit through.</dd>
+<dt>p <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
+<dd>transmission probability</dd>
+<dt>initial_infecteds: node or iterable of nodes  (default None)</dt>
+<dd>if a single node, then this node is initially infected
+if an iterable, then whole set is initially infected
+if None, then a randomly chosen node is initially infected.</dd>
+<dt>return_full_data: boolean (default False)</dt>
+<dd><p class="first">Tells whether the infection and recovery times of each 
+individual node should be returned.  
+It is returned in the form of two dicts,</p>
+<blockquote>
+<div>infection_time and recovery_time</div></blockquote>
+<p class="last">infection_time[node] is the time of infection and 
+recovery_time[node] is the recovery time</p>
+</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>if return_full_data is False:</dt>
+<dd>the scipy arrays: t, S, I, R</dd>
+<dt>else:</dt>
+<dd>the scipy arrays: t, S, I, R 
+and the dicts infection_time and recovery_time</dd>
+</dl>
+<p>these scipy arrays give all the times observed and the number in 
+each state at each time.  The dicts give times at which each node 
+changed status.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">EoN</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">fast_gnp_random_graph</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span><span class="mf">0.002</span><span class="p">)</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">I</span><span class="p">,</span> <span class="n">R</span> <span class="o">=</span> <span class="n">EoN</span><span class="o">.</span><span class="n">basic_discrete_SIR_epidemic</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">S</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This sample may be boring if the randomly chosen initial infection
+doesn&#8217;t trigger an epidemic.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="EoN.simulation.directed_percolate_network">
+<code class="descclassname">EoN.simulation.</code><code class="descname">directed_percolate_network</code><span class="sig-paren">(</span><em>G</em>, <em>tau</em>, <em>gamma</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN/simulation.html#directed_percolate_network"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.simulation.directed_percolate_network" title="Permalink to this definition">¶</a></dt>
+<dd><p>From figure 6.13 of Kiss, Miller, &amp; Simon.  Please cite the
+book if using this algorithm.</p>
+<p>This adds node and edge attributes in the percolated network which 
+are not at present in the figure in the book.</p>
+<p>This option is discussed in the text.</p>
+<p>This performs directed percolation corresponding to an SIR epidemic
+assuming that transmission is at rate tau and recovery at rate 
+gamma</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SEE ALSO:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<p>nonMarkov_directed_percolate_network which allows for more complex
+transmission and recovery rules.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>G <span class="classifier-delimiter">:</span> <span class="classifier">NetworkX Graph</span></dt>
+<dd>The network the disease will transmit through.</dd>
+<dt>tau <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
+<dd>transmission rate</dd>
+<dt>gamma <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
+<dd>recovery rate</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>H <span class="classifier-delimiter">:</span> <span class="classifier">networkx DiGraph  (directed graph)</span></dt>
+<dd><p class="first">a u-&gt;v edge exists in H if u would transmit to v if ever 
+infected.</p>
+<p>The edge has a time attribute (time_to_infect) which gives the 
+delay from infection of u until transmission occurs.</p>
+<p class="last">Each node u has a time attribute (duration) which gives the 
+duration of its infectious period.</p>
+</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">EoN</span>
+
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">fast_gnp_random_graph</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span><span class="mf">0.002</span><span class="p">)</span>
+<span class="n">H</span> <span class="o">=</span> <span class="n">EoN</span><span class="o">.</span><span class="n">directed_percolate_network</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="EoN.simulation.discrete_SIR_epidemic">
+<code class="descclassname">EoN.simulation.</code><code class="descname">discrete_SIR_epidemic</code><span class="sig-paren">(</span><em>G</em>, <em>test_transmission=&lt;function _simple_test_transmission_&gt;</em>, <em>args=()</em>, <em>initial_infecteds=None</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN/simulation.html#discrete_SIR_epidemic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.simulation.discrete_SIR_epidemic" title="Permalink to this definition">¶</a></dt>
+<dd><p>From figure 6.8 of Kiss, Miller, &amp; Simon.  Please cite the book
+if using this algorithm.</p>
+<p>Return details of epidemic curve from a discrete time simulation.</p>
+<p>It assumes that individuals are infected for exactly one unit of 
+time and then recover with immunity.</p>
+<dl class="docutils">
+<dt>This is defined to handle a user-defined function</dt>
+<dd>test_transmission(node1,node2,*args)</dd>
+</dl>
+<p>which determines whether transmission occurs.</p>
+<p>So elaborate rules can be created as desired by the user.</p>
+<dl class="docutils">
+<dt>By default it uses </dt>
+<dd>_simple_test_transmission_</dd>
+</dl>
+<p>in which case args should be entered as (p,)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>G: NetworkX Graph (or some other structure which quacks like a </dt>
+<dd>NetworkX Graph)
+The network on which the epidemic will be simulated.</dd>
+<dt>test_transmission: function(u,v,*args)</dt>
+<dd><p class="first">(see below for args definition)
+A function that determines whether u transmits to v.
+It returns True if transmission happens and False otherwise.
+The default will return True with probability p, where args=(p,)</p>
+<p>This function can be user-defined.
+It is called like:</p>
+<blockquote>
+<div>test_transmission(u,v,*args)</div></blockquote>
+<p>Note that if args is not entered, then args=(), and this call is 
+equivalent to</p>
+<blockquote class="last">
+<div>test_transmission(u,v)</div></blockquote>
+</dd>
+<dt>args: a list or tuple</dt>
+<dd><p class="first">The arguments of test_transmission coming after the nodes.  If 
+simply having transmission with probability p it should be 
+entered as</p>
+<blockquote>
+<div>args=(p,)</div></blockquote>
+<p class="last">[note the comma is needed to tell Python that this is really a 
+tuple]</p>
+</dd>
+<dt>initial_infecteds: node or iterable of nodes (default is None)</dt>
+<dd>if a single node, then this node is initially infected
+if an iterable, then whole set is initially infected
+if None, then a randomly chosen node is initially infected.</dd>
+<dt>return_full_data: boolean  (default False)</dt>
+<dd><dl class="first docutils">
+<dt>Tells whether the infection and recovery times of each </dt>
+<dd>individual node should be returned.</dd>
+<dt>It is returned in the form of two dicts, </dt>
+<dd>infection_time and recovery_time</dd>
+</dl>
+<p class="last">infection_time[node] is the time of infection and 
+recovery_time[node] is the recovery time</p>
+</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>if return_full_data is False:</dt>
+<dd>the scipy arrays: t, S, I, R</dd>
+<dt>else:</dt>
+<dd>the scipy arrays: t, S, I, R 
+and the dicts infection_time and recovery_time</dd>
+</dl>
+<p>these arrays give all the times observed and the number in each 
+state at each time.  The dicts give times at which each node changed 
+status.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">EoN</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">fast_gnp_random_graph</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span><span class="mf">0.002</span><span class="p">)</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">I</span><span class="p">,</span> <span class="n">R</span> <span class="o">=</span> <span class="n">EoN</span><span class="o">.</span><span class="n">discrete_SIR_epidemic</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.6</span><span class="p">,),</span> 
+                                    <span class="n">initial_infecteds</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">20</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">S</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Because this sample uses the defaults, it is equivalent to a call to 
+basic_discrete_SIR_epidemic</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="EoN.simulation.estimate_SIR_prob_size">
+<code class="descclassname">EoN.simulation.</code><code class="descname">estimate_SIR_prob_size</code><span class="sig-paren">(</span><em>G</em>, <em>p</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN/simulation.html#estimate_SIR_prob_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.simulation.estimate_SIR_prob_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>From figure 6.12 of Kiss, Miller, &amp; Simon.  Please cite the
+book if using this algorithm.</p>
+<p>Provies an estimate of epidemic probability and size assuming a 
+fixed transmission probability p.</p>
+<p>The estimate is found by performing bond percolation and then 
+finding the largest connected component in the remaining network.</p>
+<p>This assumes that there is a single giant component above threshold.</p>
+<p>It will not be an appropriate measure if the network is made up of 
+several densely connected components with very weak connections 
+between these components.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>G <span class="classifier-delimiter">:</span> <span class="classifier">NetworkX Graph</span></dt>
+<dd>The network the disease will transmit through.</dd>
+<dt>p <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
+<dd>transmission probability</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>PE, AR <span class="classifier-delimiter">:</span> <span class="classifier"></span></dt>
+<dd><dl class="first last docutils">
+<dt>(numbers) estimates of the probability and proportion </dt>
+<dd>infected (attack rate) in epidemics</dd>
+<dt>(the two are equal, but each given for consistency with </dt>
+<dd>estimate_directed_SIR_prob_size)</dd>
+</dl>
+</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">EoN</span>
+
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">fast_gnp_random_graph</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span><span class="mf">0.002</span><span class="p">)</span>
+<span class="n">PE</span><span class="p">,</span> <span class="n">AR</span> <span class="o">=</span> <span class="n">EoN</span><span class="o">.</span><span class="n">estimate_SIR_prob_size</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="EoN.simulation.estimate_SIR_prob_size_from_dir_perc">
+<code class="descclassname">EoN.simulation.</code><code class="descname">estimate_SIR_prob_size_from_dir_perc</code><span class="sig-paren">(</span><em>H</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN/simulation.html#estimate_SIR_prob_size_from_dir_perc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.simulation.estimate_SIR_prob_size_from_dir_perc" title="Permalink to this definition">¶</a></dt>
+<dd><p>From figure 6.17 of Kiss, Miller, &amp; Simon.  Please cite the book if 
+using this algorithm</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>H:  directed graph (assumed to be from directed percolation on </dt>
+<dd>previous graph G)</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>PE, AR <span class="classifier-delimiter">:</span> <span class="classifier">numbers</span></dt>
+<dd>Estimates of epidemic probability and attack rate found by 
+finding largest strongly connected component and finding in/out 
+components.</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">EoN</span>
+
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">fast_gnp_random_graph</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span><span class="mf">0.003</span><span class="p">)</span>
+<span class="n">H</span> <span class="o">=</span> <span class="n">some_user_defined_operation_to_do_percolation</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">argument</span><span class="p">)</span>
+<span class="n">PE</span><span class="p">,</span> <span class="n">AR</span> <span class="o">=</span> <span class="n">EoN</span><span class="o">.</span><span class="n">estimate_SIR_prob_size_from_dir_perc</span><span class="p">(</span><span class="n">H</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="EoN.simulation.estimate_directed_SIR_prob_size">
+<code class="descclassname">EoN.simulation.</code><code class="descname">estimate_directed_SIR_prob_size</code><span class="sig-paren">(</span><em>G</em>, <em>tau</em>, <em>gamma</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN/simulation.html#estimate_directed_SIR_prob_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.simulation.estimate_directed_SIR_prob_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>From figure 6.17 of Kiss, Miller, &amp; Simon.  Please cite the book if 
+using this algorithm</p>
+<p>Predicts probability and attack rate assuming continuous-time 
+Markovian SIR disease on network G</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SEE ALSO:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<p>estimate_nonMarkov_SIR_prob_size which handles nonMarkovian versions</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>G <span class="classifier-delimiter">:</span> <span class="classifier">NetworkX Graph</span></dt>
+<dd>The network the disease will transmit through.</dd>
+<dt>tau <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
+<dd>transmission rate</dd>
+<dt>gamma <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
+<dd>recovery rate</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>PE, AR <span class="classifier-delimiter">:</span> <span class="classifier">numbers (between 0 and 1)</span></dt>
+<dd>Estimates of epidemic probability and attack rate found by 
+performing directed percolation, finding largest strongly 
+connected component and finding its in/out components.</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">EoN</span>
+
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">fast_gnp_random_graph</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span><span class="mf">0.003</span><span class="p">)</span>
+<span class="n">PE</span><span class="p">,</span> <span class="n">AR</span> <span class="o">=</span> <span class="n">EoN</span><span class="o">.</span><span class="n">estimate_directed_SIR_prob_size</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="EoN.simulation.estimate_nonMarkov_SIR_prob_size">
+<code class="descclassname">EoN.simulation.</code><code class="descname">estimate_nonMarkov_SIR_prob_size</code><span class="sig-paren">(</span><em>G</em>, <em>xi</em>, <em>zeta</em>, <em>transmission</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN/simulation.html#estimate_nonMarkov_SIR_prob_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.simulation.estimate_nonMarkov_SIR_prob_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is not directly described in Kiss, Miller, &amp; Simon.  It uses
+nonMarkov_directed_percolate_network  (fig 6.18) to predict 
+epidemic probability and size.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>G <span class="classifier-delimiter">:</span> <span class="classifier">NetworkX Graph</span></dt>
+<dd>The input graph</dd>
+<dt>xi <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd>xi[u] gives all necessary information to determine what u&#8217;s 
+infectiousness is.</dd>
+<dt>zeta <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd>zeta[v] gives everything needed about v&#8217;s susceptibility</dd>
+<dt>transmission <span class="classifier-delimiter">:</span> <span class="classifier">user-defined function</span></dt>
+<dd>transmission(xi[u], zeta[v]) determines whether u transmits to 
+v.</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>PE, AR <span class="classifier-delimiter">:</span> <span class="classifier">numbers (between 0 and 1)</span></dt>
+<dd>Estimates of epidemic probability and attack rate found by 
+finding largest strongly connected component and finding in/out 
+components.</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1">#mimicking the standard version with transmission rate tau</span>
+<span class="c1">#and recovery rate gamma</span>
+
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">EoN</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">defaultdict</span>
+
+<span class="n">G</span><span class="o">=</span><span class="n">nx</span><span class="o">.</span><span class="n">fast_gnp_random_graph</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span><span class="mf">0.002</span><span class="p">)</span>
+<span class="n">tau</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">gamma</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="n">xi</span> <span class="o">=</span> <span class="p">{</span><span class="n">node</span><span class="p">:</span><span class="n">random</span><span class="o">.</span><span class="n">expovariate</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">()}</span>  
+<span class="c1">#xi[node] is duration of infection of node.</span>
+
+<span class="n">zeta</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span> <span class="p">:</span> <span class="n">tau</span><span class="p">)</span> <span class="c1">#every node has zeta=tau, so same </span>
+                                <span class="c1">#transmission rate</span>
+
+<span class="k">def</span> <span class="nf">my_transmission</span><span class="p">(</span><span class="n">infection_duration</span><span class="p">,</span> <span class="n">trans_rate</span><span class="p">):</span>
+    <span class="c1">#infect if duration is longer than time to infection.</span>
+    <span class="k">if</span> <span class="n">infection_duration</span> <span class="o">&gt;</span> <span class="n">random</span><span class="o">.</span><span class="n">expovariate</span><span class="p">(</span><span class="n">trans_rate</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">else</span><span class="p">:</span>  
+        <span class="k">return</span> <span class="kc">False</span>
+
+<span class="n">PE</span><span class="p">,</span> <span class="n">AR</span> <span class="o">=</span> <span class="n">EoN</span><span class="o">.</span><span class="n">estimate_nonMarkov_SIR_prob_size</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">xi</span><span class="p">,</span> <span class="n">zeta</span><span class="p">,</span> 
+                                                <span class="n">my_transmission</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="EoN.simulation.fast_SIR">
+<code class="descclassname">EoN.simulation.</code><code class="descname">fast_SIR</code><span class="sig-paren">(</span><em>G</em>, <em>tau</em>, <em>gamma</em>, <em>initial_infecteds=None</em>, <em>rho=None</em>, <em>tmax=inf</em>, <em>transmission_weight=None</em>, <em>recovery_weight=None</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN/simulation.html#fast_SIR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.simulation.fast_SIR" title="Permalink to this definition">¶</a></dt>
+<dd><p>From figure A.3 of Kiss, Miller, &amp; Simon.  Please cite the
+book if using this algorithm.</p>
+<p>fast SIR simulation assuming exponentially distributed infection and
+recovery times</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>G <span class="classifier-delimiter">:</span> <span class="classifier">NetworkX Graph</span></dt>
+<dd>The underlying network</dd>
+<dt>tau <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
+<dd>transmission rate per edge</dd>
+<dt>gamma <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
+<dd>recovery rate per node</dd>
+<dt>initial_infecteds: node or iterable of nodes</dt>
+<dd>if a single node, then this node is initially infected
+if an iterable, then whole set is initially infected
+if None, then choose randomly based on rho.  If rho is also
+None, a random single node is chosen.
+If both initial_infecteds and rho are assigned, then there
+is an error.</dd>
+<dt>rho <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
+<dd>initial fraction infected. number is int(round(G.order()*rho))</dd>
+<dt>tmax <span class="classifier-delimiter">:</span> <span class="classifier">number   (default float(&#8216;Inf&#8217;))</span></dt>
+<dd>maximum time after which simulation will stop.
+the default of running to infinity is okay for SIR, 
+but not for SIS.</dd>
+<dt>transmission_weight <span class="classifier-delimiter">:</span> <span class="classifier">string       (default None)</span></dt>
+<dd>the label for a weight given to the edges.
+transmission rate is
+G.edge[i][j][transmission_weight]*tau</dd>
+<dt>recovery_weight <span class="classifier-delimiter">:</span> <span class="classifier">string       (default None)</span></dt>
+<dd><p class="first">a label for a weight given to the nodes to scale their 
+recovery rates</p>
+<blockquote class="last">
+<div>gamma_i = G.node[i][recovery_weight]*gamma</div></blockquote>
+</dd>
+<dt>return_full_data: boolean</dt>
+<dd>Tells whether the infection and recovery times of each 
+individual node should be returned.  
+It is returned in the form of two dicts, infection_time and 
+recovery_time.
+infection_time[node] is the time of infection and 
+recovery_time[node] is the recovery time</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>times, S, I, R <span class="classifier-delimiter">:</span> <span class="classifier">each a scipy array</span></dt>
+<dd>giving times and number in each status for corresponding time</dd>
+</dl>
+<p>OR if return_full_data=True:
+times, S, I, R, infection_time, recovery_time</p>
+<blockquote>
+<div>first four are scipy arrays as above.  New objects are dicts
+with entries just for those nodes that were infected ever
+infection_time[node] is time of infection
+recovery_time[node] is time of recovery</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">EoN</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">configuration_model</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">10</span><span class="p">]</span><span class="o">*</span><span class="mi">100000</span><span class="p">)</span>
+<span class="n">initial_size</span> <span class="o">=</span> <span class="mi">10000</span>
+<span class="n">gamma</span> <span class="o">=</span> <span class="mf">1.</span>
+<span class="n">tau</span> <span class="o">=</span> <span class="mf">0.3</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">I</span><span class="p">,</span> <span class="n">R</span> <span class="o">=</span> <span class="n">EoN</span><span class="o">.</span><span class="n">fast_SIR</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> 
+                            <span class="n">initial_infecteds</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">initial_size</span><span class="p">))</span>
+                            
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">I</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="EoN.simulation.fast_SIS">
+<code class="descclassname">EoN.simulation.</code><code class="descname">fast_SIS</code><span class="sig-paren">(</span><em>G</em>, <em>tau</em>, <em>gamma</em>, <em>initial_infecteds=None</em>, <em>rho=None</em>, <em>tmax=100</em>, <em>transmission_weight=None</em>, <em>recovery_weight=None</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN/simulation.html#fast_SIS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.simulation.fast_SIS" title="Permalink to this definition">¶</a></dt>
+<dd><p>From figure A.5 of Kiss, Miller, &amp; Simon.  Please cite the
+book if using this algorithm.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>G <span class="classifier-delimiter">:</span> <span class="classifier">NetworkX Graph</span></dt>
+<dd>The underlying network</dd>
+<dt>tau <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
+<dd>transmission rate per edge</dd>
+<dt>gamma <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
+<dd>recovery rate per node</dd>
+<dt>initial_infecteds: node or iterable of nodes</dt>
+<dd>if a single node, then this node is initially infected
+if an iterable, then whole set is initially infected
+if None, then choose randomly based on rho.  If rho is also
+None, a random single node is chosen.
+If both initial_infecteds and rho are assigned, then there
+is an error.</dd>
+<dt>rho <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
+<dd>initial fraction infected. number is int(round(G.order()*rho))</dd>
+<dt>tmax <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
+<dd>stop time</dd>
+<dt>transmission_weight <span class="classifier-delimiter">:</span> <span class="classifier">string       (default None)</span></dt>
+<dd>the label for a weight given to the edges.
+transmission rate is
+G.edge[i][j][transmission_weight]*tau</dd>
+<dt>recovery_weight <span class="classifier-delimiter">:</span> <span class="classifier">string       (default None)</span></dt>
+<dd><p class="first">a label for a weight given to the nodes to scale their 
+recovery rates</p>
+<blockquote class="last">
+<div>gamma_i = G.node[i][recovery_weight]*gamma</div></blockquote>
+</dd>
+<dt>return_full_data: boolean</dt>
+<dd>Tells whether the infection and recovery times of each 
+individual node should be returned.  
+It is returned in the form of two dicts, infection_time and 
+recovery_time.
+infection_time[node] is the time of infection and 
+recovery_time[node] is the recovery time.</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>times, S, I <span class="classifier-delimiter">:</span> <span class="classifier">each a scipy array</span></dt>
+<dd>giving times and number in each status for corresponding time</dd>
+</dl>
+<p>or if return_full_data=True:
+times, S, I, infection_time, recovery_time</p>
+<blockquote>
+<div>first four are scipy arrays as above.  New objects are dicts
+with entries just for those nodes that were infected ever
+infection_time[node] is a list of times of infection
+recovery_time[node] is a list of times of recovery</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">EoN</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">configuration_model</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">10</span><span class="p">]</span><span class="o">*</span><span class="mi">100000</span><span class="p">)</span>
+<span class="n">initial_size</span> <span class="o">=</span> <span class="mi">10000</span>
+<span class="n">gamma</span> <span class="o">=</span> <span class="mf">1.</span>
+<span class="n">tau</span> <span class="o">=</span> <span class="mf">0.2</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">I</span> <span class="o">=</span> <span class="n">EoN</span><span class="o">.</span><span class="n">fast_SIS</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">tmax</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+                            <span class="n">initial_infecteds</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">initial_size</span><span class="p">))</span>
+                            
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">I</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="EoN.simulation.fast_nonMarkov_SIR">
+<code class="descclassname">EoN.simulation.</code><code class="descname">fast_nonMarkov_SIR</code><span class="sig-paren">(</span><em>G</em>, <em>process_trans=&lt;function _process_trans_SIR_&gt;</em>, <em>args=()</em>, <em>initial_infecteds=None</em>, <em>rho=None</em>, <em>tmax=inf</em>, <em>return_full_data=False</em>, <em>Q=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN/simulation.html#fast_nonMarkov_SIR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.simulation.fast_nonMarkov_SIR" title="Permalink to this definition">¶</a></dt>
+<dd><p>A modification of the algorithm in figure A.3 of Kiss, Miller, &amp; 
+Simon to allow for user-defined rules governing time of 
+transmission.</p>
+<p>Please cite the book if using this algorithm.</p>
+<p>This is useful if the transmission rule is non-Markovian in time, or
+for more elaborate models.</p>
+<p>For example if there is a mass action style transmission this can be
+incorporated into the process_trans command defined by user.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<p>G : Networkx Graph</p>
+<dl class="docutils">
+<dt>process_trans <span class="classifier-delimiter">:</span> <span class="classifier">a function that handles a transmission event.</span></dt>
+<dd><dl class="first docutils">
+<dt>Called by </dt>
+<dd><dl class="first last docutils">
+<dt>process_trans(G, time, node, times, S, I, R, Q, </dt>
+<dd>status, rec_time, pred_inf_time, <a href="#id3"><span class="problematic" id="id4">*</span></a>args)</dd>
+</dl>
+</dd>
+</dl>
+<p>must update :   status, rec_time, times, S, I, R,
+must also update : Q, pred_inf_time.
+In updating these last two, it calculates the</p>
+<blockquote>
+<div>recovery time, and adds the event to Q.</div></blockquote>
+<dl class="last docutils">
+<dt>It then calculates predicted times of transmission </dt>
+<dd>to neighbors.</dd>
+<dt>If before current earliest prediction, it will add</dt>
+<dd>appropriate transmission event to Q and update 
+this prediction.</dd>
+</dl>
+</dd>
+<dt>args: The final arguments going into process_trans.  </dt>
+<dd>If there is some reason to collect data about node that is 
+only calculated when transmission occurs it can modify a dict 
+or something similar that is passed as an argument.</dd>
+<dt>initial_infecteds: node or iterable of nodes</dt>
+<dd>if a single node, then this node is initially infected
+if an iterable, then whole set is initially infected
+if None, then choose randomly based on rho.  If rho is also
+None, a random single node is chosen.
+If both initial_infecteds and rho are assigned, then there
+is an error.</dd>
+<dt>rho <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
+<dd>initial fraction infected. number is int(round(G.order()*rho))</dd>
+<dt>tmax <span class="classifier-delimiter">:</span> <span class="classifier">(default infinity)</span></dt>
+<dd>final time</dd>
+<dt>return_full_data: boolean</dt>
+<dd><p class="first">Tells whether the infection and recovery times of each 
+individual node should be returned.  
+It is returned in the form of two dicts, infection_time and 
+recovery_time.
+infection_time[node] is the time of infection and 
+recovery_time[node] is the recovery time</p>
+<blockquote class="last">
+<div><dl class="docutils">
+<dt>If Q is defined:</dt>
+<dd>Then initial_infecteds consists of those nodes infected 
+<strong>PRIOR</strong> to t=0.  
+Those infected at t=0 will be handled by being in Q 
+already.</dd>
+</dl>
+</div></blockquote>
+</dd>
+<dt>Q <span class="classifier-delimiter">:</span> <span class="classifier">If user wants to predefine some events, this can be done.  This </span></dt>
+<dd><p class="first">can be input as a heap or as a list (it will be heapified and 
+modified).</p>
+<p>User should understand the Event class and use it.</p>
+<p>Currently there is no guarantee this is properly supported,
+so much so that right now I&#8217;m going to force the user to edit 
+the source code before trying it.</p>
+<p>I am reasonably confident it will work.</p>
+<p>When Q is input, initial_infecteds should be the of nodes in 
+I class <strong>PRIOR</strong> to t=0, and the events in Q must have all of 
+their recoveries.</p>
+<p class="last">The best way to handle nodes that should be already recovered is 
+to put them in initial_infecteds and give them a recovery event 
+at t=0.</p>
+</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>times, S, I, R <span class="classifier-delimiter">:</span> <span class="classifier">each a scipy array</span></dt>
+<dd>giving times and number in each status for corresponding time</dd>
+</dl>
+<p>OR if return_full_data=True:
+times, S, I, R, infection_time, recovery_time</p>
+<blockquote>
+<div>first four are scipy arrays as above.  New objects are dicts
+with entries just for those nodes that were infected ever
+infection_time[node] is time of infection
+recovery_time[node] is time of recovery</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="EoN.simulation.get_infected_nodes">
+<code class="descclassname">EoN.simulation.</code><code class="descname">get_infected_nodes</code><span class="sig-paren">(</span><em>G</em>, <em>tau</em>, <em>gamma</em>, <em>initial_infecteds=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN/simulation.html#get_infected_nodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.simulation.get_infected_nodes" title="Permalink to this definition">¶</a></dt>
+<dd><p>From figure 6.15 of Kiss, Miller, &amp; Simon.  Please cite the book if 
+using this algorithm</p>
+<p>Finds all eventually infected nodes in a simulation, assuming that 
+the intial infecteds are as given and transmission occurs with rate 
+tau and recovery with rate gamma.</p>
+<p>Uses a percolation-based approach.</p>
+<p>Note that the output of this algorithm is stochastic.</p>
+<p>This code has similar run-time whether an epidemic occurs or not.
+There are much faster ways to implement an algorithm giving the same 
+output, for example by actually running an epidemic.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">WARNING:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<p>why are you using this command? If it&#8217;s to better understand some
+concept, that&#8217;s fine.  But this command IS NOT an efficient way to
+calculate anything.  Don&#8217;t do it like this.  Use one of the other
+algorithms.  Try fast_SIR, for example.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>G <span class="classifier-delimiter">:</span> <span class="classifier">NetworkX Graph</span></dt>
+<dd>The network the disease will transmit through.</dd>
+<dt>tau <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
+<dd>transmission rate</dd>
+<dt>gamma <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
+<dd>recovery rate</dd>
+<dt>initial_infecteds: node or iterable of nodes</dt>
+<dd>if a single node, then this node is initially infected
+if an iterable, then whole set is initially infected
+if None, then a randomly chosen node is initially infected.</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>infected_nodes <span class="classifier-delimiter">:</span> <span class="classifier">set</span></dt>
+<dd>the set of nodes infected eventually in a simulation.</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"><p class="first">import networkx as nx
+import EoN</p>
+<p class="last">G = nx.fast_gnp_random_graph(1000,0.002)
+finalR = EoN.get_infected_nodes(G, 2, 1, initial_infecteds=[0, 5])</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>finds the nodes infected if 0 and 5 are the initial nodes infected
+and tau=2, gamma=1</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="EoN.simulation.myQueue">
+<em class="property">class </em><code class="descclassname">EoN.simulation.</code><code class="descname">myQueue</code><span class="sig-paren">(</span><em>tmax=inf</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN/simulation.html#myQueue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.simulation.myQueue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>This class is used to store a priority queue of events
+for event-driven simulations.</p>
+<dl class="method">
+<dt id="EoN.simulation.myQueue.add">
+<code class="descname">add</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN/simulation.html#myQueue.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.simulation.myQueue.add" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="EoN.simulation.myQueue.pop_and_run">
+<code class="descname">pop_and_run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN/simulation.html#myQueue.pop_and_run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.simulation.myQueue.pop_and_run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="EoN.simulation.nonMarkov_directed_percolate_network">
+<code class="descclassname">EoN.simulation.</code><code class="descname">nonMarkov_directed_percolate_network</code><span class="sig-paren">(</span><em>G</em>, <em>xi</em>, <em>zeta</em>, <em>transmission</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN/simulation.html#nonMarkov_directed_percolate_network"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.simulation.nonMarkov_directed_percolate_network" title="Permalink to this definition">¶</a></dt>
+<dd><p>From figure 6.18 of Kiss, Miller, &amp; Simon.  
+Please cite the book if using this algorithm.</p>
+<p>xi and zeta are dictionaries of whatever data is needed so that 
+xi[u] and zeta[v] 
+are enough to determine the probability of a u-v transmission.</p>
+<p>transmissision is a user-defined function taking xi[u] and zeta[v] 
+and returning True if a transmission would occur</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>G <span class="classifier-delimiter">:</span> <span class="classifier">NetworkX Graph</span></dt>
+<dd>The input graph</dd>
+<dt>xi <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd>xi[u] gives all necessary information to determine what us 
+infectiousness is.</dd>
+<dt>zeta <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd>zeta[v] gives everything needed about vs susceptibility</dd>
+<dt>transmission <span class="classifier-delimiter">:</span> <span class="classifier">user-defined function</span></dt>
+<dd>transmission(xi[u], zeta[v]) determines whether u transmits to 
+v.</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<p>networkx DiGraph (directed graph) H.  
+Edge u,v exists in H if it will transmit given the opportunity.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<p>for now, I&#8217;m being lazy.  
+Look at the sample for estimate_nonMarkov_SIR_prob_size to infer it.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="EoN.simulation.percolate_network">
+<code class="descclassname">EoN.simulation.</code><code class="descname">percolate_network</code><span class="sig-paren">(</span><em>G</em>, <em>p</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN/simulation.html#percolate_network"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.simulation.percolate_network" title="Permalink to this definition">¶</a></dt>
+<dd><p>From figure 6.10 of Kiss, Miller, &amp; Simon.  Please cite the book
+if using this algorithm.</p>
+<p>Performs bond percolation on the network G, keeping edges with 
+probability p</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<p>G : NetworkX Graph
+p : number between 0 and 1</p>
+<blockquote>
+<div>the probability of keeping edge</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>H <span class="classifier-delimiter">:</span> <span class="classifier">NetworkX Graph</span></dt>
+<dd>A network with same nodes as G, but with each edge retained 
+independently with probability p.</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">EoN</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">fast_gnp_random_graph</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span><span class="mf">0.002</span><span class="p">)</span>
+<span class="n">H</span> <span class="o">=</span> <span class="n">EoN</span><span class="o">.</span><span class="n">percolate_network</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">)</span>
+
+<span class="c1">#H is now a graph with 60% of the edges of G</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="EoN.simulation.percolation_based_discrete_SIR_epidemic">
+<code class="descclassname">EoN.simulation.</code><code class="descname">percolation_based_discrete_SIR_epidemic</code><span class="sig-paren">(</span><em>G</em>, <em>p</em>, <em>initial_infecteds=None</em>, <em>return_full_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN/simulation.html#percolation_based_discrete_SIR_epidemic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.simulation.percolation_based_discrete_SIR_epidemic" title="Permalink to this definition">¶</a></dt>
+<dd><p>From figure 6.10 of Kiss, Miller, &amp; Simon.  Please cite the book
+if using this algorithm.</p>
+<p>The simple case of all nodes transmitting with probability p 
+independently to each neighbor and then recovering, but using a 
+percolation-based approach.</p>
+<p>See basic_discrete_SIR_epidemic which should produce equivalent 
+outputs.</p>
+<p>That algorithm will be faster than this one.</p>
+<p>The value of this function is that by performing many simulations we 
+can see that the outputs of the two are equivalent.</p>
+<p>This algorithm leads to a better understanding of the theory.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">INPUTS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>G <span class="classifier-delimiter">:</span> <span class="classifier">NetworkX Graph</span></dt>
+<dd>The network the disease will transmit through.</dd>
+<dt>p <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
+<dd>transmission probability</dd>
+<dt>initial_infecteds: node or iterable of nodes</dt>
+<dd>if a single node, then this node is initially infected
+if an iterable, then whole set is initially infected
+if None, then a randomly chosen node is initially infected.</dd>
+<dt>return_full_data: boolean</dt>
+<dd><p class="first">Tells whether the infection and recovery times of each 
+individual node should be returned.  
+It is returned in the form of two dicts,</p>
+<blockquote>
+<div>infection_time and recovery_time</div></blockquote>
+<p class="last">infection_time[node] is the time of infection and 
+recovery_time[node] is the recovery time</p>
+</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>if return_full_data is False:</dt>
+<dd>the lists: t, S, I, R</dd>
+<dt>else:</dt>
+<dd>the lists: t, S, I, R 
+and the dicts infection_time and recovery_time</dd>
+<dt>these lists give all the times observed and the number in each state </dt>
+<dd>at each time.</dd>
+</dl>
+<p>The dicts give times at which each node changed status.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">SAMPLE USE:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">EoN</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">fast_gnp_random_graph</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span><span class="mf">0.002</span><span class="p">)</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">I</span><span class="p">,</span> <span class="n">R</span> <span class="o">=</span> <span class="n">EoN</span><span class="o">.</span><span class="n">percolation_based_discrete_SIR_epidemic</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">S</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This is equivalent to basic_discrete_epidemic (but many simulations
+may be needed before it&#8217;s clear, since these are stochastic)</p>
+</dd></dl>
+
+</div>
+
 
           </div>
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper"><div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="index.html">Documentation overview</a><ul>
-  </ul></li>
-</ul>
-</div>
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="EoN.html"
+                        title="previous chapter">EoN module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="analytic.html"
+                        title="next chapter">EoN Analytic Models</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -76,20 +1392,27 @@
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="footer">
-      &copy;2017, Joel Miller, Istvan Kiss, Peter Simon.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
-      
-      |
-      <a href="_sources/simulation.rst.txt"
-          rel="nofollow">Page source</a>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="analytic.html" title="EoN Analytic Models"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="EoN.html" title="EoN module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Epidemics on Networks 0.91 documentation</a> &#187;</li> 
+      </ul>
     </div>
-
-    
-
-    
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Joel Miller, Istvan Kiss, Peter Simon.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
+    </div>
   </body>
 </html>

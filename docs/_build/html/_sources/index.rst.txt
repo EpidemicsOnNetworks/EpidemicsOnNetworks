@@ -20,8 +20,10 @@ The package is built using tools from NetworkX_.
    :caption: Contents:
 
    quickstart
-   methods
-
+   EoN
+   simulation
+   analytic
+   
 
 Indices and tables
 ==================
