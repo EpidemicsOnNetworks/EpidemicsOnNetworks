@@ -33,7 +33,7 @@ print("warning - EoN is currently under significant development.  Interface"
 
 
 __author__ = "Joel C. Miller, Istvan Z. Kiss, and Peter Simon"
-__version__ = "0.91"
+__version__ = "0.92"
 
 
 
@@ -42,6 +42,7 @@ class EoNError(Exception):
     this will be the basic error type for EoN
     '''
     pass
+
 
 import simulation
 from simulation import *
