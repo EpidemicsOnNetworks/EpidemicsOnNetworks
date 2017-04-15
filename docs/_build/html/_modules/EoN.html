@@ -476,8 +476,9 @@
 <span class="sd">    returns them </span>
 <span class="sd">      subsampled at specific report_times.</span>
 <span class="sd">      </span>
-<span class="sd">    If more than one is given, does so as a list in order given, but </span>
-<span class="sd">        skipping whichever was not included (if any not included)</span>
+<span class="sd">    If more than one argument is given, does so as a list in order given, but </span>
+<span class="sd">    skipping whichever was not included (if any not included)</span>
+
 <span class="sd">    If only one is given then returns just that.</span>
 
 <span class="sd">    If report_times goes longer than times, then this simply assumes the </span>
@@ -489,9 +490,11 @@
 
 <span class="sd">    report_times : iterable (ordered)</span>
 <span class="sd">                   times at which we want to know state of system</span>
+<span class="sd">                   </span>
 <span class="sd">    times : iterable (ordered)</span>
 <span class="sd">            times at which we have the system state (assumed no change </span>
 <span class="sd">            between these times)</span>
+<span class="sd">            </span>
 <span class="sd">    statusX (X one of 1, 2 or 3) : iterable (order corresponds to times)</span>
 <span class="sd">                          generally S, I, or R</span>
 <span class="sd">                          number of nodes in given status.</span>
@@ -6043,26 +6046,28 @@
 <span class="sd">    :INPUTS:</span>
 <span class="sd">        </span>
 <span class="sd">    Pk : dict</span>
-<span class="sd">        the probability a randomly selected node has degree k.</span>
+<span class="sd">    </span>
+<span class="sd">    the probability a randomly selected node has degree k.</span>
 
 <span class="sd">    tau : number</span>
-<span class="sd">        per-edge transmission rate.</span>
+<span class="sd">    per-edge transmission rate.</span>
 
 <span class="sd">    gamma : number</span>
-<span class="sd">        per-node recovery rate</span>
+<span class="sd">    per-node recovery rate</span>
 
 <span class="sd">    number_its : int</span>
-<span class="sd">        The solution is found iteratively, so this determines </span>
-<span class="sd">                 the number of iterations.</span>
+<span class="sd">    The solution is found iteratively, so this determines </span>
+<span class="sd">    the number of iterations.</span>
+
 <span class="sd">    rho : number, optional</span>
-<span class="sd">        The initial proportion infected (defaults to None)</span>
+<span class="sd">    The initial proportion infected (defaults to None)</span>
 
 <span class="sd">    Sk0 : dict (default None)</span>
-<span class="sd">          only one of rho and Sk0 can be defined.  </span>
-<span class="sd">          The other (or both) should remain None.</span>
-<span class="sd">          rho gives the fraction of nodes randomly infected.</span>
-<span class="sd">          Sk0 is a dict such that Sk0[k] is the probability that a </span>
-<span class="sd">              degree k node is susceptible at start.</span>
+<span class="sd">    only one of rho and Sk0 can be defined.  </span>
+<span class="sd">    The other (or both) should remain None.</span>
+<span class="sd">    rho gives the fraction of nodes randomly infected.</span>
+<span class="sd">    Sk0 is a dict such that Sk0[k] is the probability that a </span>
+<span class="sd">    degree k node is susceptible at start.</span>
 
 <span class="sd">    :RETURNS:</span>
 

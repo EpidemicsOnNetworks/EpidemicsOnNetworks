@@ -96,30 +96,23 @@ introduce rho or Sk0</p>
 </tr>
 </tbody>
 </table>
-<dl class="docutils">
-<dt>Pk <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
-<dd>the probability a randomly selected node has degree k.</dd>
-<dt>tau <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
-<dd>per-edge transmission rate.</dd>
-<dt>gamma <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
-<dd>per-node recovery rate</dd>
-<dt>number_its <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
-<dd><dl class="first last docutils">
-<dt>The solution is found iteratively, so this determines </dt>
-<dd>the number of iterations.</dd>
-</dl>
-</dd>
-<dt>rho <span class="classifier-delimiter">:</span> <span class="classifier">number, optional</span></dt>
-<dd>The initial proportion infected (defaults to None)</dd>
-<dt>Sk0 <span class="classifier-delimiter">:</span> <span class="classifier">dict (default None)</span></dt>
-<dd><p class="first">only one of rho and Sk0 can be defined.  
+<p>Pk : dict</p>
+<p>the probability a randomly selected node has degree k.</p>
+<p>tau : number
+per-edge transmission rate.</p>
+<p>gamma : number
+per-node recovery rate</p>
+<p>number_its : int
+The solution is found iteratively, so this determines 
+the number of iterations.</p>
+<p>rho : number, optional
+The initial proportion infected (defaults to None)</p>
+<p>Sk0 : dict (default None)
+only one of rho and Sk0 can be defined.  
 The other (or both) should remain None.
 rho gives the fraction of nodes randomly infected.
-Sk0 is a dict such that Sk0[k] is the probability that a</p>
-<blockquote class="last">
-<div>degree k node is susceptible at start.</div></blockquote>
-</dd>
-</dl>
+Sk0 is a dict such that Sk0[k] is the probability that a 
+degree k node is susceptible at start.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -4212,9 +4205,9 @@ may be needed before it&#8217;s clear, since these are stochastic)</p>
 given status at given times</dd>
 <dt>returns them </dt>
 <dd>subsampled at specific report_times.</dd>
-<dt>If more than one is given, does so as a list in order given, but </dt>
-<dd>skipping whichever was not included (if any not included)</dd>
 </dl>
+<p>If more than one argument is given, does so as a list in order given, but 
+skipping whichever was not included (if any not included)</p>
 <p>If only one is given then returns just that.</p>
 <p>If report_times goes longer than times, then this simply assumes the 
 system freezes in the final state.</p>
