@@ -2,7 +2,7 @@ from scipy import integrate
 from scipy.ndimage.interpolation import shift
 import scipy
 import networkx as nx
-
+import EoN
 #######################
 #                     #
 #   Auxiliary stuff   #
@@ -955,13 +955,13 @@ def SIS_pair_based(G, nodelist, Y0, tau, gamma, XY0=None, XX0 = None,
         XY0 = X0[:,None]*Y0[None,:]
     else:
         if XY0.shape != (N,N):
-            raise EoNError("incompatible lengths for XY0 and Y0")
+            raise EoN.EoNError("incompatible lengths for XY0 and Y0")
 
     if XX0 is None:
         XX0 = X0[:,None]*X0[None,:]
     else:
         if XX0.shape != (N,N):
-            raise EoNError("incompatible lengths for XX0 and Y0")
+            raise EoN.EoNError("incompatible lengths for XX0 and Y0")
     A = nx.adjacency_matrix(G).toarray()
     XY0 = XY0*A  #in principle the equations should still work for pairs not
     XX0 = XX0*A  #in an edge, but this led to the error with odeint.  
@@ -1117,12 +1117,12 @@ def SIR_pair_based(G, nodelist, Y0, tau, gamma, X0 = None, XY0=None,
         XY0 = X0[:,None]*Y0[None,:]
     else:
         if XY0.shape != (N,N):
-            raise EoNError("incompatible lengths for XY0 and Y0")
+            raise EoN.EoNError("incompatible lengths for XY0 and Y0")
     if XX0 is None:
         XX0 = X0[:,None]*X0[None,:]
     else:
         if XX0.shape != (N,N):
-            raise EoNError("incompatible lengths for XX0 and Y0")
+            raise EoN.EoNError("incompatible lengths for XX0 and Y0")
     A = nx.adjacency_matrix(G).toarray()
     XY0 = XY0*A  #in principle the equations should still work for pairs not
     XX0 = XX0*A  #in an edge, but this led to the error with odeint.  
@@ -1260,10 +1260,10 @@ def _dSIR_pair_based2_(V, t, G, nodelist, index_of_node, edgelist,
 def _SIR_pair_based_initialize_node_data(G, rho, nodelist, X0, Y0):
     #inputs must define either rho or Y0.  In first case nodelist is optional.
     if (rho and Y0 is not None) or (not rho and Y0 is None):
-        raise EoNError("need rho or Y0 defined for initial condition, \
+        raise EoN.EoNError("need rho or Y0 defined for initial condition, \
                         but not both")
     if Y0 is not None and nodelist is None:
-        raise EoNError("order in Y0 is ambiguous if nodelist is not given.")
+        raise EoN.EoNError("order in Y0 is ambiguous if nodelist is not given.")
 
     if not nodelist: #then rho is defined but not Y0
         nodelist = list(G.nodes())
@@ -1281,10 +1281,10 @@ def _SIR_pair_based_initialize_edge_data(G, edgelist, nodelist, XY0, YX0,
     if (not XY0 is None or YX0 is None or XX0 is None) \
             and (XY0 is not None or YX0 !=None  or XX0 is not None):  
             #at least one defined and one not defined
-        raise EoNError("must define all of XY0, YX0, and XX0 or none of them")
+        raise EoN.EoNError("must define all of XY0, YX0, and XX0 or none of them")
     if not edgelist:
         if XY0:
-            raise EoNError("order in XY0, YX0, and XX0 is ambiguous if \
+            raise EoN.EoNError("order in XY0, YX0, and XX0 is ambiguous if \
                             edgelist is not given.")
         else:
             edgelist = list(G.edges())
@@ -1296,7 +1296,7 @@ def _SIR_pair_based_initialize_edge_data(G, edgelist, nodelist, XY0, YX0,
            i_v = index_of_node[v]
            if XY0[index] >X0[i_u]*Y0[i_v] or YX0[index]>Y0[i_u]*X0[I_v] \
                                 or XX0[index]>X0[i_u]*X0[i_v]:
-               raise EoNError("edge probabilities inconsistent with node \
+               raise EoN.EoNError("edge probabilities inconsistent with node \
                                 probabilities")
     else:
         XY0 = scipy.array([X0[index_of_node[u]]*Y0[index_of_node[v]] 
@@ -1697,7 +1697,7 @@ def SIS_homogeneous_pairwise(S0, I0, SI0, SS0, n, tau, gamma, tmin = 0,
     N = S0+I0
 
     if SS0 + SI0*2>n*N:
-        raise EoNError('Initial condition has more SS, SI, and IS edges than allowed')
+        raise EoN.EoNError('Initial condition has more SS, SI, and IS edges than allowed')
 
     X0 = scipy.array([S0, SI0, SS0])
     
@@ -1783,7 +1783,7 @@ def SIR_homogeneous_pairwise(S0, I0, R0, SI0, SS0, n, tau, gamma, tmin = 0,
     '''
     N = S0+I0+R0
     if SS0 + 2*SI0 > n*N:
-        raise EoNError('Initial condition has more SS, SI, and IS edges than allowed')
+        raise EoN.EoNError('Initial condition has more SS, SI, and IS edges than allowed')
     X0 = scipy.array([S0, I0, SI0, SS0])
     times = scipy.linspace(tmin,tmax,tcount)
     X = integrate.odeint(_dSIR_homogeneous_pairwise_, X0, times, 
@@ -2021,7 +2021,7 @@ def SIS_heterogeneous_meanfield(Sk0, Ik0, tau, gamma, tmin = 0, tmax=100,
         t, S, I = EoN.SIS_heterogeneous_meanfield(Sk0, Ik0, tau, gamma, tmax = 10)
     '''
     if len(Sk0) != len(Ik0):
-        raise EoNError('length of Sk0 not equal to length of Ik0')
+        raise EoN.EoNError('length of Sk0 not equal to length of Ik0')
     Sk0 = scipy.array(Sk0)
     Ik0 = scipy.array(Ik0)
 
@@ -2105,7 +2105,7 @@ def SIR_heterogeneous_meanfield(Sk0, Ik0, Rk0, tau, gamma, tmin = 0, tmax=100,
                                                         tmax = 10)
     '''
     if len(Sk0) != len(Ik0) or len(Sk0) != len(Rk0):
-        raise EoNError('length of Sk0, Ik0, and Rk0 must be the same')
+        raise EoN.EoNError('length of Sk0, Ik0, and Rk0 must be the same')
 
     theta0=1
     Sk0 = scipy.array(Sk0)
@@ -3658,7 +3658,7 @@ def Attack_rate_discrete(Pk, p, number_its=100, rho = None, Sk0=None,
     '''
 
     if rho is not None and Sk0 is not None:
-        raise EoNError("at most one of rho and Sk0 can be defined")
+        raise EoN.EoNError("at most one of rho and Sk0 can be defined")
     if Sk0 is None:
         if rho is None or rho == 0:
             return Epi_Prob_discrete(Pk, p, number_its)
@@ -3735,7 +3735,7 @@ def Attack_rate_cts_time(Pk, tau, gamma, number_its =100, rho = None,
     '''
 
     if rho is not None and Sk0 is not None:
-        raise EoNError("at most one of rho and Sk0 can be defined")
+        raise EoN.EoNError("at most one of rho and Sk0 can be defined")
     if Sk0 is None:
         if rho is None:
             rho = 0

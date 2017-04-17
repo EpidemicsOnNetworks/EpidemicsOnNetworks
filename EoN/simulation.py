@@ -3,7 +3,7 @@ import networkx as nx
 import random
 import heapq
 import scipy
-
+import EoN
 
 #######################
 #                     #
@@ -1339,7 +1339,7 @@ def fast_nonMarkov_SIR(G, process_trans = _process_trans_SIR_,
     
     '''
     if rho is not None and initial_infecteds is not None:
-        raise EoNError("cannot define both initial_infecteds and rho")
+        raise EoN.EoNError("cannot define both initial_infecteds and rho")
 
 
     status = defaultdict(lambda: 'S') #node status defaults to 'S'
@@ -1373,7 +1373,7 @@ def fast_nonMarkov_SIR(G, process_trans = _process_trans_SIR_,
             Q.add(newevent)
 
     else:
-        raise EoNError("inputting Q is not currently tested.\n \
+        raise EoN.EoNError("inputting Q is not currently tested.\n \
                         Email joel.c.miller.research@gmail.com for help.\n \
                         I believe this code will work, but you will need to \
                         delete this message.")
@@ -1653,7 +1653,7 @@ def fast_SIS(G, tau, gamma, initial_infecteds=None, rho = None, tmax=100,
             
     '''
     if rho is not None and initial_infecteds is not None:
-        raise EoNError("cannot define both initial_infecteds and rho")
+        raise EoN.EoNError("cannot define both initial_infecteds and rho")
     
     trans_rate_fxn, rec_rate_fxn = _get_rate_functions(G, tau, gamma, 
                                                 transmission_weight,
@@ -1958,7 +1958,7 @@ def Gillespie_SIR(G, tau, gamma, initial_infecteds=None, rho = None, tmax=float(
     '''
 
     if rho is not None and initial_infecteds is not None:
-        raise EoNError("cannot define both initial_infecteds and rho")
+        raise EoN.EoNError("cannot define both initial_infecteds and rho")
 
     
     infection_times = defaultdict(lambda: []) #defaults to an empty list for each node
@@ -2098,7 +2098,7 @@ def Gillespie_SIS(G, tau, gamma, initial_infecteds=None, rho = None, tmax=100,
 
     '''
     if rho is not None and initial_infecteds is not None:
-        raise EoNError("cannot define both initial_infecteds and rho")
+        raise EoN.EoNError("cannot define both initial_infecteds and rho")
 
     infection_times = defaultdict(lambda: []) #defaults to an empty list 
     recovery_times = defaultdict(lambda: [])  #for each node
