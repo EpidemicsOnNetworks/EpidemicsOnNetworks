@@ -21,17 +21,8 @@ The package is built using tools from NetworkX_.
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
-   Getting Started
-   ===============
-   quickstart
-   examples
-
-   Functions
-   =========
+   Getting Started <GettingStarted>
    EoN
-   simulation
-   analytic
-   
-
+   Algorithms for Simlation <simulation>
+   Algorithms for analyic approximations <analytic>

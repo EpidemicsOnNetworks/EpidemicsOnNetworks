@@ -1,7 +1,4 @@
 r'''
-EoN
-===
-
 EoN (Epidemics on Networks)
 
 EoN is a Python package for the simulation of epidemics on networks 
