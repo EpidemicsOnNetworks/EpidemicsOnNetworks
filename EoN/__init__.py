@@ -17,16 +17,16 @@ For simulations, we assume that input networks are **NetworkX**
 graphs; see https://networkx.github.io/
 
 
+Distributed under MIT license.  See :download:`license.txt<../license.txt>` for full details.
 
 
-Distributed under MIT license.  See license.txt for full details.
 
 '''
 
 print("warning - EoN is not yet tested in Python 3")
 
 print("warning - EoN is currently under significant development.  Interface"
-      +" may change with little if any warning until it version 1.0")
+      +" may change with little if any warning until version 1.0")
 
 
 __author__ = "Joel C. Miller, Istvan Z. Kiss, and Peter Simon"

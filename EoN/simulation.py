@@ -4,6 +4,7 @@ import random
 import heapq
 import scipy
 import EoN
+import matplotlib.pyplot as plt
 
 #######################
 #                     #
@@ -1436,7 +1437,8 @@ def fast_nonMarkov_SIR(G, process_trans = _process_trans_SIR_,
                 scipy.array(R), infection_time, recovery_time
 
 
-def _process_trans_SIS_(time, G, source, target, times, infection_times, S, I, Q, status, rec_time, trans_rate_fxn, rec_rate_fxn):
+def _process_trans_SIS_(time, G, source, target, times, infection_times, recovery_times,
+                        S, I, Q, status, rec_time, trans_rate_fxn, rec_rate_fxn):
     r'''From figure A.6 of Kiss, Miller, & Simon.  Please cite the
     book if using this algorithm.
 
@@ -1451,6 +1453,10 @@ def _process_trans_SIS_(time, G, source, target, times, infection_times, S, I, Q
             node receiving transmission.
         times : list
             list of times at which events have happened
+        infection_times : 
+        
+        recovery_times : 
+            
         S, I: lists
             lists of numbers of nodes of each status at each time
         Q : myQueue
@@ -1476,6 +1482,7 @@ def _process_trans_SIS_(time, G, source, target, times, infection_times, S, I, Q
     status : updates status of target
     rec_time : adds recovery time for target
     times : appends time of event
+    infection_times[node] : appends time of infection.
     S : appends new S (reduced by 1 from last)
     I : appends new I (increased by 1)
     Q : adds recovery and transmission events for target.
@@ -1490,13 +1497,14 @@ def _process_trans_SIS_(time, G, source, target, times, infection_times, S, I, Q
         rec_time[target] = time + random.expovariate(rec_rate_fxn(target))
         
         newevent = Event(rec_time[target], _process_rec_SIS_, 
-                                args = (target, times, S, I, status))
+                                args = (target, times, recovery_times, S, I, status))
         Q.add(newevent) #fails if time>tmax
         for v in G.neighbors(target): #target plays role of source here
             _find_next_trans_SIS_(Q, time, trans_rate_fxn(target, v), target, v, 
                                     status, rec_time,
                                     trans_event_args = (G, target, v, times, 
-                                            infection_times, S, I, Q, status, 
+                                            infection_times, recovery_times,
+                                            S, I, Q, status, 
                                             rec_time, trans_rate_fxn,
                                             rec_rate_fxn
                                             )
@@ -1506,7 +1514,8 @@ def _process_trans_SIS_(time, G, source, target, times, infection_times, S, I, Q
         _find_next_trans_SIS_(Q, time, trans_rate_fxn(source, target), 
                                 source, target, status, rec_time, 
                                 trans_event_args = (G, source, target, times, 
-                                            infection_times, S, I, Q, status, 
+                                            infection_times, recovery_times,
+                                            S, I, Q, status, 
                                             rec_time, trans_rate_fxn, 
                                             rec_rate_fxn
                                             )
@@ -1566,13 +1575,14 @@ def _find_next_trans_SIS_(Q, time, tau, source, target, status, rec_time,
             Q.add(newEvent) #note Q checks that it's before tmax
 
  
-def _process_rec_SIS_(time, node, times, S, I, status):
+def _process_rec_SIS_(time, node, times, recovery_times, S, I, status):
     r'''From figure A.6 of Kiss, Miller, & Simon.  Please cite the
     book if using this algorithm.
 
     '''
 
     times.append(time)
+    recovery_times[node].append(time)
     S.append(S[-1]+1)   #no change to number susceptible
     I.append(I[-1]-1) #one less infected
     status[node] = 'S'
@@ -1687,7 +1697,8 @@ def fast_SIS(G, tau, gamma, initial_infecteds=None, rho = None, tmax=100,
     for u in initial_infecteds:
         newevent = Event(0, _process_trans_SIS_, 
                             args = (G, 'initial_condition', u, times, 
-                                    infection_times, S, I, Q, 
+                                    infection_times, recovery_times, 
+                                    S, I, Q, 
                                     status, rec_time, trans_rate_fxn, 
                                     rec_rate_fxn)
                         )
@@ -2171,3 +2182,55 @@ def Gillespie_SIS(G, tau, gamma, initial_infecteds=None, rho = None, tmax=100,
                 infection_times, recovery_times
 
 
+
+
+def visualize(G, plot_times, infection_times, recovery_times, pos = None, 
+                SIR = True, filetype = 'png', filenamebase = 'tmp', 
+                colorS = '#009a80', colorI = '#ff2020', 
+                colorR = 'gray', show_edges = True):
+    r''' 
+    Assumes that all nodes are susceptible unless (and until) appearing in infection_times.
+    
+    '''
+    
+    if pos is None:
+        pos = nx.spring_layout(G)
+
+        
+    for time in plot_times:
+        plt.clf()
+        S = set()
+        I = set()
+        R = set()
+        if SIR:
+            for node in G.nodes():
+                if node not in infection_times or infection_times[node]>time:
+                    S.add(node)
+                elif recovery_times[node]>time:
+                    I.add(node)
+                else:
+                    R.add(node)    
+        else: #SIS
+            for node in G.nodes():
+                if node not in infection_times or infection_times[node][0]>time:
+                    S.add(node)
+                else: #has been infected at least once. I'm not taking advantage of ordering of lists. 
+                    time_of_last_inf = max(inftime for inftime in infection_times[node] if inftime<=time)
+                    if recovery_times[node][0]<time:
+                        time_of_last_rec = max(rectime for rectime in recovery_times[node] if rectime<=time)
+                    else:
+                        time_of_last_rec = float('Inf')
+                    if time_of_last_rec<time_of_last_inf:
+                        S.add(node)
+                    else:
+                        I.add(node)
+
+        nx.draw_networkx_nodes(G, pos = pos, node_color = colorS, nodelist = list(S))            
+        nx.draw_networkx_nodes(G, pos = pos, node_color = colorI, nodelist = list(I))            
+        nx.draw_networkx_nodes(G, pos = pos, node_color = colorR, nodelist = list(R))
+        if show_edges:
+            nx.draw_networkx_edges(G, pos)
+        plt.savefig(filenamebase+str(time).replace('.', 'p')+'.'+filetype)
+        plt.clf()
+                
+    
