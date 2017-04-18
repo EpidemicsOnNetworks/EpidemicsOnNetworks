@@ -52,16 +52,16 @@
 <div class="section" id="eon">
 <h2>EoN<a class="headerlink" href="#eon" title="Permalink to this headline">¶</a></h2>
 <p>EoN (Epidemics on Networks)</p>
-<p>EoN is a Python package for the simulation of epidemics on networks 
+<p>EoN is a Python package for the simulation of epidemics on networks
 and ODE models of disease spread.</p>
 <p>The algorithms are based on the book</p>
-<p><cite>Mathematics of epidemics on networks: from exact to approximate 
+<p><cite>Mathematics of epidemics on networks: from exact to approximate
 models</cite>
 by Kiss, Miller &amp; Simon</p>
 <blockquote>
 <div><a class="reference external" href="http://www.springer.com/book/9783319508047">http://www.springer.com/book/9783319508047</a></div></blockquote>
 <p>Please cite the book if using these algorithms</p>
-<p>For simulations, we assume that input networks are <strong>NetworkX</strong> 
+<p>For simulations, we assume that input networks are <strong>NetworkX</strong>
 graphs; see <a class="reference external" href="https://networkx.github.io/">https://networkx.github.io/</a></p>
 <p>Distributed under MIT license.  See license.txt for full details.</p>
 <dl class="exception">
@@ -73,7 +73,7 @@ graphs; see <a class="reference external" href="https://networkx.github.io/">htt
 <dl class="function">
 <dt id="EoN.get_time_shift">
 <code class="descclassname">EoN.</code><code class="descname">get_time_shift</code><span class="sig-paren">(</span><em>times</em>, <em>L</em>, <em>threshold</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#get_time_shift"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.get_time_shift" title="Permalink to this definition">¶</a></dt>
-<dd><p>Identifies the first time at which L crosses a threshold.  
+<dd><p>Identifies the first time at which L crosses a threshold.
 Useful for shifting times.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -109,16 +109,16 @@ Useful for shifting times.</p>
 <dt id="EoN.subsample">
 <code class="descclassname">EoN.</code><code class="descname">subsample</code><span class="sig-paren">(</span><em>report_times</em>, <em>times</em>, <em>status1</em>, <em>status2=None</em>, <em>status3=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EoN.html#subsample"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EoN.subsample" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="docutils">
-<dt>Given </dt>
+<dt>Given</dt>
 <dd>S, I, and/or R as lists (or other iterable) of numbers of nodes of
 given status at given times</dd>
-<dt>returns them </dt>
+<dt>returns them</dt>
 <dd>subsampled at specific report_times.</dd>
 </dl>
-<p>If more than one argument is given, does so as a list in order given, but 
+<p>If more than one argument is given, does so as a list in order given, but
 skipping whichever was not included (if any not included)</p>
 <p>If only one is given then returns just that.</p>
-<p>If report_times goes longer than times, then this simply assumes the 
+<p>If report_times goes longer than times, then this simply assumes the
 system freezes in the final state.</p>
 <p>This uses a recursive approach if multiple arguments are defined.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -133,7 +133,7 @@ system freezes in the final state.</p>
 <dt>report_times <span class="classifier-delimiter">:</span> <span class="classifier">iterable (ordered)</span></dt>
 <dd>times at which we want to know state of system</dd>
 <dt>times <span class="classifier-delimiter">:</span> <span class="classifier">iterable (ordered)</span></dt>
-<dd>times at which we have the system state (assumed no change 
+<dd>times at which we have the system state (assumed no change
 between these times)</dd>
 <dt>statusX (X one of 1, 2 or 3) <span class="classifier-delimiter">:</span> <span class="classifier">iterable (order corresponds to times)</span></dt>
 <dd>generally S, I, or R
@@ -150,7 +150,7 @@ number of nodes in given status.</dd>
 <dl class="docutils">
 <dt>If only status1 is defined</dt>
 <dd><dl class="first last docutils">
-<dt>report_status1 <span class="classifier-delimiter">:</span> <span class="classifier">scipy array gives status1 subsampled just at </span></dt>
+<dt>report_status1 <span class="classifier-delimiter">:</span> <span class="classifier">scipy array gives status1 subsampled just at</span></dt>
 <dd>report_times.</dd>
 </dl>
 </dd>

@@ -102,26 +102,28 @@ class _ListDict_(object):
 def _get_rate_functions(G, tau, gamma, transmission_weight = None, 
                         recovery_weight=None):
     r'''
-    INPUT:
-    -----
-    G : networkx Graph
-        the graph disease spread on
+    Arguments:
+        G : networkx Graph
+            the graph disease spread on
 
-    tau : number
-        disease parameter giving edge transmission rate 
-        (subject to edge scaling)
+        tau : number
+            disease parameter giving edge transmission rate (subject to edge scaling)
 
-    gamma : number (default None)
-        disease parameter giving typical recovery rate, 
+        gamma : number (default None)
+            disease parameter giving typical recovery rate, 
         
-    transmission_weight : string (default None)
-        G.edge[u][v][transmission_weight] scales up or down the recovery 
-        rate.
+        transmission_weight : string (default None)
+            `G.edge[u][v][transmission_weight]` scales up or down the recovery rate.
 
-    recovery_weight : string       (default None)
+        recovery_weight : string       (default None)
             a label for a weight given to the nodes to scale their 
             recovery rates
-                gamma_i = G.node[i][recovery_weight]*gamma
+                `gamma_i = G.node[i][recovery_weight]*gamma`
+    Returns:
+        : trans_rate_fxn, rec_rate_fxn
+            Two functions such that 
+            - `trans_rate_fxn(u,v)` is the transmission rate from u to v and
+            - `rec_rate_fxn(u)` is the recovery rate of u.
 '''
     if transmission_weight is None:
         trans_rate_fxn = lambda x, y: tau
@@ -156,19 +158,21 @@ def _simple_test_transmission_(u, v, p):
     This handles the simple case where transmission occurs with 
     probability p.
 
-    :INPUTS:
+    Arguments:
 
-    u : node
-        the infected node
-    v : node
-        the susceptible node
-    p : number between 0 and 1
-        the transmission probability
+        u : node
+            the infected node
+        v : node
+            the susceptible node
+        p : number between 0 and 1
+            the transmission probability
 
-    :RETURNS:
-
-    True if u will infect v (given opportunity)
-    False otherwise
+    Returns:
+        
+        :
+            
+            True if u will infect v (given opportunity)
+            False otherwise
     '''
 
     return random.random()<p
@@ -197,57 +201,54 @@ def discrete_SIR_epidemic(G,
         _simple_test_transmission_
     in which case args should be entered as (p,)
 
-    :INPUTS:
+    Arguments:
 
-    G: NetworkX Graph (or some other structure which quacks like a 
-        NetworkX Graph)
-        The network on which the epidemic will be simulated.
+        G: NetworkX Graph (or some other structure which quacks like a NetworkX Graph)
+            The network on which the epidemic will be simulated.
         
-    test_transmission: function(u,v,*args)
-        (see below for args definition)
-        A function that determines whether u transmits to v.
-        It returns True if transmission happens and False otherwise.
-        The default will return True with probability p, where args=(p,)
+        test_transmission: function(u,v,*args)
+            (see below for args definition)
+            A function that determines whether u transmits to v.
+            It returns True if transmission happens and False otherwise.
+            The default will return True with probability p, where args=(p,)
 
-        This function can be user-defined.
-        It is called like:
-            test_transmission(u,v,*args)
-        Note that if args is not entered, then args=(), and this call is 
-        equivalent to
-            test_transmission(u,v)
+            This function can be user-defined.
+            It is called like:
+            `test_transmission(u,v,*args)`
+            Note that if args is not entered, then args=(), and this call is 
+            equivalent to
+            `test_transmission(u,v)`
 
-    args: a list or tuple
-        The arguments of test_transmission coming after the nodes.  If 
-        simply having transmission with probability p it should be 
-        entered as 
-            args=(p,)   
-        [note the comma is needed to tell Python that this is really a 
-        tuple]
+        args: a list or tuple
+            The arguments of test_transmission coming after the nodes.  If 
+            simply having transmission with probability p it should be 
+            entered as 
+            `args=(p,)   `
+            [note the comma is needed to tell Python that this is really a 
+            tuple]
 
-    initial_infecteds: node or iterable of nodes (default is None)
-       if a single node, then this node is initially infected
-       if an iterable, then whole set is initially infected
-       if None, then a randomly chosen node is initially infected.
+        initial_infecteds: node or iterable of nodes (default is None)
+            if a single node, then this node is initially infected
+            if an iterable, then whole set is initially infected
+            if None, then a randomly chosen node is initially infected.
 
-    return_full_data: boolean  (default False)
-        Tells whether the infection and recovery times of each 
+        return_full_data: boolean  (default False)
+            Tells whether the infection and recovery times of each 
             individual node should be returned.
-        It is returned in the form of two dicts, 
-            infection_time and recovery_time
-        infection_time[node] is the time of infection and 
-        recovery_time[node] is the recovery time
+            It is returned in the form of two dicts, 
+            `infection_time` and `recovery_time`
+            `infection_time[node]` is the time of infection and 
+            `recovery_time[node]` is the recovery time
 
-    :RETURNS:
+    Returns:
+        :
+        t, S, I, R:
+            scipy arrays
+        Or `if return_full_data is True`:
+      
+       t, S, I, R, infection_time, recovery_time
+            The additional two values are dicts giving infection and recovery time of each node.
 
-    if return_full_data is False:
-       the scipy arrays: t, S, I, R
-    else:
-       the scipy arrays: t, S, I, R 
-       and the dicts infection_time and recovery_time
-
-    these arrays give all the times observed and the number in each 
-    state at each time.  The dicts give times at which each node changed 
-    status.
     
     :SAMPLE USE:
 
@@ -322,31 +323,32 @@ def basic_discrete_SIR_epidemic(G, p, initial_infecteds=None,
     with probability p independently to each neighbor and then
     recovering.
 
-    :INPUTS:
+    Arguments:
 
-    G : NetworkX Graph
-        The network the disease will transmit through.
-    p : number
-        transmission probability
-    initial_infecteds: node or iterable of nodes  (default None)
-       if a single node, then this node is initially infected
-       if an iterable, then whole set is initially infected
-       if None, then a randomly chosen node is initially infected.
-    return_full_data: boolean (default False)
-        Tells whether the infection and recovery times of each 
-        individual node should be returned.  
-        It is returned in the form of two dicts, 
-            infection_time and recovery_time
-        infection_time[node] is the time of infection and 
-        recovery_time[node] is the recovery time
+        G : NetworkX Graph
+            The network the disease will transmit through.
+        p : number
+            transmission probability
+        initial_infecteds: node or iterable of nodes  (default None)
+        if a single node, then this node is initially infected
+        if an iterable, then whole set is initially infected
+        if None, then a randomly chosen node is initially infected.
+        return_full_data: boolean (default False)
+            Tells whether the infection and recovery times of each 
+            individual node should be returned.  
+            It is returned in the form of two dicts, 
+                `infection_time` and `recovery_time`
+            `infection_time[node]` is the time of infection and 
+            `recovery_time[node]` is the recovery time
 
-    :RETURNS:
-
-    if return_full_data is False:
-        the scipy arrays: t, S, I, R
-    else:
-        the scipy arrays: t, S, I, R 
-        and the dicts infection_time and recovery_time
+    Returns:
+        :
+            t, S, I, R : 
+                All scipy arrays OR if `return_full_data is True`:
+            t, S, I, R, infection_time, recovery_time
+                where the additional values are dicts:
+                `infection_time[node]` is the time of infection and 
+                `recovery_time[node]` is the recovery time
 
     these scipy arrays give all the times observed and the number in 
     each state at each time.  The dicts give times at which each node 
@@ -383,17 +385,17 @@ def percolate_network(G, p):
     Performs bond percolation on the network G, keeping edges with 
     probability p
 
-    :INPUTS:
+    Arguments:
 
-    G : NetworkX Graph
-    p : number between 0 and 1
-        the probability of keeping edge
+        G : NetworkX Graph
+        p : number between 0 and 1
+            the probability of keeping edge
 
-    :RETURNS:
-
-    H : NetworkX Graph
-        A network with same nodes as G, but with each edge retained 
-        independently with probability p.
+    Returns:
+        :
+        H : NetworkX Graph
+            A network with same nodes as G, but with each edge retained 
+            independently with probability p.
         
     :SAMPLE USE:
 
@@ -422,16 +424,16 @@ def _edge_exists_(u, v, H):
 
     Tests whether H has an edge from u to v.
 
-    :INPUTS:
+    Arguments:
 
-    u : node
-    v : node
-    H : graph
+        u : node
+        v : node
+        H : graph
 
-    RETURNS  H.has_edge(u,v)
-    -------
-    True : if H has the edge
-    False : if H does not have the edge
+        Returns:
+            :
+            True : if H has the edge
+            False : if H does not have the edge
     '''
     return H.has_edge(u,v)
 
@@ -458,35 +460,34 @@ def percolation_based_discrete_SIR_epidemic(G, p,
     This algorithm leads to a better understanding of the theory.
 
 
-    :INPUTS:
+    Arguments:
 
-    G : NetworkX Graph
-        The network the disease will transmit through.
-    p : number
-        transmission probability
-    initial_infecteds: node or iterable of nodes
-       if a single node, then this node is initially infected
-       if an iterable, then whole set is initially infected
-       if None, then a randomly chosen node is initially infected.
-    return_full_data: boolean
-        Tells whether the infection and recovery times of each 
-        individual node should be returned.  
-        It is returned in the form of two dicts, 
-             infection_time and recovery_time
-        infection_time[node] is the time of infection and 
-        recovery_time[node] is the recovery time
+        G : NetworkX Graph
+            The network the disease will transmit through.
+        p : number
+            transmission probability
+        initial_infecteds: node or iterable of nodes
+            if a single node, then this node is initially infected
+            if an iterable, then whole set is initially infected
+            if None, then a randomly chosen node is initially infected.
+        return_full_data: boolean
+            Tells whether the infection and recovery times of each 
+            individual node should be returned.  
+            It is returned in the form of two dicts, 
+                infection_time and recovery_time
+            infection_time[node] is the time of infection and 
+            recovery_time[node] is the recovery time
 
-    :RETURNS:
-
-    if return_full_data is False:
-        the lists: t, S, I, R
-    else:
-        the lists: t, S, I, R 
-        and the dicts infection_time and recovery_time
-
-    these lists give all the times observed and the number in each state 
-        at each time.  
-    The dicts give times at which each node changed status.
+    Returns:
+        :
+        t, S, I, R : Scipy arrays
+        
+        OR if `return_full_data is True`:
+            
+        t, S, I, R, infection_time, recovery_time 
+            The additional dicts satisfy 
+            infection_time[node] is the time of infection and 
+            recovery_time[node] is the recovery time
     
     :SAMPLE USE:
 
@@ -530,20 +531,20 @@ def estimate_SIR_prob_size(G, p):
     several densely connected components with very weak connections 
     between these components.
 
-    :INPUTS:
+    Arguments:
 
-    G : NetworkX Graph
-        The network the disease will transmit through.
-    p : number
-        transmission probability
+        G : NetworkX Graph
+            The network the disease will transmit through.
+        p : number
+            transmission probability
 
-    :RETURNS:
-
-    PE, AR : 
-        (numbers) estimates of the probability and proportion 
-           infected (attack rate) in epidemics
-        (the two are equal, but each given for consistency with 
-           estimate_directed_SIR_prob_size)
+    Returns:
+        :
+        PE, AR : 
+            (numbers) estimates of the probability and proportion 
+            infected (attack rate) in epidemics
+            (the two are equal, but each given for consistency with 
+            `estimate_directed_SIR_prob_size`)
           
             
     :SAMPLE USE:
@@ -582,26 +583,26 @@ def directed_percolate_network(G, tau, gamma):
     nonMarkov_directed_percolate_network which allows for more complex
     transmission and recovery rules.
     
-    :INPUTS:
+    Arguments:
 
-    G : NetworkX Graph
-        The network the disease will transmit through.
-    tau : number
-        transmission rate
-    gamma : number
-        recovery rate
+        G : NetworkX Graph
+            The network the disease will transmit through.
+        tau : number
+            transmission rate
+        gamma : number
+            recovery rate
 
-    :RETURNS:
-
-    H : networkx DiGraph  (directed graph)
-        a u->v edge exists in H if u would transmit to v if ever 
-        infected.
+    Returns:
+        :
+        H : networkx DiGraph  (directed graph)
+            a u->v edge exists in H if u would transmit to v if ever 
+            infected.
         
-        The edge has a time attribute (time_to_infect) which gives the 
-        delay from infection of u until transmission occurs.
+            The edge has a time attribute (time_to_infect) which gives the 
+            delay from infection of u until transmission occurs.
         
-        Each node u has a time attribute (duration) which gives the 
-        duration of its infectious period.
+            Each node u has a time attribute (duration) which gives the 
+            duration of its infectious period.
         
     :SAMPLE USE:
 
@@ -634,24 +635,26 @@ def _out_component_(G, source):
     finds the set of nodes (including source) which are reachable from 
     nodes in source.
 
-    :INPUTS:
+    Arguments:
 
-    G : NetworkX Graph
-        The network the disease will transmit through.
-    source : either a node or an iterable of nodes (set, list, tuple)
-        The nodes from which the infections start.  We assume no node
-        will ever have a name that is an iterable of other node names.
-        It will run, but may not use source user expects.
+        G : NetworkX Graph
+            The network the disease will transmit through.
+        source : either a node or an iterable of nodes (set, list, tuple)
+            The nodes from which the infections start.  We assume no node
+            will ever have a name that is an iterable of other node names.
+            It will run, but may not use source user expects.
 
-    :RETURNS:
-
-    reachable_nodes : set
-        the set of nodes reachable from source (including source).
-
-
-    Warning: if the graph G has nodes like 1, 2, 3, and (1,2,3), then a
+    Warning: 
+        if the graph G has nodes like 1, 2, 3, and (1,2,3), then a
         source of (1,2,3) is potentially ambiguous.  It will interpret
         the source as the single node (1,2,3)
+
+    Returns:
+        :            
+        reachable_nodes : set
+            the set of nodes reachable from source (including source).
+
+
     '''
     if G.has_node(source): 
         source_nodes = {source}
@@ -670,28 +673,29 @@ def _in_component_(G, target):
     r'''
     creates the _in_component_ by basically reversing _out_component_.
 
-    :INPUTS:
+    Arguments:
 
-    G : NetworkX Graph
-        The network the disease will transmit through.
-    target : a target node (or iterable of target nodes)
-        The node whose infection we are interested in.
+        G : NetworkX Graph
+            The network the disease will transmit through.
+        target : a target node (or iterable of target nodes)
+            The node whose infection we are interested in.
 
-        In principle target could be an iterable, but in this case we 
-        would be finding those possible sources whose infection leads to 
-        infection of at least one target, not all.
+            In principle target could be an iterable, but in this case we 
+            would be finding those possible sources whose infection leads to 
+            infection of at least one target, not all.
 
-    :RETURNS:
-
-    source_nodes : (set)
-        the set of nodes (including target) from which target is 
-        reachable
-
-    :WARNING: 
+    Warning: 
         
-    if the graph G has nodes like 1, 2, 3, and (1,2,3), then a
-    target of (1,2,3) is potentially ambiguous.  It will interpret
-    the target as the single node (1,2,3)
+        if the graph G has nodes like 1, 2, 3, and (1,2,3), then a
+        target of (1,2,3) is potentially ambiguous.  It will interpret
+        the target as the single node (1,2,3)
+
+    Returns:
+
+        source_nodes : (set)
+            the set of nodes (including target) from which target is 
+            reachable
+
 
     '''
     if G.has_node(target):
@@ -733,23 +737,24 @@ def get_infected_nodes(G, tau, gamma, initial_infecteds=None):
     calculate anything.  Don't do it like this.  Use one of the other
     algorithms.  Try fast_SIR, for example.
     
-    :INPUTS:
+    Arguments:
 
-    G : NetworkX Graph
-        The network the disease will transmit through.
-    tau : number
-        transmission rate
-    gamma : number
-        recovery rate
-    initial_infecteds: node or iterable of nodes
-       if a single node, then this node is initially infected
-       if an iterable, then whole set is initially infected
-       if None, then a randomly chosen node is initially infected.
+        G : NetworkX Graph
+            The network the disease will transmit through.
+        tau : number
+            transmission rate
+        gamma : number
+            recovery rate
+        initial_infecteds: node or iterable of nodes
+            if a single node, then this node is initially infected
+            if an iterable, then whole set is initially infected
+            if None, then a randomly chosen node is initially infected.
 
-    :RETURNS:
-
-    infected_nodes : set
-        the set of nodes infected eventually in a simulation.
+    Returns:
+        :
+            
+        infected_nodes : set
+            the set of nodes infected eventually in a simulation.
         
     :SAMPLE USE:
 
@@ -785,21 +790,21 @@ def estimate_directed_SIR_prob_size(G, tau, gamma):
 
     estimate_nonMarkov_SIR_prob_size which handles nonMarkovian versions
 
-    :INPUTS:
+    Arguments:
 
-    G : NetworkX Graph
-        The network the disease will transmit through.
-    tau : number
-        transmission rate
-    gamma : number
-        recovery rate
+        G : NetworkX Graph
+            The network the disease will transmit through.
+        tau : number
+            transmission rate
+        gamma : number
+            recovery rate
 
-    :RETURNS:
-
-    PE, AR  :  numbers (between 0 and 1)
-        Estimates of epidemic probability and attack rate found by 
-        performing directed percolation, finding largest strongly 
-        connected component and finding its in/out components.
+    Returns:
+        :
+        PE, AR  :  numbers (between 0 and 1)
+            Estimates of epidemic probability and attack rate found by 
+            performing directed percolation, finding largest strongly 
+            connected component and finding its in/out components.
         
     :SAMPLE USE:
 
@@ -823,17 +828,17 @@ def estimate_SIR_prob_size_from_dir_perc(H):
     From figure 6.17 of Kiss, Miller, & Simon.  Please cite the book if 
     using this algorithm
 
-    :INPUTS:
+    Arguments:
 
-    H:  directed graph (assumed to be from directed percolation on 
-        previous graph G)
+        H:  directed graph (assumed to be from directed percolation on 
+            previous graph G)
 
-    :RETURNS:
-
-    PE, AR  :  numbers
-        Estimates of epidemic probability and attack rate found by 
-        finding largest strongly connected component and finding in/out 
-        components.
+    Returns:
+        :
+        PE, AR  :  numbers
+            Estimates of epidemic probability and attack rate found by 
+            finding largest strongly connected component and finding in/out 
+            components.
         
     :SAMPLE USE:
 
@@ -864,27 +869,27 @@ def estimate_nonMarkov_SIR_prob_size(G, xi, zeta, transmission):
     nonMarkov_directed_percolate_network  (fig 6.18) to predict 
     epidemic probability and size.
     
-    :INPUTS:
+    Arguments:
 
-    G : NetworkX Graph
-        The input graph
+        G : NetworkX Graph
+            The input graph
 
-    xi : dict
-        xi[u] gives all necessary information to determine what u's 
-        infectiousness is.
-    zeta : dict
-        zeta[v] gives everything needed about v's susceptibility
+        xi : dict
+            xi[u] gives all necessary information to determine what u's 
+            infectiousness is.
+        zeta : dict
+            zeta[v] gives everything needed about v's susceptibility
 
-    transmission : user-defined function
-        transmission(xi[u], zeta[v]) determines whether u transmits to 
-        v.
+        transmission : user-defined function
+            transmission(xi[u], zeta[v]) determines whether u transmits to 
+            v.
 
-    :RETURNS:
-
-    PE, AR  :  numbers (between 0 and 1)
-        Estimates of epidemic probability and attack rate found by 
-        finding largest strongly connected component and finding in/out 
-        components.
+    Returns:
+        :
+        PE, AR  :  numbers (between 0 and 1)
+            Estimates of epidemic probability and attack rate found by 
+            finding largest strongly connected component and finding in/out 
+            components.
         
     :SAMPLE USE:
 
@@ -937,25 +942,25 @@ def nonMarkov_directed_percolate_network(G, xi, zeta, transmission):
     transmissision is a user-defined function taking xi[u] and zeta[v] 
     and returning True if a transmission would occur
 
-    :INPUTS:
+    Arguments:
 
-    G : NetworkX Graph
-        The input graph
+        G : NetworkX Graph
+            The input graph
 
-    xi : dict
-        xi[u] gives all necessary information to determine what us 
-        infectiousness is.
-    zeta : dict
-        zeta[v] gives everything needed about vs susceptibility
+        xi : dict
+            xi[u] gives all necessary information to determine what us 
+            infectiousness is.
+        zeta : dict
+            zeta[v] gives everything needed about vs susceptibility
 
-    transmission : user-defined function
-        transmission(xi[u], zeta[v]) determines whether u transmits to 
-        v.
+        transmission : user-defined function
+            transmission(xi[u], zeta[v]) determines whether u transmits to 
+            v.
 
-    :RETURNS:
-
-    networkx DiGraph (directed graph) H.  
-    Edge u,v exists in H if it will transmit given the opportunity.
+    Returns:
+        :
+        H : networkx DiGraph (directed graph)
+            Edge u,v exists in H if disease will transmit given the opportunity.
     
     :SAMPLE USE:
 
@@ -990,35 +995,35 @@ def _find_trans_SIR_(Q, t, tau, source, target, status, pred_inf_time,
     Determines if a transmission from source to target will occur and if
     so puts into Q
 
-    :INPUTS:
+    Arguments:
 
-    Q : myQueue
-        A priority queue of events
-    t : number
-        current time
-    tau : transmission rate
-    source : infected node that may transmit
-    target : the possibly susceptible node that may receive a 
+        Q : myQueue
+            A priority queue of events
+        t : number
+            current time
+        tau : transmission rate
+        source : infected node that may transmit
+        target : the possibly susceptible node that may receive a 
              transmission
-    status : a dict giving the current status of every node
-    pred_inf_time : a dict giving a predicted infection time of 
+        status : a dict giving the current status of every node
+        pred_inf_time : a dict giving a predicted infection time of 
                     susceptible nodes (defaults to inf)
-    source_rec_time :  time source will recover (a bound on when transmission
+        source_rec_time :  time source will recover (a bound on when transmission
                         can occur)
-    trans_event_args: tuple
+        trans_event_args: tuple
                       the arguments [other than time] passed on to 
-                      _process_trans_SIR_.  That is:
+                      `_process_trans_SIR_`.  That is:
                       (G, node, times, S, I, R, Q, status, rec_time, 
                         pred_inf_time, trans_rate_fxn, rec_rate_fxn)
 
-    :RETURNS:
+    Returns:
 
-    Nothing returned
+        Nothing returned
 
     MODIFIES
     --------
     Q : Adds transmission events to Q
-    pred_inf_time : updates predicted infection time of target.
+     pred_inf_time : updates predicted infection time of target.
     '''
     if status[target] == 'S':
         delay = random.expovariate(tau)
@@ -1036,34 +1041,34 @@ def _process_trans_SIR_(time, G, node, times, S, I, R, Q, status, rec_time,
     From figure A.4 of Kiss, Miller, & Simon.  Please cite the book if 
     using this algorithm.
 
-    :INPUTS:
+    Arguments:
 
-    G : NetworkX Graph
-    time : number
-         time of transmission
-    node : node
-         node receiving transmission.
-    times : list
-        list of times at which events have happened
-    S, I, R : lists
-        lists of numbers of nodes of each status at each time
-    Q : myQueue
-        the queue of events
-    status : dict
-        dictionary giving status of each node
-    rec_time : dict
-        dictionary giving recovery time of each node
-    pred_inf_time : dict
-        dictionary giving predicted infeciton time of nodes 
-    trans_rate_fxn : function
-        transmission rate trans_rate_fxn(u,v) gives transmission rate from
-        u to v
-    rec_rate_fxn : function
-        recovery rate rec_rate_fxn(u) is recovery rate of u.
+        G : NetworkX Graph
+        time : number
+            time of transmission
+        node : node
+            node receiving transmission.
+        times : list
+            list of times at which events have happened
+        S, I, R : lists
+            lists of numbers of nodes of each status at each time
+        Q : myQueue
+            the queue of events
+        status : dict
+            dictionary giving status of each node
+        rec_time : dict
+            dictionary giving recovery time of each node
+        pred_inf_time : dict
+            dictionary giving predicted infeciton time of nodes 
+        trans_rate_fxn : function
+            transmission rate trans_rate_fxn(u,v) gives transmission rate from
+            u to v
+        rec_rate_fxn : function
+            recovery rate rec_rate_fxn(u) is recovery rate of u.
         
-    :RETURNS:
-
-    nothing returned
+    Returns:
+        :
+        nothing returned
 
     MODIFIES
     --------
@@ -1103,21 +1108,21 @@ def _process_rec_SIR_(time, node, times, S, I, R, status):
     r'''From figure A.3 of Kiss, Miller, & Simon.  Please cite the
     book if using this algorithm.
 
-    :INPUTS:
+    Arguments:
 
-    event : event
-         has details on node and time
-    times : list
-        list of times at which events have happened
-    S, I, R : lists
-        lists of numbers of nodes of each status at each time
-    status : dict
-        dictionary giving status of each node
+        event : event
+            has details on node and time
+        times : list
+            list of times at which events have happened
+        S, I, R : lists
+            lists of numbers of nodes of each status at each time
+        status : dict
+            dictionary giving status of each node
 
 
-    :RETURNS:
-
-    Nothing
+    Returns:
+        :
+        Nothing
 
     MODIFIES
     ----------
@@ -1145,62 +1150,63 @@ def fast_SIR(G, tau, gamma, initial_infecteds = None, rho = None,
     recovery times
     
 
-    :INPUTS:
+    Arguments:
 
-    G : NetworkX Graph
-       The underlying network
+        G : NetworkX Graph
+            The underlying network
 
-    tau : number
-       transmission rate per edge
+        tau : number
+            transmission rate per edge
 
-    gamma : number
-       recovery rate per node
+        gamma : number
+            recovery rate per node
 
-    initial_infecteds: node or iterable of nodes
-       if a single node, then this node is initially infected
-       if an iterable, then whole set is initially infected
-       if None, then choose randomly based on rho.  If rho is also
-       None, a random single node is chosen.
-       If both initial_infecteds and rho are assigned, then there
-       is an error.
+        initial_infecteds: node or iterable of nodes
+            if a single node, then this node is initially infected
+            if an iterable, then whole set is initially infected
+            if None, then choose randomly based on rho.  If rho is also
+            None, a random single node is chosen.
+            If both initial_infecteds and rho are assigned, then there
+            is an error.
        
-    rho : number
-       initial fraction infected. number is int(round(G.order()*rho))
+        rho : number
+            initial fraction infected. number is int(round(G.order()*rho))
 
-    tmax : number   (default float('Inf'))
-       maximum time after which simulation will stop.
-       the default of running to infinity is okay for SIR, 
-       but not for SIS.
+        tmax : number   (default float('Inf'))
+            maximum time after which simulation will stop.
+            the default of running to infinity is okay for SIR, 
+            but not for SIS.
 
-    transmission_weight : string       (default None)
+        transmission_weight : string       (default None)
             the label for a weight given to the edges.
             transmission rate is
             G.edge[i][j][transmission_weight]*tau
 
-    recovery_weight : string       (default None)
+        recovery_weight : string       (default None)
             a label for a weight given to the nodes to scale their 
             recovery rates
                 gamma_i = G.node[i][recovery_weight]*gamma
 
-    return_full_data: boolean
-        Tells whether the infection and recovery times of each 
-        individual node should be returned.  
-        It is returned in the form of two dicts, infection_time and 
-        recovery_time.
-        infection_time[node] is the time of infection and 
-        recovery_time[node] is the recovery time
+        return_full_data: boolean
+            Tells whether the infection and recovery times of each 
+            individual node should be returned.  
+            It is returned in the form of two dicts, infection_time and 
+            recovery_time.
+            infection_time[node] is the time of infection and 
+            recovery_time[node] is the recovery time
 
-    :RETURNS:
+    Returns:
+        :
+        times, S, I, R : each a scipy array
+            giving times and number in each status for corresponding time
 
-    times, S, I, R : each a scipy array
-         giving times and number in each status for corresponding time
+        OR if return_full_data=True:
 
-    OR if return_full_data=True:
-    times, S, I, R, infection_time, recovery_time
-         first four are scipy arrays as above.  New objects are dicts
-         with entries just for those nodes that were infected ever
-         infection_time[node] is time of infection
-         recovery_time[node] is time of recovery
+        times, S, I, R, infection_time, recovery_time
+            first four are scipy arrays as above.  New objects are dicts
+            with entries just for those nodes that were infected ever
+            infection_time[node] is time of infection
+            recovery_time[node] is time of recovery
     
     :SAMPLE USE:
 
@@ -1248,11 +1254,11 @@ def fast_nonMarkov_SIR(G, process_trans = _process_trans_SIR_,
     For example if there is a mass action style transmission this can be
     incorporated into the process_trans command defined by user.
 
-    :INPUTS:
+    Arguments:
 
-    G : Networkx Graph
+        G : Networkx Graph
     
-    process_trans : a function that handles a transmission event.
+        process_trans : a function that handles a transmission event.
                     Called by 
                         process_trans(G, time, node, times, S, I, R, Q, 
                            status, rec_time, pred_inf_time, *args)
@@ -1266,32 +1272,32 @@ def fast_nonMarkov_SIR(G, process_trans = _process_trans_SIR_,
                        appropriate transmission event to Q and update 
                        this prediction.
                        
-    args: The final arguments going into process_trans.  
-          If there is some reason to collect data about node that is 
-          only calculated when transmission occurs it can modify a dict 
-          or something similar that is passed as an argument.
+        args: The final arguments going into process_trans.  
+            If there is some reason to collect data about node that is 
+            only calculated when transmission occurs it can modify a dict 
+            or something similar that is passed as an argument.
     
-    initial_infecteds: node or iterable of nodes
-       if a single node, then this node is initially infected
-       if an iterable, then whole set is initially infected
-       if None, then choose randomly based on rho.  If rho is also
-       None, a random single node is chosen.
-       If both initial_infecteds and rho are assigned, then there
-       is an error.
+        initial_infecteds: node or iterable of nodes
+            if a single node, then this node is initially infected
+            if an iterable, then whole set is initially infected
+            if None, then choose randomly based on rho.  If rho is also
+            None, a random single node is chosen.
+            If both initial_infecteds and rho are assigned, then there
+            is an error.
        
-    rho : number
-       initial fraction infected. number is int(round(G.order()*rho))
+        rho : number
+            initial fraction infected. number is int(round(G.order()*rho))
 
-    tmax : (default infinity)
-        final time
+        tmax : (default infinity)
+            final time
 
-    return_full_data: boolean
-        Tells whether the infection and recovery times of each 
-        individual node should be returned.  
-        It is returned in the form of two dicts, infection_time and 
-        recovery_time.
-        infection_time[node] is the time of infection and 
-        recovery_time[node] is the recovery time
+        return_full_data: boolean
+            Tells whether the infection and recovery times of each 
+            individual node should be returned.  
+            It is returned in the form of two dicts, infection_time and 
+            recovery_time.
+            infection_time[node] is the time of infection and 
+            recovery_time[node] is the recovery time
 
     
          If Q is defined:
@@ -1301,38 +1307,37 @@ def fast_nonMarkov_SIR(G, process_trans = _process_trans_SIR_,
              already.
 
 
-    Q : If user wants to predefine some events, this can be done.  This 
-        can be input as a heap or as a list (it will be heapified and 
-        modified).
+        Q : If user wants to predefine some events, this can be done.  This 
+            can be input as a heap or as a list (it will be heapified and 
+            modified).
         
-        User should understand the Event class and use it.  
+            User should understand the Event class and use it.  
         
-        Currently there is no guarantee this is properly supported,
-        so much so that right now I'm going to force the user to edit 
-        the source code before trying it.  
+            Currently there is no guarantee this is properly supported,
+            so much so that right now I'm going to force the user to edit 
+            the source code before trying it.  
         
-        I am reasonably confident it will work.
-
-        When Q is input, initial_infecteds should be the of nodes in 
-        I class **PRIOR** to t=0, and the events in Q must have all of 
-        their recoveries.  
+            When Q is input, initial_infecteds should be the of nodes in 
+            I class **PRIOR** to t=0, and the events in Q must have all of 
+            their recoveries.  
         
-        The best way to handle nodes that should be already recovered is 
-        to put them in initial_infecteds and give them a recovery event 
-        at t=0.
+            The best way to handle nodes that should be already recovered is 
+            to put them in initial_infecteds and give them a recovery event 
+            at t=0.
 
 
-    :RETURNS:
+    Returns:
+        :
+        times, S, I, R : each a scipy array
+            giving times and number in each status for corresponding time
 
-    times, S, I, R : each a scipy array
-         giving times and number in each status for corresponding time
+        OR if return_full_data=True:
 
-    OR if return_full_data=True:
-    times, S, I, R, infection_time, recovery_time
-         first four are scipy arrays as above.  New objects are dicts
-         with entries just for those nodes that were infected ever
-         infection_time[node] is time of infection
-         recovery_time[node] is time of recovery
+        times, S, I, R, infection_time, recovery_time
+            first four are scipy arrays as above.  New objects are dicts
+            with entries just for those nodes that were infected ever
+            infection_time[node] is time of infection
+            recovery_time[node] is time of recovery
 
     :SAMPLE USE:
 
@@ -1435,36 +1440,36 @@ def _process_trans_SIS_(time, G, source, target, times, infection_times, S, I, Q
     r'''From figure A.6 of Kiss, Miller, & Simon.  Please cite the
     book if using this algorithm.
 
-    :INPUTS:
+    Arguments:
 
-    time : number
+        time : number
             current time
-    G : NetworkX Graph
-    source : node
-        node causing transmission
-    target : node
-        node receiving transmission.
-    times : list
-        list of times at which events have happened
-    S, I: lists
-        lists of numbers of nodes of each status at each time
-    Q : myQueue
-        the queue of events
-    status : dict
-        dictionary giving status of each node
-    rec_time : dict
-        dictionary giving recovery time of each node
-    pred_inf_time : dict
-        dictionary giving predicted infeciton time of nodes 
-    trans_rate_fxn : function
-        transmission rate trans_rate_fxn(u,v) gives transmission rate 
-        from u to v
-    rec_rate_fxn : function
-        recovery rate rec_rate_fxn(u) is recovery rate of u.
+        G : NetworkX Graph
+        source : node
+            node causing transmission
+        target : node
+            node receiving transmission.
+        times : list
+            list of times at which events have happened
+        S, I: lists
+            lists of numbers of nodes of each status at each time
+        Q : myQueue
+            the queue of events
+        status : dict
+            dictionary giving status of each node
+        rec_time : dict
+            dictionary giving recovery time of each node
+        pred_inf_time : dict
+            dictionary giving predicted infeciton time of nodes 
+        trans_rate_fxn : function
+            transmission rate trans_rate_fxn(u,v) gives transmission rate 
+            from u to v
+        rec_rate_fxn : function
+            recovery rate rec_rate_fxn(u) is recovery rate of u.
 
-    :RETURNS:
-
-    nothing returned
+    Returns:
+        :
+        nothing returned
 
     MODIFIES
     --------
@@ -1517,22 +1522,22 @@ def _find_next_trans_SIS_(Q, time, tau, source, target, status, rec_time,
     determines if a transmission from source to target will occur and if 
     so puts into Q
 
-    :INPUTS:
+    Arguments:
 
-    Q : myQueue
-        A priority queue of events
-    t : current time
-    tau : transmission rate
-    source : infected node that may transmit
-    target : the possibly susceptible node that may receive a 
+        Q : myQueue
+            A priority queue of events
+        t : current time
+        tau : transmission rate
+        source : infected node that may transmit
+        target : the possibly susceptible node that may receive a 
              transmission
-    status : a dict giving the current status of every node
-    rec_time : a dict giving the recovery time of every node that has 
+        status : a dict giving the current status of every node
+        rec_time : a dict giving the recovery time of every node that has 
                been infected.
 
-    :RETURNS:
-
-    nothing returned
+    Returns:
+        :
+        nothing returned
 
     MODIFIES
     --------
@@ -1578,60 +1583,61 @@ def fast_SIS(G, tau, gamma, initial_infecteds=None, rho = None, tmax=100,
     r'''From figure A.5 of Kiss, Miller, & Simon.  Please cite the
     book if using this algorithm.
 
-    :INPUTS:
+    Arguments:
     
-    G : NetworkX Graph
-       The underlying network
+        G : NetworkX Graph
+            The underlying network
 
-    tau : number
-       transmission rate per edge
+        tau : number
+            transmission rate per edge
 
-    gamma : number
-       recovery rate per node
+        gamma : number
+            recovery rate per node
 
-    initial_infecteds: node or iterable of nodes
-       if a single node, then this node is initially infected
-       if an iterable, then whole set is initially infected
-       if None, then choose randomly based on rho.  If rho is also
-       None, a random single node is chosen.
-       If both initial_infecteds and rho are assigned, then there
-       is an error.
+        initial_infecteds: node or iterable of nodes
+            if a single node, then this node is initially infected
+            if an iterable, then whole set is initially infected
+            if None, then choose randomly based on rho.  If rho is also
+            None, a random single node is chosen.
+            If both initial_infecteds and rho are assigned, then there
+            is an error.
        
-    rho : number
-       initial fraction infected. number is int(round(G.order()*rho))
+        rho : number
+            initial fraction infected. number is int(round(G.order()*rho))
        
-    tmax : number
-        stop time
+        tmax : number
+            stop time
 
-    transmission_weight : string       (default None)
+        transmission_weight : string       (default None)
             the label for a weight given to the edges.
             transmission rate is
             G.edge[i][j][transmission_weight]*tau
 
-    recovery_weight : string       (default None)
+        recovery_weight : string       (default None)
             a label for a weight given to the nodes to scale their 
             recovery rates
-                gamma_i = G.node[i][recovery_weight]*gamma
+                `gamma_i = G.node[i][recovery_weight]*gamma`
     
-    return_full_data: boolean
-        Tells whether the infection and recovery times of each 
-        individual node should be returned.  
-        It is returned in the form of two dicts, infection_time and 
-        recovery_time.
-        infection_time[node] is the time of infection and 
-        recovery_time[node] is the recovery time.
+        return_full_data: boolean
+            Tells whether the infection and recovery times of each 
+            individual node should be returned.  
+            It is returned in the form of two dicts, infection_time and 
+            recovery_time.
+            infection_time[node] is the time of infection and 
+            recovery_time[node] is the recovery time.
 
-    :RETURNS:
-
-    times, S, I : each a scipy array
-         giving times and number in each status for corresponding time
-
-    or if return_full_data=True:
-    times, S, I, infection_time, recovery_time
-         first four are scipy arrays as above.  New objects are dicts
-         with entries just for those nodes that were infected ever
-         infection_time[node] is a list of times of infection
-         recovery_time[node] is a list of times of recovery
+    Returns:
+        :
+        times, S, I : each a scipy array
+            giving times and number in each status for corresponding time
+        
+        or if return_full_data=True:
+            
+        times, S, I, infection_time, recovery_time
+            first four are scipy arrays as above.  New objects are dicts
+            with entries just for those nodes that were infected ever
+            infection_time[node] is a list of times of infection
+            recovery_time[node] is a list of times of recovery
     
     :SAMPLE USE:
 
@@ -1831,7 +1837,7 @@ def _Gillespie_Recover_SIS_(G, S, I, times, infected, current_time, status,
     r''' From figure A.5 of Kiss, Miller, & Simon.  Please cite the
     book if using this algorithm.
     
-    :INPUTS:
+    Arguments:
     '''
     assert(I[-1]==len(infected))
     index = random.randint(0,I[-1]-1)
@@ -1892,50 +1898,48 @@ def Gillespie_SIR(G, tau, gamma, initial_infecteds=None, rho = None, tmax=float(
     
     
     
-    :INPUTS:
-
-    G : NetworkX Graph
-       The underlying network
+    Arguments:
+        G : NetworkX Graph
+            The underlying network
+        tau : number
+            transmission rate per edge
        
-    tau : number
-       transmission rate per edge
+        gamma : number
+            recovery rate per node
        
-    gamma : number
-       recovery rate per node
+        initial_infecteds: node or iterable of nodes
+            if a single node, then this node is initially infected
+            if an iterable, then whole set is initially infected
+            if None, then choose randomly based on rho.  If rho is also
+            None, a random single node is chosen.
+            If both initial_infecteds and rho are assigned, then there
+            is an error.
        
-    initial_infecteds: node or iterable of nodes
-       if a single node, then this node is initially infected
-       if an iterable, then whole set is initially infected
-       if None, then choose randomly based on rho.  If rho is also
-       None, a random single node is chosen.
-       If both initial_infecteds and rho are assigned, then there
-       is an error.
-       
-    rho : number
-       initial fraction infected. number is int(round(G.order()*rho))
+        rho : number
+            initial fraction infected. number is int(round(G.order()*rho))
 
-    tmax : number
-        stop time
+        tmax : number
+            stop time
 
-    return_full_data: boolean
-        Tells whether the infection and recovery times of each 
-        individual node should be returned.  
-        It is returned in the form of two dicts, infection_time and 
-        recovery_time.
-        infection_time[node] is the time of infection and 
-        recovery_time[node] is the recovery time.
+        return_full_data: boolean
+            Tells whether the infection and recovery times of each 
+            individual node should be returned.  
+            It is returned in the form of two dicts, infection_time and 
+            recovery_time.
+            infection_time[node] is the time of infection and 
+            recovery_time[node] is the recovery time.
 
-    :RETURNS:
+    Returns:
+        :
+        times, S, I, R : each a scipy array
+            giving times and number in each status for corresponding time
 
-    times, S, I, R : each a scipy array
-         giving times and number in each status for corresponding time
-
-    OR if return_full_data=True:
-    times, S, I, R, infection_time, recovery_time
-         first four are scipy arrays as above.  New objects are dicts
-         with entries just for those nodes that were infected ever
-         infection_time[node] is time of infection
-         recovery_time[node] is time of recovery
+            OR if return_full_data=True:
+        times, S, I, R, infection_time, recovery_time
+            first four are scipy arrays as above.  New objects are dicts
+            with entries just for those nodes that were infected ever
+            infection_time[node] is time of infection
+            recovery_time[node] is time of recovery
 
     :SAMPLE USE:
 
@@ -2045,39 +2049,49 @@ def Gillespie_SIS(G, tau, gamma, initial_infecteds=None, rho = None, tmax=100,
     fast_SIS which has the same inputs but uses a much faster method.
     
     
-    :INPUTS:
-
-    G : NetworkX Graph
-       The underlying network
-
-    tau : number
-       transmission rate per edge
-
-    gamma : number
-       recovery rate per node
-
-    initial_infecteds: node or iterable of nodes
-       if a single node, then this node is initially infected
-       if an iterable, then whole set is initially infected
-       if None, then choose randomly based on rho.  If rho is also
-       None, a random single node is chosen.
-       If both initial_infecteds and rho are assigned, then there
-       is an error.
-       
-    rho : number
-       initial fraction infected. number is int(round(G.order()*rho))
-
-    tmax : number
-        stop time
-
-    return_full_data: boolean
-        Tells whether the infection and recovery times of each 
-        individual node should be returned.  
-        It is returned in the form of two dicts, infection_time and 
-        recovery_time.
-        infection_time[node] is the time of infection and 
-        recovery_time[node] is the recovery time.
+    Arguments:
         
+        G (NetworkX Graph):  
+            The underlying network
+        tau : number 
+            transmission rate per edge
+        gamma : number
+            recovery rate per node
+
+        initial_infecteds: node or iterable of nodes
+            if a single node, then this node is initially infected
+            if an iterable, then whole set is initially infected
+            if None, then choose randomly based on rho.  If rho is also
+            None, a random single node is chosen.
+            If both initial_infecteds and rho are assigned, then there
+            is an error.
+       
+        rho : number
+            initial fraction infected. number is int(round(G.order()*rho))
+
+        tmax : number
+            stop time
+
+        return_full_data: boolean
+            Tells whether the infection and recovery times of each 
+            individual node should be returned.  
+            It is returned in the form of two dicts, infection_time and 
+            recovery_time.
+            infection_times[node] gives the times of infection and 
+            recovery_times[node] gives the recovery times.
+        
+    Returns:
+
+        : times, S, I; 
+            each a scipy array giving times and number in each status for corresponding time
+
+        or if `return_full_data==True`
+        
+        times, S, I, infection_time, recovery_time;
+            first four are scipy arrays as above.  New objects are dicts
+            with entries just for those nodes that were infected ever
+            infection_times[node] gives the times of infection and 
+            recovery_times[node] gives the recovery times.
 
     :SAMPLE USE:
 

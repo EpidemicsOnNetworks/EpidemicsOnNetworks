@@ -49,33 +49,33 @@ def get_Nk_and_IC_as_arrays(G, rho, SIR=True):
     initial conditions and number of nodes of each degree as needed
     by many of the differential equations models.
     
-    :INPUTS:
+    Arguments:
 
-    G : networkx graph
+        G : networkx graph
 
-    rho : number between 0 and 1
-          fraction of nodes to infect at time 0.
+        rho : number between 0 and 1
+            fraction of nodes to infect at time 0.
 
-    SIR : boolean
-          says whether the system will be SIR or SIS.
+        SIR : boolean
+            says whether the system will be SIR or SIS.
 
-    :RETURNS:
+    Returns:
 
-    Nk : scipy array
-         NUMBER (not proportion) of nodes of each degree.
+        Nk : scipy array
+           NUMBER (not proportion) of nodes of each degree.
 
-    Sk0 : scipy array
-          NUMBER of susceptible nodes of each degree at t=0, 
-          = (1-rho)Nk
+        Sk0 : scipy array
+            NUMBER of susceptible nodes of each degree at t=0, 
+            = (1-rho)Nk
 
-    Ik0 : scipy array    
-          NUMBER of infected nodes of each degree at t=0,   
-          = rho Nk
+        Ik0 : scipy array    
+            NUMBER of infected nodes of each degree at t=0,   
+            = rho Nk
 
-    if SIR, also returns
-    Rk0 : scipy array
-          NUMBER of recovered nodes of each degree at t=0,    
-          = 0 Nk
+        if SIR, also returns
+        Rk0 : scipy array
+            NUMBER of recovered nodes of each degree at t=0,    
+            = 0 Nk
     '''
     
     degree_count = Counter(G.degree().values())
@@ -99,46 +99,46 @@ def get_NkNl_and_IC_as_arrays(G, rho, withKs = False, SIR=True):
     This finds that and the initial conditions for numbers of the
     various edges assuming a fraction rho is initially infected.
     
-    INPUT
-    -----
-    G : networkx graph
-    rho : number between 0 and 1
-          fraction of nodes to infect at time 0.
-    withKs : boolean
-             flag to say whether we are restricting our attention to 
-             just those degrees observed in the network or to all 
-             degrees.
-             If True, 
-                 then we only consider those degrees that are observed.
-             If False, 
-                 then we treat it as if all degrees from 0 to kmax are 
-                 observed.
-    SIR : boolean
-          says whether the system will be SIR or SIS.
+    Arguments:
+        G : networkx graph
+        rho : number between 0 and 1
+            fraction of nodes to infect at time 0.
+        withKs : boolean
+            flag to say whether we are restricting our attention to 
+            just those degrees observed in the network or to all 
+            degrees.
+            If True, 
+             then we only consider those degrees that are observed.
+            If False, 
+             then we treat it as if all degrees from 0 to kmax are 
+             observed.
+        SIR : boolean
+            says whether the system will be SIR or SIS.
 
-    :RETURNS:
+    Returns:
+        :
+        NkNl : 2D scipy array
+            NUMBER (not proportion) of edges between each pair of degrees.
+        SkSl0 : 2D scipy array
+            initial NUMBER of edges between pair of susceptibel nodes of 
+            each degree type.
+            = (1-rho)^2 NkNl
+        SkIl0 : 2D scipy array    
+            initial NUMBER of edges from a susceptible to an infected node 
+            of the given degrees.
+            = rho(1-rho) NkNl
 
-    NkNl : 2D scipy array
-         NUMBER (not proportion) of edges between each pair of degrees.
-    SkSl0 : 2D scipy array
-          initial NUMBER of edges between pair of susceptibel nodes of 
-          each degree type.
-          = (1-rho)^2 NkNl
-    SkIl0 : 2D scipy array    
-          initial NUMBER of edges from a susceptible to an infected node 
-          of the given degrees.
-          = rho(1-rho) NkNl
+        if not SIR, also returns
 
-    if not SIR, also returns
-    IkIl0 : 2D scipy array
-          initial NUMBER of edges between 2 infected nodes.  This is not 
-          needed for SIR model.
-          = rho^2*NkNl
+        IkIl0 : 2D scipy array
+            initial NUMBER of edges between 2 infected nodes.  This is not 
+            needed for SIR model.
+            = rho^2*NkNl
 
-    if withKs, also returns
-    Ks : scipy array
-         The observed degrees in the population.
-    ''' 
+        if withKs, also returns
+            Ks : scipy array
+            The observed degrees in the population.
+        ''' 
     if withKs:
         Ks = sorted(list(set(G.degree().values())))
         klength = len(Ks)
@@ -171,14 +171,14 @@ def get_Pk(G):
     Used in several places so that we can input a graph and then we 
     can call the methods that depend on the degree distribution
 
-    :INPUTS:
+    Arguments:
 
-    G : networkx Graph
+        G : networkx Graph
 
-    :RETURNS:
+    Returns:
 
-    Pk : dict
-         Pk[k] is the proportion of nodes with degree k.
+        Pk : dict
+            Pk[k] is the proportion of nodes with degree k.
     '''
 
     degree_count = Counter(G.degree().values())
@@ -189,15 +189,15 @@ def get_Psi(Pk):
     r'''
     Given a degree distribution (as a dict), returns the function psi
     
-    :INPUTS:
+    Arguments:
 
-    Pk : dict
-         Pk[k] is the proportion of nodes with degree k.
+        Pk : dict
+            Pk[k] is the proportion of nodes with degree k.
 
-    :RETURNS:
-
-    psi : function.
-          psi(x) = \sum_k Pk[k] x^k
+    Returns:
+        :
+        psi : function.
+            psi(x) = \sum_k Pk[k] x^k
     '''
     maxk = max(Pk.keys())
     Pkarray = scipy.array([Pk.get(k,0) for k in range(maxk+1)])
@@ -208,15 +208,15 @@ def get_PsiPrime(Pk):
     Given a degree distribution (as a dict) returns the function
     dPsi(x)/dx
     
-    :INPUTS:
+    Arguments:
 
-    Pk : dict
-         Pk[k] is the proportion of nodes with degree k.
+        Pk : dict
+            Pk[k] is the proportion of nodes with degree k.
 
-    :RETURNS:
+    Returns:
 
-    psiPrime : function.
-          \sum_k k Pk[k] x^{k-1}
+        psiPrime : function.
+            \sum_k k Pk[k] x^{k-1}
     '''
     maxk = max(Pk.keys())
     Pkarray = scipy.array([Pk.get(k,0) for k in range(maxk+1)])
@@ -229,15 +229,15 @@ def get_PsiDPrime(Pk):
     
     d^2Psi(x)/dx^2
     
-    :INPUTS:
+    Arguments:
 
-    Pk : dict
-         Pk[k] is the proportion of nodes with degree k.
+        Pk : dict
+            Pk[k] is the proportion of nodes with degree k.
 
-    :RETURNS:
-
-    psiDPrime : function.
-          \sum_k k(k-1)Pk[k] x^{k-2}
+    Returns:
+        :
+        psiDPrime : function.
+            \sum_k k(k-1)Pk[k] x^{k-2}
     '''
     maxk = max(Pk.keys())
     Pkarray = scipy.array([Pk.get(k,0) for k in range(maxk+1)])
@@ -313,56 +313,56 @@ def SIS_individual_based(G, nodelist, Y0, tau, gamma, tmin = 0,
 
     <\dot{Y}_i> = tau \sum_j g_{ij} (1-<Y_i>)<Y_j>  -  gamma_i <Y_i>
 
-    :INPUTS:
+    Arguments:
 
-    G : Networkx graph
-    
-    Y0 : scipy array
-         the array of initial infection probabilities
+        G : Networkx graph
+        
+        Y0 : scipy array
+            the array of initial infection probabilities
 
-    nodelist : list
-         list of nodes in G in the same order as in Y0
+        nodelist : list
+            list of nodes in G in the same order as in Y0
 
-    tau : number
-          transmission rate of disease
+        tau : number
+            transmission rate of disease
 
-    gamma : number 
+        gamma : number 
             global recovery rate 
 
-    tmin : number       (default 0)
-           minimum report time
+        tmin : number       (default 0)
+            minimum report time
 
-    tmax : number       (default 100)
-           maximum report time
+        tmax : number       (default 100)
+            maximum report time
 
-    tcount : integer       (default 1001)
-             number of reports
+        tcount : integer       (default 1001)
+            number of reports
 
-    transmission_weight : string       (default None)
+        transmission_weight : string       (default None)
             the label for a weight given to the edges.
             G.edge[i][j][transmission_weight] = g_{ij}
 
-    recovery_weight : string       (default None)
+        recovery_weight : string       (default None)
             a label for a weight given to the nodes to scale their 
             recovery rates
                 gamma_i = G.node[i][recovery_weight]*gamma
 
-    return_full_data       (default False)
+        return_full_data       (default False)
             If True, returns times, Ss, Is
             if False, returns times, S, I
 
-    :RETURNS:
-
-    if return_full_data is True:
-        returns times, Ss, Is
-           where times is a scipy array of times, Ss is a 2D scipy array
-           Ss[i,j] gives probability nodelist[i] is susceptible at time
-           times[j].
-           Similarly for Is.
-    if return_full data is False:
-        returns times, S, I
-             all are scipy arrays.  gives times, and expected number 
-             susceptible and expected number infected.
+    Returns:
+        :
+        if return_full_data is True:
+            returns times, Ss, Is
+            where times is a scipy array of times, Ss is a 2D scipy array
+            Ss[i,j] gives probability nodelist[i] is susceptible at time
+            times[j].
+            Similarly for Is.
+        if return_full data is False:
+            returns times, S, I
+            all are scipy arrays.  gives times, and expected number 
+            susceptible and expected number infected.
              
     :SAMPLE USE:
 
@@ -405,59 +405,59 @@ def SIR_individual_based(G, nodelist, X0, Y0, tau, gamma, tmin = 0,
 
     See also:
 
-    :INPUTS:
+    Arguments:
 
-    G : Networkx graph
+        G : Networkx graph
 
-    X0 : scipy array
-         the array of initial susceptibility probabilities
-    Y0 : scipy array
-         the array of initial infection probabilities
+        X0 : scipy array
+            the array of initial susceptibility probabilities
+        Y0 : scipy array
+            the array of initial infection probabilities
 
-    nodelist : list
-         list of nodes in G in the same order as in X0 and Y0
-
-    tau : number
-          transmission rate of disease
-
-    gamma : number      (default None)
+        nodelist : list
+            list of nodes in G in the same order as in X0 and Y0
+    
+        tau : number
+            transmission rate of disease
+    
+        gamma : number      (default None)
             global recovery rate  
+    
+        tmin : number       (default 0)
+            minimum report time
 
-    tmin : number       (default 0)
-           minimum report time
+        tmax : number       (default 100)
+            maximum report time
 
-    tmax : number       (default 100)
-           maximum report time
+        tcount : integer       (default 1001)
+            number of reports
 
-    tcount : integer       (default 1001)
-             number of reports
-
-    transmission_weight : string       (default None)
+        transmission_weight : string       (default None)
             the label for a weight given to the edges.
             G.edge[i][j][transmission_weight] = g_{ij}
 
-    recovery_weight : string       (default None)
+        recovery_weight : string       (default None)
             a label for a weight given to the nodes to scale their 
             recovery rates
                 gamma_i = G.node[i][recovery_weight]*gamma
 
-    return_full_data       (default False)
+        return_full_data       (default False)
             If True, returns times, S, I, R, Ss, Is, Rs
             if False, returns times, S, I, R
 
-    :RETURNS:
-
-    if return_full_data is True:
-        returns times, Ss, Is, Rs
-           where times is a scipy array of times, Ss is a 2D scipy array
-           Ss[i,j] gives probability nodelist[i] is susceptible at time
-           times[j].
-           Similarly for Is ans Rs
-    if return_full data is False:
-        returns times, S, I, R
-             all are scipy arrays.  gives times, and expected number 
-             susceptible, expected number infected, and expected number
-             recovered
+    Returns:
+        :
+        if return_full_data is True:
+            returns times, Ss, Is, Rs
+            where times is a scipy array of times, Ss is a 2D scipy array
+            Ss[i,j] gives probability nodelist[i] is susceptible at time
+            times[j].
+            Similarly for Is ans Rs
+        if return_full data is False:
+            returns times, S, I, R
+            all are scipy arrays.  gives times, and expected number 
+            susceptible, expected number infected, and expected number
+            recovered
     
     :SAMPLE USE:
 
@@ -475,12 +475,12 @@ def SIR_individual_based(G, nodelist, X0, Y0, tau, gamma, tmin = 0,
         N = G.order()
         rho = 1./N
 
-    nodelist = G.nodes()
-    X = (1-rho)*scipy.ones(N)
-    Y = rho*scipy.ones(N)
+        nodelist = G.nodes()
+        X = (1-rho)*scipy.ones(N)
+        Y = rho*scipy.ones(N)
     
-    t, S, I, R = EoN.SIR_individual_based(G, nodelist, X, Y, tau, gamma=gamma, tmax = 20)
-    plt.plot(t,I)
+        t, S, I, R = EoN.SIR_individual_based(G, nodelist, X, Y, tau, gamma=gamma, tmax = 20)
+        plt.plot(t,I)
     '''
 
     trans_rate_fxn, rec_rate_fxn = _get_rate_functions(G, tau, gamma, 
@@ -523,45 +523,44 @@ def SIS_individual_based_pure_IC(G, index_nodes, nodelist, tau, gamma,
     
     <\dot{Y}_i> = tau \sum_j g_{ij} (1-<Y_i>)<Y_j>  -  gamma_i <Y_i>
 
-    :INPUTS:
+    Arguments:
 
-    G : Networkx graph
-    index_nodes : list or set
-      the set of nodes initially infected
-    nodelist : list
-         list of nodes in G in the same order as in Y0
-    tau : number
-          transmission rate of disease
-    gamma : number      (default None)
+        G : Networkx graph
+        index_nodes : list or set
+            the set of nodes initially infected
+        nodelist : list
+            list of nodes in G in the same order as in Y0
+        tau : number
+            transmission rate of disease
+        gamma : number      (default None)
             global recovery rate  
 
-    tmin : number       (default 0)
-           minimum report time
+        tmin : number       (default 0)
+            minimum report time
 
-    tmax : number       (default 100)
-           maximum report time
+        tmax : number       (default 100)
+            maximum report time
 
-    tcount : integer       (default 1001)
-             number of reports
+        tcount : integer       (default 1001)
+            number of reports
 
-    transmission_weight : string       (default None)
+        transmission_weight : string       (default None)
             the label for a weight given to the edges.
             G.edge[i][j][transmission_weight] = g_{ij}
 
-    recovery_weight : string       (default None)
+        recovery_weight : string       (default None)
             a label for a weight given to the nodes to scale their 
             recovery rates
                 gamma_i = G.node[i][recovery_weight]*gamma
 
-    return_full_data : boolean      (default False)
+        return_full_data : boolean      (default False)
 
 
-    RETURNS:
-    --------
+    Returns:
             if return_full_data is True,
-                returns times, Ss, Is
+                Returns times, Ss, Is
             if return_full_data is False,
-                returns times, S, I
+                Returns times, S, I
     :SAMPLE USE:
 
     ::
@@ -604,53 +603,53 @@ def SIR_individual_based_pure_IC(G, index_nodes, nodelist, tau, gamma,
     
     <\dot{Y}_i> = tau \sum_j g_{ij} (1-<Y_i>)<Y_j>  -  gamma_i <Y_i>
 
-    :INPUTS:
+    Arguments:
 
-    G : Networkx graph
+        G : Networkx graph
     
-    index_nodes : list or set
-      the set of nodes initially infected
+        index_nodes : list or set
+            the set of nodes initially infected
       
-    nodelist : list
-         list of nodes in G in the same order as in Y0
+        nodelist : list
+            list of nodes in G in the same order as in Y0
+    
+        tau : number
+            transmission rate of disease
 
-    tau : number
-          transmission rate of disease
-
-    gamma : number      (default None)
+        gamma : number      (default None)
             global recovery rate  
+    
+        initial_susceptible : list or set  (default None)
+            initially susceptible nodes
+            if equal to None, then all non-index nodes are initially 
+            susceptible.
 
-    initial_susceptible : list or set  (default None)
-      initially susceptible nodes
-      if equal to None, then all non-index nodes are initially 
-      susceptible.
+        tmin : number       (default 0)
+            minimum report time
 
-    tmin : number       (default 0)
-           minimum report time
+        tmax : number       (default 100)
+            maximum report time
 
-    tmax : number       (default 100)
-           maximum report time
+        tcount : integer       (default 1001)
+            number of reports
 
-    tcount : integer       (default 1001)
-             number of reports
-
-    transmission_weight : string       (default None)
+        transmission_weight : string       (default None)
             the label for a weight given to the edges.
             G.edge[i][j][transmission_weight] = g_{ij}
 
-    recovery_weight : string       (default None)
+        recovery_weight : string       (default None)
             a label for a weight given to the nodes to scale their 
             recovery rates
                 gamma_i = G.node[i][recovery_weight]*gamma
 
-    return_full_data : boolean      (default False)
+        return_full_data : boolean      (default False)
 
-    RETURNS:
-    -------
-    if return_full_data is True,
-        returns times, S, I, R, Ss, Is, Rs
-    if return_full_data is False,
-        returns times, S, I, R
+    Returns:
+        :
+        if return_full_data is True,
+            returns times, S, I, R, Ss, Is, Rs
+        if return_full_data is False,
+            returns times, S, I, R
     
     '''
     nodelist = G.nodes()
@@ -864,66 +863,66 @@ def SIS_pair_based(G, nodelist, Y0, tau, gamma, XY0=None, XX0 = None,
         We track pairs in both directions: e.g., XX[1,2] and XX[2,1].
 
 
-    INPUT:
-    ------
-    G : Networkx graph
+    Arguments:
+    
+        G : Networkx graph
 
-    nodelist : list
-         list of nodes in G in the same order as in Y0
+        nodelist : list
+            list of nodes in G in the same order as in Y0
 
-    Y0 : scipy array
-         the array of initial infection probabilities for each node in 
-         order as in nodelist
+        Y0 : scipy array
+            the array of initial infection probabilities for each node in 
+            order as in nodelist
 
-    tau : number
-          transmission rate of disease
+        tau : number
+            transmission rate of disease
 
-    gamma : number (default None)
+        gamma : number (default None)
             global recovery rate  
 
-    XY0 : 2D scipy array (default None)
+        XY0 : 2D scipy array (default None)
             (each dimension has length number of nodes of G)
             XY0[i,j] is probability node i is susceptible and j is 
             infected.
             if None, then assumes that infections are introduced 
             randomly according to Y0.
 
-    XX0 : 2D scipy array (default None)
+        XX0 : 2D scipy array (default None)
             (each dimension has length number of nodes of G)
             XX0[i,j] is probability nodes i and j are susceptible.
             if None, then assumes that infections are introduced 
             randomly according to Y0.
 
-    tmin : number (default 0)
-           minimum report time
+        tmin : number (default 0)
+            minimum report time
 
-    tmax : number (default 100)
-           maximum report time 
+        tmax : number (default 100)
+            maximum report time 
 
-    tcount : integer (default 1001)
-             number of reports
+        tcount : integer (default 1001)
+            number of reports
 
-    transmission_weight : string
+        transmission_weight : string
             the label for a weight given to the edges.
             G.edge[i][j][transmission_weight] = g_{ij}
 
-    recovery_weight : string       (default None)
+        recovery_weight : string       (default None)
             a label for a weight given to the nodes to scale their 
             recovery rates
                 gamma_i = G.node[i][recovery_weight]*gamma
 
-    return_full_data : boolean      (default False)
+        return_full_data : boolean      (default False)
             if True:
                 returns times, S, I, R, Xs, Ys, Zs, XY, XX
             if False:
                 returns times, S, I, R
 
-    :RETURNS:
-
-    if return_full_data is True:
-        returns times, S, I, Xs, Ys, XY, XX
-    if False:
-        returns times, S, I
+    Returns:
+        :
+        if return_full_data is True:
+            returns times, S, I, Xs, Ys, XY, XX
+        if False:
+            returns times, S, I
         
         
     :SAMPLE USE:
@@ -1021,72 +1020,71 @@ def SIR_pair_based(G, nodelist, Y0, tau, gamma, X0 = None, XY0=None,
     Journal of Theoretical Biology
     
 
-    INPUT:
-    ------
-    G : Networkx graph
+    Arguments:
+        G : Networkx graph
     
-    nodelist : list
-         list of nodes in G in the same order as in Y0
+        nodelist : list
+            list of nodes in G in the same order as in Y0
 
-    Y0 : scipy array
-         the array of initial infection probabilities for each node in 
-         order as in nodelist
+        Y0 : scipy array
+            the array of initial infection probabilities for each node in 
+            order as in nodelist
 
-    tau : number
-          transmission rate of disease
+        tau : number
+            transmission rate of disease
 
-    gamma : number (default None)
+        gamma : number (default None)
             global recovery rate  
 
-    X0 : scipy array (default None)
+        X0 : scipy array (default None)
             probability a random node is initially susceptible.
             the probability of initially recovered will be 1-X0-Y0.  By 
             default we assume no initial recoveries, so X0=1-Y0 will be 
             assumed in this case.
 
-    XY0 : 2D scipy array (default None)
+        XY0 : 2D scipy array (default None)
             (each dimension has length number of nodes of G)
             XY0[i,j] is probability node i is susceptible and j is 
                 infected.
             if None, then assumes that infections are introduced 
                 randomly according to Y0.
 
-    XX0 : 2D scipy array (default None)
+        XX0 : 2D scipy array (default None)
             (each dimension has length number of nodes of G)
             XX0[i,j] is probability nodes i and j are susceptible.
             if None, then assumes that infections are introduced 
                 randomly according to Y0.
 
-    tmin : number (default 0)
-           minimum report time
+        tmin : number (default 0)
+            minimum report time
 
-    tmax : number (default 100)
-           maximum report time 
+        tmax : number (default 100)
+            maximum report time 
 
-    tcount : integer (default 1001)
-             number of reports
+        tcount : integer (default 1001)
+            number of reports
 
-    transmission_weight : string
+        transmission_weight : string
             the label for a weight given to the edges.
             G.edge[i][j][transmission_weight] = g_{ij}
 
-    recovery_weight : string       (default None)
+        recovery_weight : string       (default None)
             a label for a weight given to the nodes to scale their 
             recovery rates
                 gamma_i = G.node[i][recovery_weight]*gamma
 
-    return_full_data : boolean      (default False)
+        return_full_data : boolean      (default False)
             if True:
                 returns times, S, I, R, Xs, Ys, Zs, XY, XX
             if False:
                 returns times, S, I, R
 
-    :RETURNS:
-
-    if return_full_data is True:
-        returns times, S, I, R, Xs, Ys, Zs, XY, XX
-    if False:
-        returns times, S, I, R
+    Returns:
+        :
+        if return_full_data is True:
+            returns times, S, I, R, Xs, Ys, Zs, XY, XX
+        if ... is False:
+            returns times, S, I, R
 
     :SAMPLE USE:
 
@@ -1335,12 +1333,15 @@ def SIR_pair_based2(G, tau, gamma, rho = None, nodelist=None, X0=None,
     strategies against epidemics propagated on contact networks,
     Journal of Theoretical Biology
 
-    <\dot{Y}_i> = tau \sum_j g_{ij} <XY>>  -  gamma_i <Y_i>
+    <\dot{Y}_i> = tau \sum_j g_{ij} <XY>  -  gamma_i <Y_i>
+    
     <\dot{XY}> = tau sum_{k \neq i} g_{jk} <XX><XjYk>/<Xj>
                    - tau sum_{k neq j} g_{ik} <YkXi><XY>/<Xi>
                    - tau g_{ij}<XY> - gamma_j <XIYj> 
+
     <\dot{XX}> = 
     <>
+    
     The equations as coded involve all pairs rather than just the pairs 
     that are in edges.  
     
@@ -1353,59 +1354,67 @@ def SIR_pair_based2(G, tau, gamma, rho = None, nodelist=None, X0=None,
     Before I forced the initial conditions for these nonedges to be 0, 
     they caused quite a bit of numerical headaches.
 
-    :INPUTS:
+
+
+    Arguments:
         
-    G : Networkx graph
+        G : Networkx graph
 
-    nodelist : list
-         list of nodes in G in the same order as in Y0
+        nodelist : list
+            list of nodes in G in the same order as in Y0
 
-    Y0 : scipy array
-         the array of initial infection probabilities for each node in 
-         order as in nodelist
+        Y0 : scipy array
+            the array of initial infection probabilities for each node in 
+            order as in nodelist
 
-    tau : number
-          transmission rate of disease
+        tau : number
+            transmission rate of disease
 
-    gamma : number (default None)
+        gamma : number (default None)
             global recovery rate  
 
-    XY0 : 2D scipy array (default None)
+        XY0 : 2D scipy array (default None)
             (each dimension has length number of nodes of G)
             XY0[i,j] is probability node i is susceptible and j is 
             infected.
             if None, then assumes that infections are introduced 
                 randomly according to Y0.
 
-    XX0 : 2D scipy array (default None)
+        XX0 : 2D scipy array (default None)
             (each dimension has length number of nodes of G)
             XX0[i,j] is probability nodes i and j are susceptible.
             if None, then assumes that infections are introduced 
                 randomly according to Y0.
 
-    tmin : number (default 0)
-           minimum report time
+        tmin : number (default 0)
+            minimum report time
 
-    tmax : number (default 100)
-           maximum report time 
+        tmax : number (default 100)
+            maximum report time 
 
-    tcount : integer (default 1001)
-             number of reports
+        tcount : integer (default 1001)
+            number of reports
 
-    transmission_weight : string
+        transmission_weight : string
             the label for a weight given to the edges.
             G.edge[i][j][transmission_weight] = g_{ij}
 
-    recovery_weight : string       (default None)
+        recovery_weight : string       (default None)
             a label for a weight given to the nodes to scale their 
             recovery rates
                 gamma_i = G.node[i][recovery_weight]*gamma
 
-    return_full_data : boolean      (default False)
+        return_full_data : boolean      (default False)
             if True:
                 returns times, S, I, R, Xs, Ys, Zs, XY, XX
             if False:
                 returns times, S, I, R
+    Returns:
+        :
+        if return_full_data is True:
+            returns times, S, I, R, Xs, Ys, Zs, XY, XX
+        if ... is False:
+            returns times, S, I, R
     '''
 
     #note: we do not test whether the nodelist and edgelist are in 
@@ -1484,28 +1493,28 @@ def SIS_homogeneous_meanfield(S0, I0, n, tau, gamma, tmin=0, tmax=100,
     [\dot{I}] = \tau n[S][I]/N - \gamma [I]
 
 
-    :INPUTS:
+    Arguments:
 
-    S0 : number
-         initial number susceptible
-    I0 : number
-         initial number infected
-    n : integer
-        degree of all nodes.
-    tau : number
-          transmission rate
-    gamma : number
+        S0 : number
+            initial number susceptible
+        I0 : number
+            initial number infected
+        n : integer
+            degree of all nodes.
+        tau : number
+            transmission rate
+        gamma : number
             recovery rate
-    tmin : number (default 0)
-           minimum report time
-    tmax : number (default 100)
-           maximum report time 
-    tcount : integer (default 1001)
-             number of reports
+        tmin : number (default 0)
+            minimum report time
+        tmax : number (default 100)
+            maximum report time 
+        tcount : integer (default 1001)
+            number of reports
 
-    :RETURNS:
-
-    times, S, I, all scipy arrays
+    Returns:
+        :
+        times, S, I, all scipy arrays
     
     :SAMPLE USE:
 
@@ -1543,30 +1552,30 @@ def SIR_homogeneous_meanfield(S0, I0, R0, n, tau, gamma, tmin=0, tmax=100,
     [\dot{R}] = \gamma [I]
 
 
-    :INPUTS:
+    Arguments:
 
-    S0 : number
-         initial number susceptible
-    I0 : number
-         initial number infected
-    R0 : number
-         initial number recovered
-    n : integer
-        degree of each node
-    tau : number
-          transmission rate
-    gamma : number
+        S0 : number
+            initial number susceptible
+        I0 : number
+            initial number infected
+        R0 : number
+            initial number recovered
+        n : integer
+            degree of each node
+        tau : number
+            transmission rate
+        gamma : number
             recovery rate
-    tmin : number (default 0)
-           minimum report time
-    tmax : number (default 100)
-           maximum report time 
-    tcount : integer (default 1001)
-             number of reports
+        tmin : number (default 0)
+            minimum report time
+        tmax : number (default 100)
+            maximum report time 
+        tcount : integer (default 1001)
+            number of reports
     
-    :RETURNS:
-
-    times, S, I, R : all scipy arrays
+    Returns:
+        :
+        times, S, I, R : all scipy arrays
     
     :SAMPLE USE:
 
@@ -1643,38 +1652,37 @@ def SIS_homogeneous_pairwise(S0, I0, SI0, SS0, n, tau, gamma, tmin = 0,
     In the text this is often referred to as the 
     "mean-field model closed at the level of triples"
 
-    :INPUTS:
+    Arguments:
 
-    S0 : number
-         initial number susceptible
-    I0 : number
-         initial number infected
-    SI0 : number
-          initial number of SI edges
-    SS0 : number
-          initial number of SS edges
-    n : integer
-          (common) degree of nodes.
-    tau : number
-          transmission rate
-    gamma : number
+        S0 : number
+            initial number susceptible
+        I0 : number
+            initial number infected
+        SI0 : number
+            initial number of SI edges
+        SS0 : number
+            initial number of SS edges
+        n : integer
+            (common) degree of nodes.
+        tau : number
+            transmission rate
+        gamma : number
             recovery rate
-    tmin : number (default 0)
-           minimum report time
-    tmax : number (default 100)
-           maximum report time 
-    tcount : integer (default 1001)
-             number of reports
-    return_full_data : boolean
-                       tells whether to just return times, S, I or 
-                       all calculated data.
+        tmin : number (default 0)
+            minimum report time
+        tmax : number (default 100)
+            maximum report time 
+        tcount : integer (default 1001)
+            number of reports
+        return_full_data : boolean
+            tells whether to just return times, S, I or all calculated data.
     
-    :RETURNS:
-
-    if return_full_data is True:
-        t, S, I, SI, SS, II
-    if return_full_data is False:
-        t, S, I
+    Returns:
+        :
+        if return_full_data is True:
+            t, S, I, SI, SS, II
+        if return_full_data is False:
+            t, S, I
         
         
     :SAMPLE USE:
@@ -1733,34 +1741,33 @@ def SIR_homogeneous_pairwise(S0, I0, R0, SI0, SS0, n, tau, gamma, tmin = 0,
     conserved quantities: [S]+[I]+[R]  also 
                           [SS]+[II]+[RR] + 2([SI] + [SR] + [IR])
 
-    :INPUTS:
+    Arguments:
 
-    S0 : Initial number suusceptible
-    I0 : Initial number infected
-    R0 : Initial number recovered
-    SI0 : Initial number of SI edges
-    SS0 : Initial number of SS edges
-    n : Degree of nodes
-    tau : number
-          transmission rate
-    gamma : number
+        S0 : Initial number suusceptible
+        I0 : Initial number infected
+        R0 : Initial number recovered
+        SI0 : Initial number of SI edges
+        SS0 : Initial number of SS edges
+        n : Degree of nodes
+        tau : number
+            transmission rate
+        gamma : number
             recovery rate
-    tmin : number (default 0)
-           minimum report time
-    tmax : number (default 100)
-           maximum report time 
-    tcount : integer (default 1001)
-             number of reports
-    return_full_data : boolean (default False)
-                       tells whether to just return times, S, I, R or 
-                       all calculated data.
-                       if True, then returns times, S, I, R, SI, SS
-    :RETURNS:
-
-    if return_full_data is True:
-        times, S, I, R, SI, SS
-    if return_full_data is False:
-        times, S, I, R 
+        tmin : number (default 0)
+            minimum report time
+        tmax : number (default 100)
+            maximum report time 
+        tcount : integer (default 1001)
+            number of reports
+        return_full_data : boolean (default False)
+            tells whether to just return times, S, I, R or all calculated data.
+            if True, then returns times, S, I, R, SI, SS
+    Returns:
+        :
+        if return_full_data is True:
+            times, S, I, R, SI, SS
+        if return_full_data is False:
+            times, S, I, R 
 
     :SAMPLE USE:
 
@@ -1803,31 +1810,30 @@ def SIS_homogeneous_pairwise_from_graph(G, tau, gamma, rho = None, tmin = 0,
     Calls SIS_homogeneous_pairwise with a graph, disease parameters, and
     a random fraction rho initially infected.
 
-    :INPUTS:
+    Arguments:
 
-    G : networkx Graph
-    tau : number
-          transmission rate
-    gamma : number
+        G : networkx Graph
+        tau : number
+            transmission rate
+        gamma : number
             recovery rate
-    rho : number (default 1/N)
-          initial fraction infected 
-    tmin : number (default 0)
-           minimum report time
-    tmax : number (default 100)
-           maximum report time 
-    tcount : integer (default 1001)
-             number of reports
-    return_full_data : boolean (default False)
-                       tells whether to just return times, S, I, or 
-                       all calculated data.
-                       if True, then returns times, S, I, SI, SS
-    :RETURNS:
-
-    if return_full_data is True:
-        t, S, I, SI, SS, II
-    if return_full_data is False:
-        t, S, I
+        rho : number (default 1/N)
+            initial fraction infected 
+        tmin : number (default 0)
+            minimum report time
+        tmax : number (default 100)
+            maximum report time 
+        tcount : integer (default 1001)
+            number of reports
+        return_full_data : boolean (default False)
+            tells whether to just return times, S, I, or all calculated data.
+            if True, then returns times, S, I, SI, SS
+    Returns:
+        :
+        if return_full_data is True:
+            t, S, I, SI, SS, II
+        if return_full_data is False:
+            t, S, I
         
         
     :SAMPLE USE:
@@ -1863,31 +1869,30 @@ def SIR_homogeneous_pairwise_from_graph(G, tau, gamma, rho = None, tmin = 0,
     Calls SIS_homogeneous_pairwise with a graph, disease parameters, and
     a random fraction rho initially infected.
 
-    :INPUTS:
+    Arguments:
 
-    G : networkx Graph
-    tau : number
-          transmission rate
-    gamma : number
+        G : networkx Graph
+        tau : number
+            transmission rate
+        gamma : number
             recovery rate
-    rho : number (default 1/N)
-          initial fraction infected 
-    tmin : number (default 0)
-           minimum report time
-    tmax : number (default 100)
-           maximum report time 
-    tcount : integer (default 1001)
-             number of reports
-    return_full_data : boolean (default False)
-                       tells whether to just return times, S, I, R or 
-                       all calculated data.
-                       if True, then returns times, S, I, R, SI, SS
-    :RETURNS:
-
-    if return_full_data is True:
-        t, S, I, SI, SS, II
-    if return_full_data is False:
-        t, S, I
+        rho : number (default 1/N)
+            initial fraction infected 
+        tmin : number (default 0)
+            minimum report time
+        tmax : number (default 100)
+            maximum report time 
+        tcount : integer (default 1001)
+            number of reports
+        return_full_data : boolean (default False)
+            tells whether to just return times, S, I, R or all calculated data.
+            if True, then returns times, S, I, R, SI, SS
+    Returns:
+        :
+        if return_full_data is True:
+            t, S, I, SI, SS, II
+        if return_full_data is False:
+            t, S, I
         
         
     :SAMPLE USE:
@@ -1978,34 +1983,32 @@ def SIS_heterogeneous_meanfield(Sk0, Ik0, tau, gamma, tmin = 0, tmax=100,
 
 
 
-    :INPUTS:
+    Arguments:
 
-    Sk0 : scipy array
-          number susceptible for each k
-    Ik0 : scipy array
-          number infected for each k
-    tau : number
-          transmission rate
-    gamma : number
+        Sk0 : scipy array
+            number susceptible for each k
+        Ik0 : scipy array
+            number infected for each k
+        tau : number
+            transmission rate
+        gamma : number
             recovery rate
-    tmin : number (default 0)
-           minimum report time
-    tmax : number (default 100)
-           maximum report time 
-    tcount : integer (default 1001)
-             number of reports
-    return_full_data : boolean (default False)
-                       tells whether to just return times, S, I or all 
-                       calculated data.
-                       if True, returns t, S, I, Sk, Ik
+        tmin : number (default 0)
+            minimum report time
+        tmax : number (default 100)
+            maximum report time 
+        tcount : integer (default 1001)
+            number of reports
+        return_full_data : boolean (default False)
+            tells whether to just return times, S, I or all calculated data.
+            if True, returns t, S, I, Sk, Ik
 
-    :RETURNS:
-
-    
-    if return_full_data is True:
-        times, S, I, Sk  (Sk is scipy 2D arrays)
-    if return_full_data is False:
-        times, S, I      (all scipy arrays)
+    Returns:
+        :
+        if return_full_data is True:
+            times, S, I, Sk  (Sk is scipy 2D arrays)
+        if return_full_data is False:
+            times, S, I      (all scipy arrays)
         
     :SAMPLE USE:
 
@@ -2059,35 +2062,33 @@ def SIR_heterogeneous_meanfield(Sk0, Ik0, Rk0, tau, gamma, tmin = 0, tmax=100,
     pi_I = \sum_k k[I_k]
 
 
-    :INPUTS:
+    Arguments:
 
-    Sk0 : array
-          Sk0[k] is the number of
-          nodes that are susceptible and have degree k (even if some degrees 
-          missing).
-    Ik0 : array
-    Rk0 : array
-    tau : number
-          transmission rate
-    gamma : number
+        Sk0 : array
+            Sk0[k] is the number of
+            nodes that are susceptible and have degree k (even if some degrees 
+            missing).
+        Ik0 : array
+        Rk0 : array
+        tau : number
+            transmission rate
+        gamma : number
             recovery rate
-    tmin : number (default 0)
-           minimum report time
-    tmax : number (default 100)
-           maximum report time 
-    tcount : integer (default 1001)
-             number of reports
-    return_full_data : boolean
-                       tells whether to just return times, S, I, R or 
-                       all calculated data.
+        tmin : number (default 0)
+            minimum report time
+        tmax : number (default 100)
+            maximum report time 
+        tcount : integer (default 1001)
+            number of reports
+        return_full_data : boolean
+            tells whether to just return times, S, I, R or all calculated data.
 
-    :RETURNS:
-
-    
-    if return_full_data is True:
-        times, S, I, R, Sk, Ik, Rk (the Xk are scipy 2D arrays)
-    if return_full_data is False:
-        times, S, I, R          (all scipy arrays)
+    Returns:
+        :
+        if return_full_data is True:
+            times, S, I, R, Sk, Ik, Rk (the Xk are scipy 2D arrays)
+        if return_full_data is False:
+            times, S, I, R          (all scipy arrays)
         
     :SAMPLE USE:
 
@@ -2135,33 +2136,30 @@ def SIS_heterogeneous_meanfield_from_graph(G, tau, gamma, rho = None,
     Takes a graph and an initial proportion infected rho.  
     Calculates Sk0 and Ik0 and calls the heterogeneous meanfield model
 
-    :INPUTS:
-
-    G : networkx Graph
-    tau : number
-          transmission rate
-    gamma : number
+    Arguments:
+        G : networkx Graph
+        tau : number
+            transmission rate
+        gamma : number
             recovery rate
-    rho : number between 0 and 1  (default None)
-          the fraction to be randomly infected at time 0
-          If None, then rho=1/N is used where N = G.order()
-    tmin : number (default 0)
-           minimum report time
-    tmax : number (default 100)
-           maximum report time 
-    tcount : integer (default 1001)
-             number of reports
-    return_full_data : boolean
-                       tells whether to just return times, S, I, R or 
-                       all calculated data.
+        rho : number between 0 and 1  (default None)
+            the fraction to be randomly infected at time 0
+            If None, then rho=1/N is used where N = G.order()
+        tmin : number (default 0)
+            minimum report time
+        tmax : number (default 100)
+            maximum report time 
+        tcount : integer (default 1001)
+            number of reports
+        return_full_data : boolean
+            tells whether to just return times, S, I, R or all calculated data.
 
-    :RETURNS:
-
-    
-    if return_full_data is True:
-        times, S, I, Sk, Ik, (the Xk are scipy 2D arrays)
-    if return_full_data is False:
-        times, S, I         (all scipy arrays)
+    Returns:
+        :
+        if return_full_data is True:
+            times, S, I, Sk, Ik, (the Xk are scipy 2D arrays)
+        if return_full_data is False:
+            times, S, I         (all scipy arrays)
         
     :SAMPLE USE:
 
@@ -2191,33 +2189,31 @@ def SIR_heterogeneous_meanfield_from_graph(G, tau, gamma, rho = None,
     Takes a graph and an initial proportion infected rho.  
     Calculates Sk0 and Ik0 and calls the heterogeneous meanfield model
 
-    :INPUTS:
+    Arguments:
 
-    G : networkx Graph
-    tau : number
-          transmission rate
-    gamma : number
+        G : networkx Graph
+        tau : number
+            transmission rate
+        gamma : number
             recovery rate
-    rho : number between 0 and 1  (default None)
-          the fraction to be randomly infected at time 0
-          If None, then rho=1/N is used where N = G.order()
-    tmin : number (default 0)
-           minimum report time
-    tmax : number (default 100)
-           maximum report time 
-    tcount : integer (default 1001)
-             number of reports
-    return_full_data : boolean
-                       tells whether to just return times, S, I, R or 
-                       all calculated data.
+        rho : number between 0 and 1  (default None)
+            the fraction to be randomly infected at time 0
+            If None, then rho=1/N is used where N = G.order()
+        tmin : number (default 0)
+            minimum report time
+        tmax : number (default 100)
+            maximum report time 
+        tcount : integer (default 1001)
+            number of reports
+        return_full_data : boolean
+            tells whether to just return times, S, I, R or all calculated data.
 
+    Returns:
 
-    :RETURNS:
-
-    if return_full_data is True
-        times, Sk, Ik, Rk (the Xk are scipy 2D arrays)
-    if False,
-        times, S, I, R (all scipy arrays)
+        if return_full_data is True
+            times, Sk, Ik, Rk (the Xk are scipy 2D arrays)
+        if False,
+            times, S, I, R (all scipy arrays)
     
     :SAMPLE USE:
 
@@ -2266,18 +2262,18 @@ def _dSIS_heterogeneous_pairwise_(X, t, Nk, NkNl, tau, gamma, Ks):
     identities: [IkSl] = [SlIk], so where IkSl needed, use SlIk.T
 
 
-    :INPUTS:
+    Arguments:
 
-    X : current values of variables
-    t : current time
-    Nk : The number of nodes of each degree; Nk[i] is the number of 
-         nodes with degree Ks[i]
-    NkNl : number of edges of various types.  NkNl[i,j] corresponds to 
-           Ks[i] and Ks[j].
-    tau : transmission rate
-    gamma : recovery rate
-    Ks : a scipy array --- gives the observed degrees in increasing 
-         order.
+        X : current values of variables
+        t : current time
+        Nk : The number of nodes of each degree; Nk[i] is the number of 
+            nodes with degree Ks[i]
+        NkNl : number of edges of various types.  NkNl[i,j] corresponds to 
+            Ks[i] and Ks[j].
+        tau : transmission rate
+        gamma : recovery rate
+        Ks : a scipy array --- gives the observed degrees in increasing 
+            order.
     '''
     kcount = len(Ks)
     Sk = X[:kcount]
@@ -2357,59 +2353,57 @@ def _dSIR_heterogeneous_pairwise_(X, t, tau, gamma, Nk, Ks):
 def SIS_heterogeneous_pairwise(Sk0, Ik0, SkSl0, SkIl0, IkIl0, tau, gamma, 
                                 tmin = 0, tmax=100, tcount=1001, 
                                 return_full_data = False, Ks = None):
-    '''Encodes System (5.13) of Kiss, Miller, & Simon.  Please cite the
+                                
+    r'''Encodes System (5.13) of Kiss, Miller, & Simon.  Please cite the
     book if using this algorithm.
 
     In the text this is often referred to as the 
-    "heterogeneous mean-field model closed at the level of triples"
+    heterogeneous mean-field model closed at the level of triples
 
-    :INPUTS:
+    Arguments:
+        Sk0 : array.  
+            Sk0[k] is the number of nodes that are susceptible and have degree 
+            k.  If one is empty, it becomes 0.
+            (if Ks is defined, the definition changes slightly, see below)
 
-    Sk0 : array.  Sk0[k] is the number of
-                 nodes that are susceptible and have degree k.  If one 
-                 is empty, it becomes 0.
-                 (if Ks is defined, the definition changes slightly, see
-                  below)
+        Ik0 : array
+            similar to Sk0, but for infected.
+            (if Ks is defined, the definition changes slightly, see below)
+    
+        SkSl0, SkIl0, and IkIl0 : 2D arrays
+            SkIl0[k][l] is [S_kI_l]
+            see below for constraints these should satisfy related to 
+            Sk0 and Ik0.  
+            The code does not enforce these constraints.
+            (if Ks is defined, the definition changes slightly, see below)
 
-    Ik0 : array
-         similar to Sk0, but for infected.
-        (if Ks is defined, the definition changes slightly, see below)
+        tau : number
+            transmission rate
 
-    SkSl0, SkIl0, and IkIl0 : 2D arrays
-         SkIl0[k][l] is [S_kI_l]
-             see below for constraints these should satisfy related to 
-             Sk0 and Ik0.  
-             The code does not enforce these constraints.
-             (if Ks is defined, the definition changes slightly, 
-              see below)
-
-    tau : number
-          transmission rate
-
-    gamma : number
+        gamma : number
             recovery rate
+    
+        tmin : number (default 0)
+            minimum report time
 
-    tmin : number (default 0)
-           minimum report time
+        tmax : number (default 100)
+            maximum report time 
 
-    tmax : number (default 100)
-           maximum report time 
+        tcount : integer (default 1001)
+            number of reports
 
-    tcount : integer (default 1001)
-             number of reports
+        return_full_data : boolean (default False)
+            If True, return times, Sk, Ik, SkIl, SkSl, IkIl
+            If False, return times, S, I
 
-    return_full_data : boolean (default False)
-                       If True, return times, Sk, Ik, SkIl, SkSl, IkIl
-                       If False, return times, S, I
-
-    Ks : scipy array. (default None)
-         (helps prevent memory errors) if some degrees are not
-         observed, then the corresponding entries of these arrays are
-         zero.  This can lead to memory errors in the case of a
-         network with many missing degrees.  So Ks is an (assumed)
-         ordered vector stating which Ks are actually observed.  Then
-         the Sk0[i] is the number of nodes that are susceptible and
-         have degree Ks[i].  Similarly for Ik0 and SkIl0 etc.
+        Ks : scipy array. (default None)
+            (helps prevent memory errors) if some degrees are not
+            observed, then the corresponding entries of these arrays are
+            zero.  This can lead to memory errors in the case of a
+            network with many missing degrees.  So Ks is an (assumed)
+            ordered vector stating which Ks are actually observed.  Then
+            the Sk0[i] is the number of nodes that are susceptible and
+            have degree Ks[i].  Similarly for Ik0 and SkIl0 etc.
 
     In principle, there are constraints relating Sk with SkSl and SkIl 
     and similarly relating Ik with IkIl and SkIl.T.  
@@ -2422,12 +2416,13 @@ def SIS_heterogeneous_pairwise(Sk0, Ik0, SkSl0, SkIl0, IkIl0, tau, gamma,
     others, but for consistency with elsewhere, this is not done here.
     
     
-    :RETURNS:
+    Returns:
+        :
+        if return_full_data is True:
+            returns times, S, I, Sk, Ik, SkIl, SkSl, IkIl
+        if return_full_data is False:
+            returns times, S, I
 
-    if return_full_data is True:
-        returns times, S, I, Sk, Ik, SkIl, SkSl, IkIl
-    if return_full_data is False:
-        returns times, S, I
     :SAMPLE USE:
 
     ::
@@ -2503,63 +2498,60 @@ def SIR_heterogeneous_pairwise(Sk0, Ik0, Rk0, SkSl0, SkIl0, tau, gamma,
     [A_l S_k I] = ((k-1)/k) [A_l S_k] [S_k I]/ [S_k]
     [I S_k A_l] = ((k-1)/k) [I S_k] [S_k A_l]/ [S_k]
 
-    :INPUTS:
+    Arguments:
 
-    Sk0 : scipy array, Sk0[k] is number of degree k susceptible at 
-          time 0.
-    Ik0 : scipy array
-    Rk0 : scipy array
-    SkIl0 : scipy 2D array
-    SkSl0 : scipy 2D array
+        Sk0 : scipy array, Sk0[k] is number of degree k susceptible at 
+            time 0.
+        Ik0 : scipy array
+        Rk0 : scipy array
+        SkIl0 : scipy 2D array
+        SkSl0 : scipy 2D array
 
-    tau : number
-          transmission rate
-    gamma : number
+        tau : number
+            transmission rate
+        gamma : number
             recovery rate
-    tmin : number (default 0)
-           minimum report time
-    tmax : number (default 100)
-           maximum report time 
-    tcount : integer (default 1001)
-             number of reports
-    return_full_data : boolean (default False)
-                       If True, return times, Sk, Ik, Rk, SkIl, SkSl
-                       If False, return times, S, I, R
+        tmin : number (default 0)
+            minimum report time
+        tmax : number (default 100)
+            maximum report time 
+        tcount : integer (default 1001)
+            number of reports
+        return_full_data : boolean (default False)
+            If True, return times, Sk, Ik, Rk, SkIl, SkSl
+            If False, return times, S, I, R
 
-
-    tau : number
-          transmission rate
-    gamma : number
+        tau : number
+            transmission rate
+        gamma : number
             recovery rate
-    tmin : number (default 0)
-           minimum report time
-    tmax : number (default 100)
-           maximum report time 
-    tcount : integer (default 1001)
-             number of reports
-    return_full_data : boolean
-                       tells whether to just return times, S, I, R or 
-                       all calculated data.
-    Ks : scipy array. (default None)
-         (helps prevent memory errors) if some degrees are not
-         observed, then the corresponding entries of these arrays are
-         zero.  This can lead to memory errors in the case of a
-         network with many missing degrees.  So Ks is an (assumed)
-         ordered vector stating which Ks are actually observed.  Then
-         the Sk0[i] is the number of nodes that are susceptible and
-         have degree Ks[i].  Similarly for Ik0 and SkIl0 etc.        
+        tmin : number (default 0)
+            minimum report time
+        tmax : number (default 100)
+            maximum report time 
+        tcount : integer (default 1001)
+            number of reports
+        return_full_data : boolean
+            tells whether to just return times, S, I, R or all calculated data.
+        Ks : scipy array. (default None)
+            (helps prevent memory errors) if some degrees are not
+            observed, then the corresponding entries of these arrays are
+            zero.  This can lead to memory errors in the case of a
+            network with many missing degrees.  So Ks is an (assumed)
+            ordered vector stating which Ks are actually observed.  Then
+            the Sk0[i] is the number of nodes that are susceptible and
+            have degree Ks[i].  Similarly for Ik0 and SkIl0 etc.        
 
-    :RETURNS:
+    Returns:
 
-    if return_full_data is True
-        returns times, S, I, R, Sk, Ik, Rk, SkIl, SkSl
-    if return_full_data is False
-        return times, S, I, R
+        if return_full_data is True
+            returns times, S, I, R, Sk, Ik, Rk, SkIl, SkSl
+        if return_full_data is False
+            return times, S, I, R
     
     :SAMPLE USE:
 
     ::
-
 
         import networkx as nx
         import EoN
@@ -2688,31 +2680,30 @@ def SIS_compact_pairwise(Sk0, Ik0, SI0, SS0, II0, tau, gamma, tmin = 0,
     [SX] = sum_k k [S_k]
     Q = (1/[SX]^2) sum_k (k-1)k[S_k]
 
-    INPUT
-    -----
-    Sk0 : scipy array
-          number susceptible for each k
-    Ik0 : scipy array
-          number infected for each k
-    SI0 : number
-          number of SI edges
-    SS0 : number
-          number of SS edges
-    II0 : number
-          number of II edges
-    tau : number
-          transmission rate
-    gamma : number
+    Arguments:
+        Sk0 : scipy array
+            number susceptible for each k
+        Ik0 : scipy array
+            number infected for each k
+        SI0 : number
+            number of SI edges
+        SS0 : number
+            number of SS edges
+        II0 : number
+            number of II edges
+        tau : number
+            transmission rate
+        gamma : number
             recovery rate
-    tmin : number (default 0)
-           minimum report time
-    tmax : number (default 100)
-           maximum report time 
-    tcount : integer (default 1001)
-             number of reports
-    return_full_data : boolean (default False)
-                       if True, return times, S, I, Sk, Ik, SI, SS, II
-		       if False,  return times, S, I
+        tmin : number (default 0)
+            minimum report time
+        tmax : number (default 100)
+            maximum report time 
+        tcount : integer (default 1001)
+            number of reports
+        return_full_data : boolean (default False)
+            if True, return times, S, I, Sk, Ik, SI, SS, II
+            if False,  return times, S, I
 
 
 
@@ -2720,13 +2711,12 @@ def SIS_compact_pairwise(Sk0, Ik0, SI0, SS0, II0, tau, gamma, tmin = 0,
     conserved quantities:  [Sk]+[Ik]     ;     SS + II + 2SI
     
     
-    :RETURNS:
+    Returns:
 
     
     :SAMPLE USE:
 
     ::
-
 
         import networkx as nx
         import EoN
@@ -2767,33 +2757,32 @@ def SIR_compact_pairwise(Sk0, I0, R0, SS0, SI0, tau, gamma, tmin=0, tmax=100,
     [S] = sum [S_k]
     I = N-[S]-R
 
-    :INPUTS:
+    Arguments:
 
-    Sk0 : scipy array
-          initial number of suscetibles of each degree k
-    I0 : number
-         initial number infected
-    R0 : number
-         initial number recovered
-    SS0 : number
-          initial number of SS edges
-    SI0 : number
-          initial number of SI edges
-    tau : number
-          transmission rate
-    gamma : number
+        Sk0 : scipy array
+            initial number of suscetibles of each degree k
+        I0 : number
+            initial number infected
+        R0 : number
+            initial number recovered
+        SS0 : number
+            initial number of SS edges
+        SI0 : number
+            initial number of SI edges
+        tau : number
+            transmission rate
+        gamma : number
             recovery rate
-    tmin : number (default 0)
-           minimum report time
-    tmax : number (default 100)
-           maximum report time 
-    tcount : integer (default 1001)
-             number of reports
-    return_full_data : boolean
-                       tells whether to just return times, S, I, R or 
-                       all calculated data.
+        tmin : number (default 0)
+            minimum report time
+        tmax : number (default 100)
+            maximum report time 
+        tcount : integer (default 1001)
+            number of reports
+        return_full_data : boolean
+            tells whether to just return times, S, I, R or all calculated data.
 
-    :RETURNS:
+    Returns:
 
 
     :SAMPLE USE:
@@ -2916,39 +2905,39 @@ def SIS_super_compact_pairwise(S0, I0, SS0, SI0, II0, tau, gamma, k_ave,
     Encodes system (5.20) of Kiss, Miller, & Simon.  Please cite the 
     book if using this algorithm.
 
-    :INPUTS:
+    Arguments:
 
-    S0 : 
-    I0 :
-    SS0 :
-    SI0 :  
-    II0 : 
-    tau : number
-          transmission rate
-    gamma : number
+        S0 : 
+        I0 :
+        SS0 :
+        SI0 :  
+        II0 : 
+        tau : number
+            transmission rate
+        gamma : number
             recovery rate
-    k_ave : number
+        k_ave : number
             average value of k
-    ksquare_ave : number
+        ksquare_ave : number
             average value of k**2
-    kcube_ave : number
+        kcube_ave : number
             average value of k**3
-    tmin : number (default 0)
-           minimum report time
-    tmax : number (default 100)
-           maximum report time 
-    tcount : integer (default 1001)
-             number of reports
-    return_full_data : boolean
-             tells whether to just return times, S, I, R or all 
-             calculated data.
+        tmin : number (default 0)
+            minimum report time
+        tmax : number (default 100)
+            maximum report time 
+        tcount : integer (default 1001)
+            number of reports
+        return_full_data : boolean
+            tells whether to just return times, S, I, R or all 
+            calculated data.
 
-    :RETURNS:
-
-    if return_full_data is True
-        returns times, S, I, SS, SI, II
-    if return_full_data is False
-        returns times, S, I
+    Returns:
+        :
+        if return_full_data is True
+            returns times, S, I, SS, SI, II
+        if return_full_data is False
+            returns times, S, I
         
     :SAMPLE USE:
 
@@ -2987,19 +2976,19 @@ def SIR_super_compact_pairwise(SS0, SI0, R0, N, tau, gamma, psihat,
     Q = psihat_xx(theta)/N(psihat_x(theta))^2
 
     
-    :INPUTS:
+    Arguments:
 
-    tau : number
-          transmission rate
-    gamma : number
+        tau : number
+            transmission rate
+        gamma : number
             recovery rate
-    tmin : number (default 0)
-           minimum report time
-    tmax : number (default 100)
-           maximum report time 
-    tcount : integer (default 1001)
-             number of reports
-    return_full_data : boolean
+        tmin : number (default 0)
+            minimum report time
+        tmax : number (default 100)
+            maximum report time 
+        tcount : integer (default 1001)
+            number of reports
+        return_full_data : boolean
             tells whether to just return times, S, I, R or all 
             calculated data.
 '''
@@ -3202,29 +3191,28 @@ def SIS_effective_degree(Ssi0, Isi0, tau, gamma, tmin = 0, tmax=100,
     book if using this algorithm.
 
 
-    :INPUTS:
+    Arguments:
 
-    Ssi0 and Isi0 : (square) numpy 2D arrays of same shape.
-                      Entries are initial number susceptible or infected 
-                      with given initial number of susceptible/infected 
-                      neighbors.
-    tau : number
-          transmission rate
-    gamma : number
+        Ssi0 and Isi0 : (square) numpy 2D arrays of same shape.
+            Entries are initial number susceptible or infected 
+            with given initial number of susceptible/infected 
+            neighbors.
+        tau : number
+            transmission rate
+        gamma : number
             recovery rate
-    tmin : number (default 0)
-           minimum report time
-    tmax : number (default 100)
-           maximum report time 
-    tcount : integer (default 1001)
-             number of reports
-    return_full_data : boolean (default False)
-                       tells whether to just return times, S, I, R or 
-                       all calculated data.
-                       if True, 
-                           return times, S, I, Ssi, Isi
-                       if False, 
-                           return times, S, I
+        tmin : number (default 0)
+            minimum report time
+        tmax : number (default 100)
+            maximum report time 
+        tcount : integer (default 1001)
+            number of reports
+        return_full_data : boolean (default False)
+            tells whether to just return times, S, I, R or all calculated data.
+            if True, 
+                return times, S, I, Ssi, Isi
+            if False, 
+                return times, S, I
                        
     '''
     times = scipy.linspace(tmin,tmax,tcount) 
@@ -3258,27 +3246,27 @@ def SIR_effective_degree(S_si0, I0, R0, tau, gamma, tmin=0, tmax=100,
     S = \sum_{s,i} S_{s,i}
     I = N-S-R
 
-    :INPUTS:
+    Arguments:
 
-    S_si0 : (square) numpy 2-D array
+        S_si0 : (square) numpy 2-D array
             S_{s,i} at time 0
-    I0 : number
-         number of infected individuals at time 0
-    R0 : number
-         number of recovered individuals at time 0
-    tau : number
-          transmission rate
-    gamma : number
+        I0 : number
+            number of infected individuals at time 0
+        R0 : number
+            number of recovered individuals at time 0
+        tau : number
+            transmission rate
+        gamma : number
             recovery rate
-    tmin : number (default 0)
-           minimum report time
-    tmax : number (default 100)
-           maximum report time 
-    tcount : integer (default 1001)
-             number of reports
-    return_full_data : boolean
-                       tells whether to just return times, S, I, R or 
-                       all calculated data.
+        tmin : number (default 0)
+            minimum report time
+        tmax : number (default 100)
+            maximum report time 
+        tcount : integer (default 1001)
+            number of reports
+        return_full_data : boolean
+            tells whether to just return times, S, I, R or 
+            all calculated data.
     '''
     times = scipy.linspace(tmin,tmax, tcount)
     N = S_si0.sum()+I0+R0
@@ -3396,47 +3384,46 @@ def SIR_compact_effective_degree(Skappa0, I0, R0, SI0, tau, gamma, tmin=0,
     S = sum_kappa S_kappa
     I = N - S - R
 
-    :INPUTS:
+    Arguments:
 
-    Skappa0 : scipy array
-              from S_0(0) up to S_kappamax(0) of number susceptible with 
-                  each effective degree
-              Skappa = number of nodes that are susceptible and have 
-                       kappa non-recovered neighbors
-    I0 : number
-         number of infected individuals at time 0
-    R0 : number
-         initial number recovered
-    SI0 : number
-          initial number of SI edges
-    tau : number
-          transmission rate
-    gamma : number
+        Skappa0 : scipy array
+            from S_0(0) up to S_kappamax(0) of number susceptible with 
+            each effective degree
+            Skappa = number of nodes that are susceptible and have 
+            kappa non-recovered neighbors
+        I0 : number
+            number of infected individuals at time 0
+        R0 : number
+            initial number recovered
+        SI0 : number
+            initial number of SI edges
+        tau : number
+            transmission rate
+        gamma : number
             recovery rate
-    tmin : number (default 0)
-           minimum report time
-    tmax : number (default 100)
-           maximum report time 
-    tcount : integer (default 1001)
+        tmin : number (default 0)
+            minimum report time
+        tmax : number (default 100)
+            maximum report time 
+        tcount : integer (default 1001)
              number of reports
-    return_full_data : boolean
-                       tells whether to just return times, S, I, R or 
-                       all calculated data.
+        return_full_data : boolean
+            tells whether to just return times, S, I, R or all calculated data.
     
-    RETURNS (if return_full_data==False):
-    --------
-    times : scipy.array of times
-    S : scipy.array of number susceptible
-    I : scipy.array of number infected
-    R : scipy.array of number recovered
+    Returns:
+        :
+        if return_full_data==False
+            times : scipy.array of times
+            S : scipy.array of number susceptible
+            I : scipy.array of number infected
+            R : scipy.array of number recovered
 
-    if return_full_data==True
-    --------------------------
-    times : as before
-    Skappa : array of arrays, each subarray gives particular S_kappa
-    I : number infected
-    R : number recovered
-    SI : number of SI edges
+        else
+        times : as before
+        Skappa : array of arrays, each subarray gives particular S_kappa
+        I : number infected
+        R : number recovered
+        SI : number of SI edges
     '''
 
     N = Skappa0.sum()+I0+R0
@@ -3478,18 +3465,17 @@ def Epi_Prob_discrete(Pk, p, number_its = 100):
     '''Encodes System (6.2) of Kiss, Miller, & Simon.  Please cite the
     book if using this algorithm.
     
-    :INPUTS:
+    Arguments:
 
-    Pk : scipy array Pk[k] is probability a node has degree k.
+        Pk : scipy array Pk[k] is probability a node has degree k.
 
-    p : transmission probability
+        p : transmission probability
 
-    number_its : number of iterations before assumed converged.
+        number_its : number of iterations before assumed converged.
                  default value is 100
 
-    :RETURNS:
-
-    Calculated Epidemic probability (assuming configuration model)
+    Returns:
+        Calculated Epidemic probability (assuming configuration model)
     '''
     ks = scipy.arange(len(Pk))
     def psi(x):
@@ -3534,26 +3520,26 @@ def Epi_Prob_cts_time(Pk, tau, gamma, umin=0, umax = 10, ucount = 1001,
     and 
         p(u) = 1-e^{-\tau u/\gamma}
     
-    :INPUTS:
+    Arguments:
 
-    Pk : scipy array Pk[k] is probability a node has degree k.
+        Pk : scipy array Pk[k] is probability a node has degree k.
 
-    tau : transmission rate
+        tau : transmission rate
 
-    gamma : recovery rate
+        gamma : recovery rate
 
-    umin : minimal value of \gamma T used in calculation
-    umax : maximum value of \gamma T used in calculation
-    ucount : number of points taken for integral.
+        umin : minimal value of \gamma T used in calculation
+        umax : maximum value of \gamma T used in calculation
+        ucount : number of points taken for integral.
              So this integrates from umin to umax using simple Riemann 
              sum.
 
-    number_its : number of iterations before assumed converged.
+        number_its : number of iterations before assumed converged.
                  default value is 100
 
-    :RETURNS:
+    Returns:
 
-    Calculated Epidemic probability (assuming configuration model)
+        Calculated Epidemic probability (assuming configuration model)
     '''
     ks = scipy.arange(len(Pk))
     def psi(x):
@@ -3576,33 +3562,33 @@ def Epi_Prob_non_Markovian(Pk, tau, gamma, Pxidxi, po, umin=0, umax = 10,
     r'''Encodes system (6.5) of Kiss, Miller, & Simon.  Please cite the
     book if using this algorithm.
     
-    :INPUTS:
+    Arguments:
 
-    Pk : scipy array Pk[k] is probability a node has degree k.
+        Pk : scipy array Pk[k] is probability a node has degree k.
 
-    tau : transmission rate
+        tau : transmission rate
 
-    gamma : recovery rate
+        gamma : recovery rate
 
-    Pxidxi : a dict.  Returns P(xi)dxi for user-selected xi.  The 
+        Pxidxi : a dict.  Returns P(xi)dxi for user-selected xi.  The 
              algorithm will replace the integral with
              \sum_{xi \in Pxidxi.keys()} \psi(\alpha(xi)) Pxidxi(xi)
 
-    po : a function.
-         returns p_o(xi), the probability a node will transmit to a 
-         random neighbor given xi.
-    umin : minimal value of \gamma T used in calculation
-    umax : maximum value of \gamma T used in calculation
-    ucount : number of points taken for integral.
-             So this integrates from umin to umax using simple Riemann 
-             sum.
+        po : a function.
+            returns p_o(xi), the probability a node will transmit to a 
+            random neighbor given xi.
+        umin : minimal value of \gamma T used in calculation
+        umax : maximum value of \gamma T used in calculation
+        ucount : number of points taken for integral.
+            So this integrates from umin to umax using simple Riemann 
+            sum.
 
-    number_its : number of iterations before assumed converged.
+        number_its : number of iterations before assumed converged.
                  default value is 100
 
-    :RETURNS:
-
-    Calculated Epidemic probability (assuming configuration model)
+    Returns:
+        :
+        Calculated Epidemic probability (assuming configuration model)
     '''
     ks = scipy.arange(len(Pk))
     def psi(x):
@@ -3628,33 +3614,34 @@ def Attack_rate_discrete(Pk, p, number_its=100, rho = None, Sk0=None,
 
     To use system (6.6), leave rho and Sk0 as None.
 
-    :INPUTS:
+    Arguments:
 
-    Pk : dict
-        Pk[k] is the probability a randomly selected node has degree k.
-    tau : number
-        per-edge transmission rate.
-    gamma : number
-        per-node recovery rate
-    number_its : The solution is found iteratively, so this determines 
-                 the number of iterations.
-    rho : Number (default None)
-    Sk0 : dict (default None)
-          only one of rho and Sk0 can be defined.  
-          The other (or both) should remain None.
-          rho gives the fraction of nodes randomly infected.
-          Sk0 is a dict such that Sk0[k] is the probability that a 
-              degree k node is susceptible at start.
-    phiS0 : number (default None)
-          Should only be used if Sk0 is not None.  
-          If it is None, then assumes that initial introduction is 
-          randomly introduced
-    phiR0 : number (default 0)
-          As with phiS0, only used if Sk0 is not None.
-    :RETURNS:
+        Pk : dict
+            Pk[k] is the probability a randomly selected node has degree k.
+        tau : number
+            per-edge transmission rate.
+        gamma : number
+            per-node recovery rate
+        number_its : The solution is found iteratively, so this determines 
+            the number of iterations.
+        rho : Number (default None)
+        Sk0 : dict (default None)
+            only one of rho and Sk0 can be defined.  
+            The other (or both) should remain None.
+            rho gives the fraction of nodes randomly infected.
+            Sk0 is a dict such that Sk0[k] is the probability that a 
+            degree k node is susceptible at start.
+        phiS0 : number (default None)
+            Should only be used if Sk0 is not None.  
+            If it is None, then assumes that initial introduction is 
+            randomly introduced
+        phiR0 : number (default 0)
+            As with phiS0, only used if Sk0 is not None.
 
-    A : number
-        the predicted fraction infected.
+    Returns:
+        :
+        A : number
+            the predicted fraction infected.
     '''
 
     if rho is not None and Sk0 is not None:
@@ -3702,36 +3689,35 @@ def Attack_rate_cts_time(Pk, tau, gamma, number_its =100, rho = None,
     If we look for the limit of a nonzero initial fraction infected, we 
     introduce rho or Sk0
 
-    :INPUTS:
+    Arguments:
         
-    Pk : dict
-    
-    the probability a randomly selected node has degree k.
+        Pk : dict    
+            the probability a randomly selected node has degree k.
 
-    tau : number
-    per-edge transmission rate.
+        tau : number
+            per-edge transmission rate.
 
-    gamma : number
-    per-node recovery rate
+        gamma : number
+            per-node recovery rate
 
-    number_its : int
-    The solution is found iteratively, so this determines 
-    the number of iterations.
+        number_its : int
+            The solution is found iteratively, so this determines the number 
+            of iterations.
 
-    rho : number, optional
-    The initial proportion infected (defaults to None)
+        rho : number, optional
+            The initial proportion infected (defaults to None)
 
-    Sk0 : dict (default None)
-    only one of rho and Sk0 can be defined.  
-    The other (or both) should remain None.
-    rho gives the fraction of nodes randomly infected.
-    Sk0 is a dict such that Sk0[k] is the probability that a 
-    degree k node is susceptible at start.
+        Sk0 : dict (default None)
+            only one of rho and Sk0 can be defined.  
+            The other (or both) should remain None.
+            rho gives the fraction of nodes randomly infected.
+            Sk0 is a dict such that Sk0[k] is the probability that a 
+            degree k node is susceptible at start.
 
-    :RETURNS:
-
-    A : number
-        the predicted fraction infected.
+    Returns:
+        :
+        A : number
+            the predicted fraction infected.
     '''
 
     if rho is not None and Sk0 is not None:
@@ -3770,6 +3756,7 @@ def Attack_rate_cts_time_from_graph(G,  tau, gamma, number_its =100, rho=None,
     Attack_rate_cts_time.
     
     SEE ALSO
+    --------
     estimate_SIR_prob_size(G, p) - accounts for entire structure of G
     '''
     Pk = get_Pk(G)
@@ -3796,38 +3783,38 @@ def EBCM_discrete(N, psihat, psihatPrime, p, phiS0, phiR0=0, R0=0, tmax = 100,
     S(t) = N psihat(theta(t))
     I(t) = N-S-R
 
-    :INPUTS:
+    Arguments:
 
-    N : number
-        size of population
-    psihat : function
-        psihat(x) = \sum_k S(k,0) x^k
-    psihatPrime : function
+        N : number
+            size of population
+        psihat : function
+            psihat(x) = \sum_k S(k,0) x^k
+        psihatPrime : function
         psihatPrime(x) = d psihat(x)/dx = sum_k k S(k,0) x^{k-1}
-    p : number
-        per edge transmission probability
-    phiS0 : number
+        p : number
+            per edge transmission probability
+        phiS0 : number
             initial proportion of edges (of susceptible nodes) 
             connecting to susceptible nodes
-    phiR0 : number
+        phiR0 : number
             initial proportion of edges (of susceptible nodes) 
             connecting to recovered nodes
-    R0 : number
-        number of recovered nodes at time 0
-    tmax : number
-        maximum time
-    return_full_data : boolean
-                       if False, 
-                           return t, S, I, R
-                       if True 
-                           return t, S, I, R, and theta
+        R0 : number
+            number of recovered nodes at time 0
+        tmax : number
+            maximum time
+        return_full_data : boolean
+            if False, 
+               return t, S, I, R
+            if True 
+               return t, S, I, R, and theta
 
-    :RETURNS:
-
-    if return_full_data == False:
-        returns t, S, I, R, all scipy arrays
-    if ...== True
-        returns t, S, I, R and theta, all scipy arrays
+    Returns:
+        :
+        if return_full_data == False:
+            returns t, S, I, R, all scipy arrays
+        if ...== True
+            returns t, S, I, R and theta, all scipy arrays
     '''
     times = [0]
     theta = [1]
@@ -3860,32 +3847,32 @@ def EBCM_discrete_uniform_introduction(N, psi, psiPrime, p, rho, tmax=100,
     Handles the case that the disease is introduced uniformly as opposed
     to depending on degree.
 
-    :INPUTS:
+    Arguments:
 
-    N : Number
-        number of nodes
-    psi : function
-        psi(x) = \sum P(k) x^k
-    psiPrime : function
-        psiPrime(x)=d psi(x)/dx = \sum kP(k) x^{k-1}
-    p : number
-        per edge transmission probability
-    rho : number
-        initial proportion of infected nodes
-    tmax : number
-        maximum time
-    return_full-data : boolean
-        if False, 
-            return t, S, I, R
-        if True 
-            return t, S, I, R, and theta
+        N : Number
+            number of nodes
+        psi : function
+            psi(x) = \sum P(k) x^k
+        psiPrime : function
+            psiPrime(x)=d psi(x)/dx = \sum kP(k) x^{k-1}
+        p : number
+            per edge transmission probability
+        rho : number
+            initial proportion of infected nodes
+        tmax : number
+            maximum time
+        return_full-data : boolean
+            if False, 
+                return t, S, I, R
+            if True 
+                return t, S, I, R, and theta
 
-    :RETURNS:
+    Returns:
 
-    if return_full_data == False:
-        returns t, S, I, R, all scipy arrays
-    if ...== True
-        returns t, S, I, R and theta, all scipy arrays
+        if return_full_data == False:
+            returns t, S, I, R, all scipy arrays
+        if ...== True
+            returns t, S, I, R and theta, all scipy arrays
     '''
     def psihat(x):
         return (1-rho)*psi(x)
@@ -3906,25 +3893,25 @@ def EBCM_discrete_from_graph(G, p, rho = None, tmin = 0, tmax=100,
     0, 
     and then uses the discrete EBCM model.
     
-    :INPUTS:
+    Arguments:
 
-    G : Networkx Graph
-    p : number
-        per edge transmission probability
-    rho : number
-        initial proportion of infected nodes
-    tmax : number
-        maximum time
-    return_full-data : boolean
-        if False, 
-            return t, S, I, R and if True return t, S, I, R, and theta
+        G : Networkx Graph
+        p : number
+            per edge transmission probability
+        rho : number
+            initial proportion of infected nodes
+        tmax : number
+            maximum time
+        return_full-data : boolean
+            if False, 
+                return t, S, I, R and if True return t, S, I, R, and theta
 
-    :RETURNS:
-
-    if return_full_data == False:
-        returns t, S, I, R, all scipy arrays
-    if ...== True
-        returns t, S, I, R and theta, all scipy arrays
+    Returns:
+        :
+        if return_full_data == False:
+            returns t, S, I, R, all scipy arrays
+        if ...== True
+            returns t, S, I, R and theta, all scipy arrays
  '''
     if rho is None:
         rho = 1./G.order()
@@ -3959,44 +3946,44 @@ def EBCM(N, psihat, psihatPrime, tau, gamma, phiS0, phiR0=0, R0=0, tmin=0,
     note : R0 is R(0), not the reproductive number
 
 
-    :INPUTS:
+    Arguments:
 
-    N : number
-        size of population
-    psihat : function
-             psihat(x) = \sum_k S(k,0) x^k
-    psihatPrime : function
-               psihatPrime(x) = d psihat(x)/dx = sum_k k S(k,0) x^{k-1}
-    tau : number
-        per edge transmission rate
-    gamma : number
-        per node recovery rate
-    phiS0 : number
+        N : number
+            size of population
+        psihat : function
+            psihat(x) = \sum_k S(k,0) x^k
+        psihatPrime : function
+            psihatPrime(x) = d psihat(x)/dx = sum_k k S(k,0) x^{k-1}
+        tau : number
+            per edge transmission rate
+        gamma : number
+            per node recovery rate
+        phiS0 : number
             initial proportion of edges (of susceptible nodes) 
             connecting to susceptible nodes
-    phiR0 : number
+        phiR0 : number
             initial proportion of edges (of susceptible nodes) 
             connecting to recovered nodes
-    R0 : number
-        number of recovered nodes at time 0
-    tmin : number
-        start time
-    tmax : number
-        stop time
-    tcount : integer
-        number of distinct times to calculate
-    return_full_data : boolean
-        if False, 
-            return t, S, I, R
-        if True 
-            return t, S, I, R, and theta
+        R0 : number
+            number of recovered nodes at time 0
+        tmin : number
+            start time
+        tmax : number
+            stop time
+        tcount : integer
+            number of distinct times to calculate
+        return_full_data : boolean
+            if False, 
+                return t, S, I, R
+            if True 
+                return t, S, I, R, and theta
 
-    :RETURNS:
-
-    if return_full_data == False:
-        returns t, S, I, R, all scipy arrays
-    if ...== True
-        returns t, S, I, R and theta, all scipy arrays
+    Returns:
+        :
+        if return_full_data == False:
+            returns t, S, I, R, all scipy arrays
+        if ...== True
+            returns t, S, I, R and theta, all scipy arrays
     '''
     times = scipy.linspace(tmin, tmax, tcount)
     X0 = scipy.array([1, R0])
@@ -4019,38 +4006,38 @@ def EBCM_uniform_introduction(N, psi, psiPrime, tau, gamma, rho, tmin=0,
     Handles the case that the disease is introduced uniformly as opposed
     to depending on degree.
 
-    :INPUTS:
+    Arguments:
 
-    N : number
-        size of population
-    psi : function
-        psihat(x) = \sum_k S(k,0) x^k
-    psiPrime : function
-        psihatPrime(x) = d psihat(x)/dx = sum_k k S(k,0) x^{k-1}
-    tau : number
-        per edge transmission rate
-    gamma : number
-        per node recovery rate
-    rho : number
-        initial proportion infected
-    tmin : number
-        start time
-    tmax : number
-        stop time
-    tcount : integer
-        number of distinct times to calculate
-    return_full_data : boolean
-        if False,
-            return t, S, I, R 
-        if True 
-            return t, S, I, R, and theta
+        N : number
+            size of population
+        psi : function
+            psihat(x) = \sum_k S(k,0) x^k
+        psiPrime : function
+            psihatPrime(x) = d psihat(x)/dx = sum_k k S(k,0) x^{k-1}
+        tau : number
+            per edge transmission rate
+        gamma : number
+            per node recovery rate
+        rho : number
+            initial proportion infected
+        tmin : number
+            start time
+        tmax : number
+            stop time
+        tcount : integer
+            number of distinct times to calculate
+        return_full_data : boolean
+            if False,
+                return t, S, I, R 
+            if True 
+                return t, S, I, R, and theta
 
-    :RETURNS:
-
-    if return_full_data == False:
-        returns t, S, I, R, all scipy arrays
-    if ...== True
-        returns t, S, I, R and theta, all scipy arrays
+    Returns:
+        :
+        if return_full_data == False:
+            returns t, S, I, R, all scipy arrays
+        if ...== True
+            returns t, S, I, R and theta, all scipy arrays
 '''
     def psihat(x):
         return (1-rho)*psi(x)

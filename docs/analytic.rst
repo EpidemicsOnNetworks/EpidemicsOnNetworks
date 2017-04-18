@@ -1,7 +1,7 @@
 EoN Analytic Models
 ===================
 
-.. automodule:: EoN.simulation
+.. automodule:: EoN.analytic
     :members:
     :undoc-members:
     :show-inheritance:

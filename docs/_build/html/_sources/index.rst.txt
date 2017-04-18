@@ -7,7 +7,11 @@ Welcome to Epidemics on Networks's documentation!
 =================================================
 
 
-Epidemics on Networks (EoN) is a Python module that provides tools to study the spread of SIS and SIR diseases in networks.  The tools fall into two broad categories: either they are used for stochastic simulation or they are used to solve analytic ODE models.  This is based on the book `Mathematics of Epidemics on Networks: from Exact to Approximate Models`_ 
+Epidemics on Networks (EoN) is a Python module that provides tools to study 
+the spread of SIS and SIR diseases in networks.  The tools fall into two broad 
+categories: either they are used for stochastic simulation or they are used to 
+solve analytic ODE models.  This is based on the book 
+|  `Mathematics of Epidemics on Networks: from Exact to Approximate Models`_ 
 
 The package is built using tools from NetworkX_. 
 
@@ -19,15 +23,15 @@ The package is built using tools from NetworkX_.
    :maxdepth: 2
    :caption: Contents:
 
+   Getting Started
+   ===============
    quickstart
+   examples
+
+   Functions
+   =========
    EoN
    simulation
    analytic
    
 
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
