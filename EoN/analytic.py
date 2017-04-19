@@ -14,7 +14,7 @@ import EoN
 def my_odeint(dfunc, V0, times, args=()):
     r'''For some of the systems odeint will switch to the BDF solver.
     In large enough systems, it then gets stuck trying to estimate the 
-    Jacobian.
+    Jacobian.  This will even cause segmentation faults.
 
     This routine has identical inputs to integrate.odeint, but relies on 
     integrate.ode.  It avoids BDF.
@@ -31,6 +31,13 @@ def my_odeint(dfunc, V0, times, args=()):
         Phillip: http://stackoverflow.com/users/1881610/phillip
         
     INPUT and OUTPUT are as integrate.odeint
+    
+    Arguments:
+        Identical to integrate.odeint
+        
+    Returns:
+        :
+        Identical to integrate.odeint
     '''
 
     r = integrate.ode(lambda t, X: dfunc(X, t, *args))
@@ -380,7 +387,7 @@ def SIS_individual_based(G, nodelist, Y0, tau, gamma, tmin = 0,
         t, S, I = EoN.SIS_individual_based(G, nodelist, Y, 0.3, gamma=1, 
                     tmax = 20)
     '''
-    trans_rate_fxn, rec_rate_fxn = _get_rate_functions(G, tau, gamma, 
+    trans_rate_fxn, rec_rate_fxn = EoN._get_rate_functions(G, tau, gamma, 
                                                 transmission_weight,
                                                 recovery_weight)
 
@@ -483,7 +490,7 @@ def SIR_individual_based(G, nodelist, X0, Y0, tau, gamma, tmin = 0,
         plt.plot(t,I)
     '''
 
-    trans_rate_fxn, rec_rate_fxn = _get_rate_functions(G, tau, gamma, 
+    trans_rate_fxn, rec_rate_fxn = EoN._get_rate_functions(G, tau, gamma, 
                                                 transmission_weight,
                                                 recovery_weight)
 
@@ -940,7 +947,7 @@ def SIS_pair_based(G, nodelist, Y0, tau, gamma, XY0=None, XX0 = None,
         plt.plot(t,I)
         
 '''
-    trans_rate_fxn, rec_rate_fxn = _get_rate_functions(G, tau, gamma, 
+    trans_rate_fxn, rec_rate_fxn = EoN._get_rate_functions(G, tau, gamma, 
                                                 transmission_weight,
                                                 recovery_weight)
 
@@ -972,7 +979,7 @@ def SIS_pair_based(G, nodelist, Y0, tau, gamma, XY0=None, XX0 = None,
     V0 = scipy.concatenate((Y0[:,None], XY0, XX0), axis=0).T[0]
     index_of_node = {node:i for i, node in enumerate(nodelist)}
 
-    V = integrate.odeint(_dSIS_pair_based_, V0, times, 
+    V = my_odeint(_dSIS_pair_based_, V0, times, 
                             args = (G, nodelist, index_of_node, trans_rate_fxn, 
                                     rec_rate_fxn))
     Ys = V.T[0:N]
@@ -1102,7 +1109,7 @@ def SIR_pair_based(G, nodelist, Y0, tau, gamma, X0 = None, XY0=None,
     '''
 
 
-    trans_rate_fxn, rec_rate_fxn = _get_rate_functions(G, tau, gamma, 
+    trans_rate_fxn, rec_rate_fxn = EoN._get_rate_functions(G, tau, gamma, 
                                                 transmission_weight,
                                                 recovery_weight)
 
@@ -1433,7 +1440,7 @@ def SIR_pair_based2(G, tau, gamma, rho = None, nodelist=None, X0=None,
     E = len(edgelist)
     #now we define functions which give the transmission rate of edges 
     #and recovery rate of nodes.  
-    trans_rate_fxn, rec_rate_fxn = _get_rate_functions(G, tau, gamma, 
+    trans_rate_fxn, rec_rate_fxn = EoN._get_rate_functions(G, tau, gamma, 
                                                 transmission_weight,
                                                 recovery_weight)
 
@@ -3267,6 +3274,29 @@ def SIR_effective_degree(S_si0, I0, R0, tau, gamma, tmin=0, tmax=100,
         return_full_data : boolean
             tells whether to just return times, S, I, R or 
             all calculated data.
+
+    Returns:
+        :
+        if return_full_data==False
+            times : scipy.array of times
+            
+            S : scipy.array of number susceptible
+            
+            I : scipy.array of number infected
+            
+            R : scipy.array of number recovered
+
+        else
+            times : as before
+    
+            S : number susceptible
+            
+            I : number infected
+
+            R : number recovered
+
+            S_si : S_{s,i} at each time in times
+
     '''
     times = scipy.linspace(tmin,tmax, tcount)
     N = S_si0.sum()+I0+R0
@@ -3414,16 +3444,23 @@ def SIR_compact_effective_degree(Skappa0, I0, R0, SI0, tau, gamma, tmin=0,
         :
         if return_full_data==False
             times : scipy.array of times
+            
             S : scipy.array of number susceptible
+            
             I : scipy.array of number infected
+            
             R : scipy.array of number recovered
 
         else
-        times : as before
-        Skappa : array of arrays, each subarray gives particular S_kappa
-        I : number infected
-        R : number recovered
-        SI : number of SI edges
+            times : as before
+    
+            Skappa : array of arrays, each subarray gives particular S_kappa
+
+            I : number infected
+
+            R : number recovered
+
+            SI : number of SI edges
     '''
 
     N = Skappa0.sum()+I0+R0
@@ -3538,8 +3575,9 @@ def Epi_Prob_cts_time(Pk, tau, gamma, umin=0, umax = 10, ucount = 1001,
                  default value is 100
 
     Returns:
-
-        Calculated Epidemic probability (assuming configuration model)
+        :
+        PE:
+            Calculated Epidemic probability (assuming configuration model)
     '''
     ks = scipy.arange(len(Pk))
     def psi(x):
@@ -3868,7 +3906,7 @@ def EBCM_discrete_uniform_introduction(N, psi, psiPrime, p, rho, tmax=100,
                 return t, S, I, R, and theta
 
     Returns:
-
+        :
         if return_full_data == False:
             returns t, S, I, R, all scipy arrays
         if ...== True

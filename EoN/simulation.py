@@ -27,12 +27,6 @@ class Event(object): #for fast_SIR and fast_SIS
     
     When self.function is called, it is called by:
         self.function(self.time, *self.args)
-    
-    
-        
-    I wonder about whether it would be better to do this as a dict.
-    
-    The ability to sort based on time is why I am leaving it as a class.
     '''
     def __init__(self, time, function, args = ()):
         self.time = time
@@ -45,7 +39,7 @@ class Event(object): #for fast_SIR and fast_SIS
     
 class myQueue(object):
     r'''
-    This class is used to store a priority queue of events
+    This class is used to store and act on a priority queue of events
     for event-driven simulations.
     '''
     def __init__(self, tmax=float("Inf")):
@@ -99,45 +93,6 @@ class _ListDict_(object):
     def choose_random(self):
         return random.choice(self.items)
 
-
-def _get_rate_functions(G, tau, gamma, transmission_weight = None, 
-                        recovery_weight=None):
-    r'''
-    Arguments:
-        G : networkx Graph
-            the graph disease spread on
-
-        tau : number
-            disease parameter giving edge transmission rate (subject to edge scaling)
-
-        gamma : number (default None)
-            disease parameter giving typical recovery rate, 
-        
-        transmission_weight : string (default None)
-            `G.edge[u][v][transmission_weight]` scales up or down the recovery rate.
-
-        recovery_weight : string       (default None)
-            a label for a weight given to the nodes to scale their 
-            recovery rates
-                `gamma_i = G.node[i][recovery_weight]*gamma`
-    Returns:
-        : trans_rate_fxn, rec_rate_fxn
-            Two functions such that 
-            - `trans_rate_fxn(u,v)` is the transmission rate from u to v and
-            - `rec_rate_fxn(u)` is the recovery rate of u.
-'''
-    if transmission_weight is None:
-        trans_rate_fxn = lambda x, y: tau
-    else:
-        trans_rate_fxn = lambda x, y: tau*G.edge[x][y][transmission_weight]
-
-    if recovery_weight is None:
-        rec_rate_fxn = lambda x : gamma
-    else:
-        rec_rate_fxn = lambda x : gamma*G.node[x][recovery_weight]
-
-
-    return trans_rate_fxn, rec_rate_fxn
 
 
 ##########################
@@ -245,9 +200,10 @@ def discrete_SIR_epidemic(G,
         :
         t, S, I, R:
             scipy arrays
+            
         Or `if return_full_data is True`:
       
-       t, S, I, R, infection_time, recovery_time
+        t, S, I, R, infection_time, recovery_time
             The additional two values are dicts giving infection and recovery time of each node.
 
     
@@ -261,7 +217,7 @@ def discrete_SIR_epidemic(G,
         G = nx.fast_gnp_random_graph(1000,0.002)
         t, S, I, R = EoN.discrete_SIR_epidemic(G, args = (0.6,), 
                                             initial_infecteds=range(20))
-        plt.plot(t,S)
+        plt.plot(t,I)
     
     
     Because this sample uses the defaults, it is equivalent to a call to 
@@ -409,7 +365,7 @@ def percolate_network(G, p):
         G = nx.fast_gnp_random_graph(1000,0.002)
         H = EoN.percolate_network(G, 0.6)
 
-        #H is now a graph with 60% of the edges of G
+        #H is now a graph with about 60% of the edges of G
 '''
 
     H = nx.Graph()
@@ -431,10 +387,10 @@ def _edge_exists_(u, v, H):
         v : node
         H : graph
 
-        Returns:
-            :
-            True : if H has the edge
-            False : if H does not have the edge
+    Returns:
+        :
+        True : if H has the edge
+        False : if H does not have the edge
     '''
     return H.has_edge(u,v)
 
@@ -1228,7 +1184,7 @@ def fast_SIR(G, tau, gamma, initial_infecteds = None, rho = None,
         plt.plot(t, I)
     '''
     
-    trans_rate_fxn, rec_rate_fxn = _get_rate_functions(G, tau, gamma, 
+    trans_rate_fxn, rec_rate_fxn = EoN._get_rate_functions(G, tau, gamma, 
                                                 transmission_weight,
                                                 recovery_weight)
     return fast_nonMarkov_SIR(G, process_trans = _process_trans_SIR_, 
@@ -1671,7 +1627,7 @@ def fast_SIS(G, tau, gamma, initial_infecteds=None, rho = None, tmax=100,
     if rho is not None and initial_infecteds is not None:
         raise EoN.EoNError("cannot define both initial_infecteds and rho")
     
-    trans_rate_fxn, rec_rate_fxn = _get_rate_functions(G, tau, gamma, 
+    trans_rate_fxn, rec_rate_fxn = EoN._get_rate_functions(G, tau, gamma, 
                                                 transmission_weight,
                                                 recovery_weight)
 
@@ -2192,8 +2148,7 @@ def visualize(G, plot_times, infection_times, recovery_times, pos = None,
     Creates a set of plots showing statuses of nodes at different times.  By 
     default, the plot for t = 1.3 would be put into "tmp1p3.png"
     
-    Arguments
-    ---------
+    Arguments:
         G : NetworkX Graph
         
         plot_times : list (or array, maybe even a set)
@@ -2238,6 +2193,26 @@ def visualize(G, plot_times, infection_times, recovery_times, pos = None,
             arguments to be passed to the networkx drawing commands
             draw_networkx_nodes and draw_networkx_edges.
          
+         
+    :SAMPLE USE:
+
+    ::
+
+        import EoN
+        import networkx as nx
+        import matplotlib.pyplot as plt
+        
+        G = nx.fast_gnp_random_graph(100,0.06)
+        plot_times = scipy.linspace(0,10,101) #0, 0.1, 0.2, ..., 10
+        
+        #let's create 101 figures for an SIS epidemic
+        times, S, I, inf_times, rec_times = EoN.fast_SIS(G, 1., 1., filenamebase = 'tmpSIS', return_full_data=True)
+        EoN.visualize(G, plot_times, inf_times, rec_times, SIR = False)
+        
+        #let's create 101 figures for an SIR epidemic
+        times, S, I, R, inf_time, rec_time = EoN.fast_SIR(G, 1., 1., filenamebase = 'tmpSIR', return_full_data=True)
+        EoN.visualize(G, plot_times, inf_time, rec_time)
+        
     '''
     
     if pos is None:

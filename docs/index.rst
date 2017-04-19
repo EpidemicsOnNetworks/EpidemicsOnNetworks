@@ -24,5 +24,5 @@ The package is built using tools from NetworkX_.
 
    Getting Started <GettingStarted>
    EoN
-   Algorithms for Simlation <simulation>
+   Algorithms for Simulation <simulation>
    Algorithms for analyic approximations <analytic>
