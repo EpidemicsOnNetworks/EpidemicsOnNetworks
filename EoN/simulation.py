@@ -2187,10 +2187,57 @@ def Gillespie_SIS(G, tau, gamma, initial_infecteds=None, rho = None, tmax=100,
 def visualize(G, plot_times, infection_times, recovery_times, pos = None, 
                 SIR = True, filetype = 'png', filenamebase = 'tmp', 
                 colorS = '#009a80', colorI = '#ff2020', 
-                colorR = 'gray', show_edges = True):
+                colorR = 'gray', show_edges = True, plot_args = ()):
     r''' 
-    Assumes that all nodes are susceptible unless (and until) appearing in infection_times.
+    Creates a set of plots showing statuses of nodes at different times.  By 
+    default, the plot for t = 1.3 would be put into "tmp1p3.png"
     
+    Arguments
+    ---------
+        G : NetworkX Graph
+        
+        plot_times : list (or array, maybe even a set)
+            collection of times to output plot
+        
+        infection_times : dict
+            infection_times[node] is a list of times (if SIS) or the time (if 
+            SIR) of infection of node.  If node is never infected, 
+            it does not appear in dict and is assumed susceptible throughout.
+            
+        recovery_times : dict
+            see infection_times, except this has time(s) of recovery.
+            
+        pos : dict, optional
+            the positions to plot nodes of G.  By default spring_layout is used.
+        
+        SIR : boolean, default True
+            True if the simulation is SIR, False if it is SIS.
+            
+        filetype : string (default 'png')
+            the type of figure to make.
+            
+        filenamebase : string (default 'tmp')
+            base name for output plot file names.
+            
+        colorS : default '#009a80'
+            something that will be interpreted as a color by matplotlib.  
+            Used to plot susceptible nodes.  Note, if using RGB as a tuple
+            of length 3, if there are 3 susceptible nodes, the tuple will
+            be interpreted as 3 different colors to use.
+            
+        colorI : default '#ff2020'
+            see colorS
+            
+        colorR : default 'gray'
+            see colorS
+            
+        show_edges : Boolean, default True
+            whether the edges should be plotted
+            
+        plot_args : tuple, default ()
+            arguments to be passed to the networkx drawing commands
+            draw_networkx_nodes and draw_networkx_edges.
+         
     '''
     
     if pos is None:
@@ -2219,17 +2266,17 @@ def visualize(G, plot_times, infection_times, recovery_times, pos = None,
                     if recovery_times[node][0]<time:
                         time_of_last_rec = max(rectime for rectime in recovery_times[node] if rectime<=time)
                     else:
-                        time_of_last_rec = float('Inf')
-                    if time_of_last_rec<time_of_last_inf:
-                        S.add(node)
-                    else:
+                        time_of_last_rec = -1
+                    if time_of_last_rec<time_of_last_inf: #most recent thing was infection
                         I.add(node)
+                    else: #most recent thing was recovery.
+                        S.add(node)
 
-        nx.draw_networkx_nodes(G, pos = pos, node_color = colorS, nodelist = list(S))            
-        nx.draw_networkx_nodes(G, pos = pos, node_color = colorI, nodelist = list(I))            
-        nx.draw_networkx_nodes(G, pos = pos, node_color = colorR, nodelist = list(R))
+        nx.draw_networkx_nodes(G, pos = pos, node_color = colorS, nodelist = list(S), *plot_args)            
+        nx.draw_networkx_nodes(G, pos = pos, node_color = colorI, nodelist = list(I), *plot_args)            
+        nx.draw_networkx_nodes(G, pos = pos, node_color = colorR, nodelist = list(R), *plot_args)
         if show_edges:
-            nx.draw_networkx_edges(G, pos)
+            nx.draw_networkx_edges(G, pos, *plot_args)
         plt.savefig(filenamebase+str(time).replace('.', 'p')+'.'+filetype)
         plt.clf()
                 
