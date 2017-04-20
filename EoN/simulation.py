@@ -1,4 +1,4 @@
-from collections import defaultdict, Counter
+from collections import defaultdict
 import networkx as nx
 import random
 import heapq
@@ -136,7 +136,7 @@ def _simple_test_transmission_(u, v, p):
 
 def discrete_SIR_epidemic(G, 
                 test_transmission=_simple_test_transmission_, args=(), 
-                initial_infecteds=None, return_full_data = False):
+                initial_infecteds=None, rho = None, return_full_data = False):
     #tested in test_discrete_SIR_epidemic
     r'''
     From figure 6.8 of Kiss, Miller, & Simon.  Please cite the book
@@ -183,10 +183,17 @@ def discrete_SIR_epidemic(G,
             [note the comma is needed to tell Python that this is really a 
             tuple]
 
-        initial_infecteds: node or iterable of nodes (default is None)
+        initial_infecteds: node or iterable of nodes (default None)
             if a single node, then this node is initially infected
             if an iterable, then whole set is initially infected
-            if None, then a randomly chosen node is initially infected.
+            if None, then choose randomly based on rho.  If rho is also
+            None, a random single node is chosen.
+            If both initial_infecteds and rho are assigned, then there
+            is an error.
+       
+        rho : number
+            initial fraction infected. number is int(round(G.order()*rho))
+
 
         return_full_data: boolean  (default False)
             Tells whether the infection and recovery times of each 
@@ -223,15 +230,24 @@ def discrete_SIR_epidemic(G,
     Because this sample uses the defaults, it is equivalent to a call to 
     basic_discrete_SIR_epidemic
     '''
+    if rho is not None and initial_infecteds is not None:
+        raise EoN.EoNError("cannot define both initial_infecteds and rho")
 
     if return_full_data:
         infection_time = {}
         recovery_time = {}
     
-    if initial_infecteds is None:
-        initial_infecteds=[random.choice(G.nodes())]
+    
+    if initial_infecteds is None:  #create initial infecteds list if not given
+        if rho is None:
+            initial_number = 1
+        else:
+            initial_number = int(round(G.order()*rho))
+        initial_infecteds=random.sample(G.nodes(), initial_number)
     elif G.has_node(initial_infecteds):
         initial_infecteds=[initial_infecteds]
+    #else it is assumed to be a list of nodes.
+
     infecteds = initial_infecteds
 
     N=G.order()
@@ -269,7 +285,7 @@ def discrete_SIR_epidemic(G,
 
 
 
-def basic_discrete_SIR_epidemic(G, p, initial_infecteds=None, 
+def basic_discrete_SIR_epidemic(G, p, initial_infecteds=None, rho = None,
                                 return_full_data = False):
     #tested in test_basic_discrete_SIR_epidemic   
     r'''
@@ -286,10 +302,17 @@ def basic_discrete_SIR_epidemic(G, p, initial_infecteds=None,
             The network the disease will transmit through.
         p : number
             transmission probability
-        initial_infecteds: node or iterable of nodes  (default None)
-        if a single node, then this node is initially infected
-        if an iterable, then whole set is initially infected
-        if None, then a randomly chosen node is initially infected.
+        initial_infecteds: node or iterable of nodes (default None)
+            if a single node, then this node is initially infected
+            if an iterable, then whole set is initially infected
+            if None, then choose randomly based on rho.  If rho is also
+            None, a random single node is chosen.
+            If both initial_infecteds and rho are assigned, then there
+            is an error.
+       
+        rho : number
+            initial fraction infected. number is int(round(G.order()*rho))
+
         return_full_data: boolean (default False)
             Tells whether the infection and recovery times of each 
             individual node should be returned.  
@@ -330,7 +353,7 @@ def basic_discrete_SIR_epidemic(G, p, initial_infecteds=None,
 '''
 
     return discrete_SIR_epidemic(G, _simple_test_transmission_, (p,), 
-                                    initial_infecteds, return_full_data)
+                                    initial_infecteds, rho, return_full_data)
 
 
 def percolate_network(G, p):
@@ -2253,6 +2276,5 @@ def visualize(G, plot_times, infection_times, recovery_times, pos = None,
         if show_edges:
             nx.draw_networkx_edges(G, pos, *plot_args)
         plt.savefig(filenamebase+str(time).replace('.', 'p')+'.'+filetype)
-        plt.clf()
                 
     

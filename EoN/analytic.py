@@ -3,6 +3,8 @@ from scipy.ndimage.interpolation import shift
 import scipy
 import networkx as nx
 import EoN
+from collections import defaultdict, Counter
+
 #######################
 #                     #
 #   Auxiliary stuff   #
@@ -85,10 +87,10 @@ def get_Nk_and_IC_as_arrays(G, rho, SIR=True):
             = 0 Nk
     '''
     
-    degree_count = Counter(G.degree().values())
-    maxk = max(degree_count.keys())
+    Nk = Counter(G.degree().values())
+    maxk = max(Nk.keys())
     
-    Nk = scipy.array([degree_count[k] for k in range(maxk+1)])
+    Nk = scipy.array([Nk[k] for k in range(maxk+1)])
     Sk0 = (1-rho)*Nk
     Ik0 = rho*Nk
     Rk0 = 0*Nk
@@ -188,8 +190,8 @@ def get_Pk(G):
             Pk[k] is the proportion of nodes with degree k.
     '''
 
-    degree_count = Counter(G.degree().values())
-    Pk = {x:degree_count[x]/float(G.order()) for x in degree_count.keys()}
+    Nk = Counter(G.degree().values())
+    Pk = {x:Nk[x]/float(G.order()) for x in Nk.keys()}
     return Pk
 
 def get_Psi(Pk):
@@ -251,6 +253,29 @@ def get_PsiDPrime(Pk):
     return lambda x: Pkarray[k].dot(k*(k-1)*x**(k-2))
 
 
+def get_Pnk(G):
+
+    r'''    
+    Arguments:
+
+        G : networkx Graph
+
+    Returns:
+
+        Pnk : dict
+            Pnk[k1][k2] is the proportion of neighbors of degree k1 nodes 
+            that have degree k2.
+    '''
+    Pnk = {k1:defaultdict(int)  for k1 in G.degree().values()}
+    Nk = Counter(G.degree().values())
+
+    for node in G.nodes():
+        k1 = G.degree(node)
+        nbr_degrees = [G.degree(nbr) for nbr in G.neighbors(node)]
+        for k2 in nbr_degrees:
+            Pnk[k1][k2] += 1./(k1*Nk[k1])
+    return Pnk
+    
 
 ##################
 #                #
@@ -2601,6 +2626,51 @@ def SIR_heterogeneous_pairwise(Sk0, Ik0, Rk0, SkSl0, SkIl0, tau, gamma,
 def SIS_heterogeneous_pairwise_from_graph(G, tau, gamma, rho = None, tmin = 0, 
                                             tmax=100, tcount=1001, 
                                             return_full_data = False):
+    r'''
+    Calls SIS_heterogeneous_pairwise with a graph, disease parameters, and
+    a random fraction rho initially infected.
+
+    Arguments:
+
+        G : networkx Graph
+        tau : number
+            transmission rate
+        gamma : number
+            recovery rate
+        rho : number (default 1/N)
+            initial fraction infected 
+        tmin : number (default 0)
+            minimum report time
+        tmax : number (default 100)
+            maximum report time 
+        tcount : integer (default 1001)
+            number of reports
+        return_full_data : boolean (default False)
+            tells whether to just return times, S, I, or all calculated data.
+            if True, then returns times, S, I, SI, SS
+    Returns:
+        :
+        if return_full_data is True:
+            returns times, S, I, Sk, Ik, SkIl, SkSl, IkIl
+        if return_full_data is False:
+            returns times, S, I
+        
+        
+    :SAMPLE USE:
+
+    ::
+
+
+        import networkx as nx
+        import EoN
+        G = nx.fast_gnp_random_graph(10000,0.0005)
+        tau = 1
+        gamma = 3
+        rho = 0.02
+        t, S, I = EoN.SIS_heterogeneous_pairwise_from_graph(G, tau, gamma, rho, tmax = 20)
+    
+    '''
+    
     if rho is None:
         rho = 1./G.order()
     Nk, Sk0, Ik0 = get_Nk_and_IC_as_arrays(G, rho, SIR=False)
@@ -3339,7 +3409,8 @@ def SIS_effective_degree_from_graph(G, tau, gamma, rho = None, tmin = 0,
                                 return_full_data=return_full_data)
 
 
-def SIR_effective_degree_from_graph(G, tau, gamma, rho = None, tmin = 0, 
+def SIR_effective_degree_
+(G, tau, gamma, rho = None, tmin = 0, 
                                     tmax=100, tcount=1001, 
                                     return_full_data=False):
     Nk, Sk0, Ik0, Rk0 = get_Nk_and_IC_as_arrays(G, rho, SIR=True)
@@ -3777,7 +3848,7 @@ def Attack_rate_cts_time(Pk, tau, gamma, number_its =100, rho = None,
     kave = sum(Pk[k]*k for k in Pk.keys())
     omega = gamma/(gamma+tau)
     for counter in range(number_its):
-        print omega
+        #print omega
         omega = gamma/(gamma+tau) \
                 + tau*phiS0*psihatPrime(omega)/(psihatPrime(1)*(gamma+tau)) \
                 + tau*phiR0/(gamma+tau)
@@ -3950,6 +4021,8 @@ def EBCM_discrete_from_graph(G, p, rho = None, tmin = 0, tmax=100,
             returns t, S, I, R, all scipy arrays
         if ...== True
             returns t, S, I, R and theta, all scipy arrays
+            
+    
  '''
     if rho is None:
         rho = 1./G.order()
@@ -4100,22 +4173,229 @@ def EBCM_from_graph(G, tau, gamma, rho = None, tmin = 0, tmax=100,
                                         return_full_data=return_full_data)
 
     
-def EBCM_deg_corr():
-    r'''Nothing to see here 
-    - just a place holder until this code is written'''
-    pass
-    
-def EBCM_deg_corr_discrete():
-    r'''Nothing to see here 
-    - just a place holder until this code is written'''
-    pass
-    
-def EBCM_deg_corr_from_graph(G):
-    r'''Nothing to see here 
-    - just a place holder until this code is written'''
-    pass
+def _dEBCM_pref_mix_(X, t, rho, tau, gamma, Pk, Pnk):
+    #print t
+    R= X[0]
+    theta = {}
+    phiR={}
+    for index, k in enumerate(sorted(Pk.keys())):
+        theta[k] = X[1+2*index]
+        phiR[k] = X[2+2*index]
+    S = (1-rho)*sum([Pk[k]*theta[k]**k for k in Pk.keys()])
+    #print 'S', S
+    I = 1 - S - R
+    returnval = [gamma*I]#xidot, I2dot, Rdot
+    phiS = {}
+    phiI = {}
+    for k1 in Pk.keys():
+        phiS[k1] = (1-rho)*sum([Pnk[k1][k2]*theta[k2]**(k2-1) for k2 in Pnk[k1].keys()])
+        phiI[k1] = theta[k1] - phiS[k1]  - phiR[k1]
+    for k in sorted(Pk.keys()):
+        dthetak_dt = -tau*phiI[k]
+        dphiRk_dt = gamma*phiI[k]
+        returnval.extend([dthetak_dt, dphiRk_dt])
+    return scipy.array(returnval)
 
-def EBCM_deg_corr_discrete_from_graph():
-    r'''Nothing to see here 
-    - just a place holder until this code is written'''
-    pass
+#N, psihat, psihatPrime, tau, gamma, phiS0, phiR0=0, R0=0, tmin=0, 
+#            tmax=100, tcount=1001, return_full_data=False
+def EBCM_pref_mix(N, Pk, Pnk, tau, gamma, rho = None, tmin = 0, tmax = 100, tcount = 1001, return_full_data=False):
+    r'''
+    
+    Encodes the system derived in exercise 6.21 of Kiss, Miller, & Simon.  Please cite the
+    book if using this algorithm.
+
+    I anticipate eventually adding an option so that the initial condition is
+    not uniformly distributed.  So could give rho_k
+    
+    Arguments:
+        N : number
+            number of nodes.
+        Pk : dict  (could also be an array or a list)
+            Pk[k] is the probability a random node has degree k.
+        Pnk : dict of dicts (possibly array/list)
+            Pnk[k1][k2] is the probability a neighbor of a degree k1 node has
+            degree k2.
+        tau : number
+            transmission rate
+        gamma : number
+            recovery rate
+        rho : number (optional)
+            initial proportion infected.  Defaults to 1/N.
+        tmin : number (default 0)
+            minimum time
+        tmax : number (default 100)
+            maximum time
+        tcount : integer (default 1001)
+            number of time points for data (including end points)
+        return_full_data : boolean (default False)
+            whether to return theta or not
+            
+
+    Returns:
+        :
+        if return_full_data == False:
+            t, S, I, R, all scipy arrays
+        if ...== True
+            t, S, I, R and theta, 
+            where theta[k] is a scipy array giving theta for degree k
+            
+    '''
+    if rho is None:
+        rho = 1./N
+        
+    ts = scipy.linspace(tmin, tmax, tcount)
+    IC = [0] #R(0)
+    for k in sorted(Pk.keys()):
+        IC.extend([1,0]) #theta_k(0), phiR_k(0)
+    IC = scipy.array(IC)
+    X = integrate.odeint(_dEBCM_pref_mix_, IC, ts, args = (rho, tau, gamma, Pk, Pnk))
+    R =  X.T[0]
+    theta = {}
+    phiR={}
+    for index, k in enumerate(sorted(Pk.keys())):
+        theta[k] = X.T[1+2*index]
+        phiR[k] = X.T[1+2*index]
+    
+    S = (1-rho)*sum([Pk[k]*theta[k]**k for k in Pk.keys()])
+    I = 1-S-R
+    if return_full_data:
+        return ts, N*S, N*I, N*R, theta
+    else:
+        return ts, N*S, N*I, N*R
+
+def EBCM_pref_mix_from_graph(G, tau, gamma, rho = None, tmin = 0, tmax = 100, tcount = 1001, return_full_data=False):
+    r'''
+    Encodes the system derived in exercise 6.21 of Kiss, Miller, & Simon.  Please cite the
+    book if using this algorithm.
+
+    I anticipate eventually adding an option so that the initial condition is
+    not uniformly distributed.  So could give rho_k
+    
+    Arguments:
+        G : NetworkX Graph
+        tau : number
+            transmission rate
+        gamma : number
+            recovery rate
+        rho : number (optional)
+            initial proportion infected.  Defaults to 1/N.
+        tmin : number (default 0)
+            minimum time
+        tmax : number (default 100)
+            maximum time
+        tcount : integer (default 1001)
+            number of time points for data (including end points)
+        return_full_data : boolean (default False)
+            whether to return theta or not
+            
+
+    Returns:
+        :
+        if return_full_data == False:
+            t, S, I, R, all scipy arrays
+        if ...== True
+            t, S, I, R and theta, 
+            where theta[k] is a scipy array giving theta for degree k
+    '''
+
+    N=G.order()
+    Pk = get_Pk(G)
+    Pnk = get_Pnk(G)
+    return EBCM_pref_mix(N, Pk, Pnk, tau, gamma, rho = rho, tmin = tmin, tmax = tmax, tcount = tcount, return_full_data=return_full_data)
+    
+    
+def EBCM_pref_mix_discrete(N, Pk, Pnk, p, rho = None, tmin = 0, tmax = 100, return_full_data=False):
+    r'''
+    
+    Encodes the discrete version of exercise 6.21 of Kiss, Miller, & Simon.  
+    Please cite the book if using this algorithm.
+
+    I anticipate eventually adding an option so that the initial condition is
+    not uniformly distributed.  So could give rho_k
+    
+    Arguments:
+        N : number
+            number of nodes.
+        Pk : dict  (could also be an array or a list)
+            Pk[k] is the probability a random node has degree k.
+        Pnk : dict of dicts (possibly array/list)
+            Pnk[k1][k2] is the probability a neighbor of a degree k1 node has
+            degree k2.  
+        p : number (0 <= p <= 1)
+            transmission probability
+        rho : number (optional)
+            initial proportion infected.  Defaults to 1/N.
+        tmin : number (default 0)
+            minimum time
+        tmax : number (default 100)
+            maximum time
+        tcount : integer (default 1001)
+            number of time points for data (including end points)
+        return_full_data : boolean (default False)
+            whether to return theta or not
+            
+
+    Returns:
+        :
+        if return_full_data == False:
+            t, S, I, R, all scipy arrays
+        if ...== True
+            t, S, I, R and theta, 
+            where theta is a dict and theta[k] is the thetas for given k.
+                
+    '''
+    
+    
+    times = [0]
+    theta = {k:[1] for k in Pk.keys()}
+    R = [0]
+    S = [N*(1-rho)]
+    I = [N*rho]
+    phiS={k: (1-rho) for k in Pk.keys()}
+    phiI={k : rho for k in Pk.keys()}
+    phiR = {k:0 for k in Pk.keys()}
+    for time in range(1,tmax+1):
+        times.append(time)
+        newtheta = {k:theta[k][-1]-p*phiI[k] for k in Pk.keys()}
+        newR = R[-1]+I[-1]
+        newS = N*(1-rho)*sum(Pk[k]*newtheta[k]**k for k in Pk.keys())
+        newI = N-newR-newS
+        for k in newtheta:
+            theta[k].append(newtheta[k])
+        R.append(newR)
+        S.append(newS)
+        I.append(newI)
+        #may be worth holding on to phiS and phiI
+        phiS = {k1: (1-rho)*sum([Pnk[k1][k2]*theta[k2][-1]**(k2-1) for k2 in Pnk[k1].keys()]) for k1 in Pk.keys()}
+        phiR = {k:phiR[k]+(1-p)*phiI[k] for k in Pk.keys()}
+        phiI = {k: theta[k][-1] - phiS[k]  - phiR[k] for k in Pk.keys()}
+    if return_full_data:
+        return scipy.array(times), scipy.array(S), scipy.array(I), \
+                    scipy.array(R), theta
+    else:
+        return scipy.array(times), scipy.array(S), scipy.array(I), \
+                    scipy.array(R)
+
+def EBCM_pref_mix_discrete_from_graph(G, p, rho = None, tmin = 0, tmax = 100, return_full_data=False):
+    
+    '''
+    Sample Use:
+        ::
+        
+            import networkx as nx
+            import EoN
+            import matplotlib.pyplot as plt
+            G = nx.bipartite.configuration_model([5]*300000, [2]*750000)
+            t, S, I, R = EoN.basic_discrete_SIR_epidemic(G, 0.6, rho = 0.002)
+            tx, Sx, Ix, Rx = EoN.EBCM_pref_mix_discrete_from_graph(G, 0.6, rho=0.002, tmax=t[-1])
+            plt.plot(t, I, label = 'simulation')
+            plt.plot(tx, Ix, '--', label = 'analytic prediction')
+            plt.legend(loc='upper right')
+            plt.show()
+    '''
+            
+    N = G.order()
+    Pk = get_Pk(G)
+    Pnk = get_Pnk(G)
+    return EBCM_pref_mix_discrete(N, Pk, Pnk, p, rho=rho, tmin=tmin, tmax=tmax, return_full_data=return_full_data)
+    
