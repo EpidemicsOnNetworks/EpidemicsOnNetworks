@@ -3629,7 +3629,7 @@ def Epi_Prob_discrete(Pk, p, number_its = 100):
         Calculated Epidemic probability (assuming configuration model)
     '''
     psi = get_Psi(Pk)
-    psiPrime = get_PsiPrime(Pk):
+    psiPrime = get_PsiPrime(Pk)
     
     alpha = 1-p
     k_ave = psiPrime(1.)
@@ -3692,7 +3692,7 @@ def Epi_Prob_cts_time(Pk, tau, gamma, umin=0, umax = 10, ucount = 1001,
             Calculated Epidemic probability (assuming configuration model)
     '''
     psi = get_Psi(Pk)
-    psiPrime = get_PsiPrime(Pk):
+    psiPrime = get_PsiPrime(Pk)
 
     us = scipy.linspace(umin, umax, ucount) 
     alpha = scipy.e**(-tau*us/gamma)  #initial guess for alpha(u)
