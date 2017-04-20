@@ -2229,12 +2229,12 @@ def visualize(G, plot_times, infection_times, recovery_times, pos = None,
         plot_times = scipy.linspace(0,10,101) #0, 0.1, 0.2, ..., 10
         
         #let's create 101 figures for an SIS epidemic
-        times, S, I, inf_times, rec_times = EoN.fast_SIS(G, 1., 1., filenamebase = 'tmpSIS', return_full_data=True)
-        EoN.visualize(G, plot_times, inf_times, rec_times, SIR = False)
+        times, S, I, inf_times, rec_times = EoN.fast_SIS(G, 1., 1., return_full_data=True)
+        EoN.visualize(G, plot_times, inf_times, rec_times, filenamebase = 'tmpSIS', SIR = False)
         
         #let's create 101 figures for an SIR epidemic
-        times, S, I, R, inf_time, rec_time = EoN.fast_SIR(G, 1., 1., filenamebase = 'tmpSIR', return_full_data=True)
-        EoN.visualize(G, plot_times, inf_time, rec_time)
+        times, S, I, R, inf_time, rec_time = EoN.fast_SIR(G, 1., 1., return_full_data=True)
+        EoN.visualize(G, plot_times, inf_time, filenamebase = 'tmpSIR', rec_time)
         
     '''
     

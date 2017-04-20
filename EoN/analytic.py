@@ -1839,8 +1839,8 @@ def SIS_homogeneous_pairwise_from_graph(G, tau, gamma, rho = None, tmin = 0,
                                         tmax=100, tcount=1001, 
                                         return_full_data=False):
     r'''
-    Calls SIS_homogeneous_pairwise with a graph, disease parameters, and
-    a random fraction rho initially infected.
+    Calls SIS_homogeneous_pairwise after calculating S0, I0, SI0, SS0, n based
+    on the graph G and initial fraction infected rho.
 
     Arguments:
 
@@ -1898,8 +1898,8 @@ def SIR_homogeneous_pairwise_from_graph(G, tau, gamma, rho = None, tmin = 0,
                                         tmax=100, tcount=1001, 
                                         return_full_data=False):
     r'''
-    Calls SIS_homogeneous_pairwise with a graph, disease parameters, and
-    a random fraction rho initially infected.
+    Calls SIS_homogeneous_pairwise after calculating S0, I0, R0, SI0, SS0, n, 
+    based on the graph G and initial fraction infected rho.
 
     Arguments:
 
@@ -2165,8 +2165,8 @@ def SIS_heterogeneous_meanfield_from_graph(G, tau, gamma, rho = None,
                                             tmin = 0, tmax=100, tcount=1001, 
                                             return_full_data=False):
     r'''
-    Takes a graph and an initial proportion infected rho.  
-    Calculates Sk0 and Ik0 and calls the heterogeneous meanfield model
+    Calls SIS_heterogeneous_meanfield after calculating Sk0, Ik0 based on 
+    the graph G and random fraction infected rho.
 
     Arguments:
         G : networkx Graph
@@ -2218,8 +2218,8 @@ def SIR_heterogeneous_meanfield_from_graph(G, tau, gamma, rho = None,
                                             tmin = 0, tmax=100, tcount=1001, 
                                             return_full_data=False):
     r'''
-    Takes a graph and an initial proportion infected rho.  
-    Calculates Sk0 and Ik0 and calls the heterogeneous meanfield model
+    Calls SIR_heterogeneous_meanfield after calculating Sk0, Ik0, Rk0 based
+    on a graph G and initial fraction infected rho.
 
     Arguments:
 
@@ -2627,8 +2627,8 @@ def SIS_heterogeneous_pairwise_from_graph(G, tau, gamma, rho = None, tmin = 0,
                                             tmax=100, tcount=1001, 
                                             return_full_data = False):
     r'''
-    Calls SIS_heterogeneous_pairwise with a graph, disease parameters, and
-    a random fraction rho initially infected.
+    Calls SIS_heterogeneous_pairwise after calculating Sk0, Ik0, SkSl0, SkIl0, IkIl0
+    from a graph G and initial fraction infected rho.
 
     Arguments:
 
@@ -2689,6 +2689,10 @@ def SIS_heterogeneous_pairwise_from_graph(G, tau, gamma, rho = None, tmin = 0,
 def SIR_heterogeneous_pairwise_from_graph(G, tau, gamma, rho = None, tmin=0, 
                                             tmax=100, tcount = 1001, 
                                             return_full_data=False):
+    r'''Calls SIR_heterogeneous_pairwise after calculating Sk0, Ik0, Rk0, SkSl0, SkIl0
+    from a graph G and initial fraction infected rho. 
+    '''
+    
     if rho==None:
         rho = 1./G.order()    
     Nk, Sk0, Ik0, Rk0 = get_Nk_and_IC_as_arrays(G, rho, SIR=True)
@@ -2866,7 +2870,6 @@ def SIR_compact_pairwise(Sk0, I0, R0, SS0, SI0, tau, gamma, tmin=0, tmax=100,
 
     ::
 
-       
         import networkx as nx
         import EoN
     '''
@@ -2889,6 +2892,9 @@ def SIR_compact_pairwise(Sk0, I0, R0, SS0, SI0, tau, gamma, tmin=0, tmax=100,
 def SIS_compact_pairwise_from_graph(G, tau, gamma, rho = None, tmin = 0, 
                                     tmax=100, tcount=1001, 
                                     return_full_data=False):
+    r'''Calls SIS_compact_pairwise after calculating Sk0, Ik0, SI0, SS0, II0
+    from the graph G and initial fraction infected rho.'''
+    
     if rho is None:
         rho = 1./G.order()
     Pk = get_Pk(G)
@@ -2907,6 +2913,9 @@ def SIS_compact_pairwise_from_graph(G, tau, gamma, rho = None, tmin = 0,
 def SIR_compact_pairwise_from_graph(G, tau, gamma, rho = None, tmin = 0, 
                                     tmax=100, tcount=1001, 
                                     return_full_data=False):
+    r'''Calls SIR_compact_pairwise after calculating Sk0, I0, R0, SS0, SI0
+    from the graph G and initial fraction infected rho.'''
+    
     if rho is None:
         rho = 1./G.order()
     Nk, Sk0, Ik0, Rk0 = get_Nk_and_IC_as_arrays(G, rho, SIR=True)
@@ -2984,11 +2993,16 @@ def SIS_super_compact_pairwise(S0, I0, SS0, SI0, II0, tau, gamma, k_ave,
 
     Arguments:
 
-        S0 : 
-        I0 :
-        SS0 :
-        SI0 :  
-        II0 : 
+        S0 : number
+            initial number susceptible
+        I0 : number
+            initial number infected
+        SS0 : number
+            initial number of susceptible-susceptible edges
+        SI0 : number
+            initial number of susceptible-infected edges
+        II0 : number
+            initial number of infected-infected edges.
         tau : number
             transmission rate
         gamma : number
@@ -3036,7 +3050,7 @@ def SIS_super_compact_pairwise(S0, I0, SS0, SI0, II0, tau, gamma, k_ave,
 
 
 
-def SIR_super_compact_pairwise(SS0, SI0, R0, N, tau, gamma, psihat, 
+def SIR_super_compact_pairwise(R0, SS0, SI0,  N, tau, gamma, psihat, 
                                 psihatPrime, psihatDPrime, tmin = 0, 
                                 tmax = 100, tcount = 1001, 
                                 return_full_data = False):
@@ -3054,7 +3068,12 @@ def SIR_super_compact_pairwise(SS0, SI0, R0, N, tau, gamma, psihat,
 
     
     Arguments:
-
+        R0 : number
+            initial number of R nodes.
+        SS0 : number
+            initial number of SS edges
+        SI0 : number
+            initial number of SI edges
         tau : number
             transmission rate
         gamma : number
@@ -3085,6 +3104,9 @@ def SIR_super_compact_pairwise(SS0, SI0, R0, N, tau, gamma, psihat,
 def SIS_super_compact_pairwise_from_graph(G, tau, gamma, rho = None, tmin = 0,
                                             tmax=100, tcount=1001, 
                                             return_full_data=False):
+    r'''Calls SIS_super_compact_pairwise after calculating S0, I0, SS0, SI0, II0
+    from the graph G and initial fraction infected rho'''
+    
     if rho is None:
         rho = 1./G.order()
     Nk, Sk0, Ik0 = get_Nk_and_IC_as_arrays(G, rho, SIR=False)
@@ -3112,6 +3134,8 @@ def SIS_super_compact_pairwise_from_graph(G, tau, gamma, rho = None, tmin = 0,
 def SIR_super_compact_pairwise_from_graph(G, tau, gamma, rho = None, tmin = 0,
                                             tmax=100, tcount=1001, 
                                             return_full_data=False):
+    r'''Calls SIR_super_compact_pairwise after calculating R0, SS0, SI0
+    from the graph G and initial fraction infected rho'''
     if rho is None:
         rho = 1./G.order()
     Nk, Sk0, Ik0, Rk0 = get_Nk_and_IC_as_arrays(G, rho, SIR=True)
@@ -3133,7 +3157,7 @@ def SIR_super_compact_pairwise_from_graph(G, tau, gamma, rho = None, tmin = 0,
     def psihatDPrime(x):
         return (1-rho)*sum(k*(k-1)*Pk[k]*x**(k-2) for k in Pk)
 
-    return  SIR_super_compact_pairwise(SS0, SI0, R0, N, tau, gamma, psihat, 
+    return  SIR_super_compact_pairwise(R0, SS0, SI0, N, tau, gamma, psihat, 
                                         psihatPrime, psihatDPrime, 
                                         tmin = tmin, tmax = tmax, 
                                         tcount = tcount, 
@@ -3394,6 +3418,12 @@ def SIS_effective_degree_from_graph(G, tau, gamma, rho = None, tmin = 0,
                                     tmax=100, tcount=1001, 
                                     return_full_data=False):
     Nk, Sk0, Ik0, Rk0 = get_Nk_and_IC_as_arrays(G, rho, SIR=True)
+    r'''Calls SIS_effective_degree after calculating Ssi0, Isi0 from
+    the graph G and initialf fraction infected rho'''
+
+    if rho is None:
+        rho = 1./G.order()
+    
     S_si0 = scipy.zeros((len(Sk0),len(Sk0)))
     I_si0 = scipy.zeros((len(Sk0),len(Sk0)))
 
@@ -3409,10 +3439,15 @@ def SIS_effective_degree_from_graph(G, tau, gamma, rho = None, tmin = 0,
                                 return_full_data=return_full_data)
 
 
-def SIR_effective_degree_
-(G, tau, gamma, rho = None, tmin = 0, 
+def SIR_effective_degree_from_graph(G, tau, gamma, rho = None, tmin = 0, 
                                     tmax=100, tcount=1001, 
                                     return_full_data=False):
+    r'''Calls SIR_effective_degree after calculating S_si0, I0, R0 from the
+    graph G and initial fraction infected rho'''
+    
+    if rho is None:
+        rho = 1./G.order()
+
     Nk, Sk0, Ik0, Rk0 = get_Nk_and_IC_as_arrays(G, rho, SIR=True)
     S_si0= scipy.zeros((len(Sk0),len(Sk0)))
     for s in range(len(Sk0)):
@@ -3447,6 +3482,8 @@ def SIS_compact_effective_degree(Sk0, Ik0, SI0, SS0, II0, tau, gamma,
 def SIS_compact_effective_degree_from_graph(G, tau, gamma, rho = None, 
                                             tmin = 0, tmax=100, tcount=1001, 
                                             return_full_data=False):
+    r'''because the SIS compact effective degree model is identical to the
+    compact pairwise model, simply calls SIS_compact_pairwise_from_graph'''
                                             
     return SIS_compact_pairwise_from_graph(G, tau, gamma, rho = rho, 
                                             tmin = tmin, tmax=tmax, 
@@ -3551,6 +3588,11 @@ def SIR_compact_effective_degree(Skappa0, I0, R0, SI0, tau, gamma, tmin=0,
 def SIR_compact_effective_degree_from_graph(G, tau, gamma, rho = None, 
                                             tmin = 0, tmax=100, tcount=1001, 
                                             return_full_data=False):
+    r'''Calls SIR_compact_effective_degree after calculating Skappa0, I0, R0, SI0
+    from the graph G and initial fraction infected rho.'''
+    
+    if rho is None:
+        rho = 1./G.order()
     Nk, Sk0, Ik0, Rk0 = get_Nk_and_IC_as_arrays(G, rho, SIR=True)
     Skappa0 = Sk0
     I0 = sum(Nk)*rho
@@ -4344,7 +4386,9 @@ def EBCM_pref_mix_discrete(N, Pk, Pnk, p, rho = None, tmin = 0, tmax = 100, retu
             where theta is a dict and theta[k] is the thetas for given k.
                 
     '''
-    
+    if rho is None:
+        rho = 1./N
+
     
     times = [0]
     theta = {k:[1] for k in Pk.keys()}
