@@ -3617,7 +3617,8 @@ def Epi_Prob_discrete(Pk, p, number_its = 100):
     
     Arguments:
 
-        Pk : scipy array Pk[k] is probability a node has degree k.
+        Pk : dict
+            Pk[k] is probability a node has degree k.
 
         p : transmission probability
 
@@ -3627,14 +3628,11 @@ def Epi_Prob_discrete(Pk, p, number_its = 100):
     Returns:
         Calculated Epidemic probability (assuming configuration model)
     '''
-    ks = scipy.arange(len(Pk))
-    def psi(x):
-        return Pk.dot(x**ks)
-    def psiPrime(x):
-        return (ks*Pk).dot(x**(ks-1))
+    psi = get_Psi(Pk)
+    psiPrime = get_PsiPrime(Pk):
     
     alpha = 1-p
-    k_ave = psiPrime(1)
+    k_ave = psiPrime(1.)
     for counter in range(number_its):
         alpha = 1-p +p *psiPrime(alpha)/k_ave
     return 1- psi(alpha)
@@ -3672,7 +3670,8 @@ def Epi_Prob_cts_time(Pk, tau, gamma, umin=0, umax = 10, ucount = 1001,
     
     Arguments:
 
-        Pk : scipy array Pk[k] is probability a node has degree k.
+        Pk : dict
+            Pk[k] is probability a node has degree k.
 
         tau : transmission rate
 
@@ -3692,13 +3691,9 @@ def Epi_Prob_cts_time(Pk, tau, gamma, umin=0, umax = 10, ucount = 1001,
         PE:
             Calculated Epidemic probability (assuming configuration model)
     '''
-    ks = scipy.arange(len(Pk))
-    def psi(x):
-        return Pk.dot(x**ks)
-    def psiPrime(x):
-        ks*Pk
-        x**(ks-1)
-        return (ks*Pk).dot(x**(ks-1))
+    psi = get_Psi(Pk)
+    psiPrime = get_PsiPrime(Pk):
+
     us = scipy.linspace(umin, umax, ucount) 
     alpha = scipy.e**(-tau*us/gamma)  #initial guess for alpha(u)
     p = 1- scipy.e**(-tau*us/gamma)    #initial guess for p(u)
@@ -3708,18 +3703,13 @@ def Epi_Prob_cts_time(Pk, tau, gamma, umin=0, umax = 10, ucount = 1001,
     return 1 - psi(alpha).dot(exp_neg_u)/(ucount - 1)
 
 
-def Epi_Prob_non_Markovian(Pk, tau, gamma, Pxidxi, po, umin=0, umax = 10, 
-                            ucount = 1001, number_its = 100):
+def Epi_Prob_non_Markovian(Pk, Pxidxi, po, number_its = 100):
     r'''Encodes system (6.5) of Kiss, Miller, & Simon.  Please cite the
     book if using this algorithm.
     
     Arguments:
 
-        Pk : scipy array Pk[k] is probability a node has degree k.
-
-        tau : transmission rate
-
-        gamma : recovery rate
+        Pk : dict Pk[k] is probability a node has degree k.
 
         Pxidxi : a dict.  Returns P(xi)dxi for user-selected xi.  The 
              algorithm will replace the integral with
@@ -3728,11 +3718,6 @@ def Epi_Prob_non_Markovian(Pk, tau, gamma, Pxidxi, po, umin=0, umax = 10,
         po : a function.
             returns p_o(xi), the probability a node will transmit to a 
             random neighbor given xi.
-        umin : minimal value of \gamma T used in calculation
-        umax : maximum value of \gamma T used in calculation
-        ucount : number of points taken for integral.
-            So this integrates from umin to umax using simple Riemann 
-            sum.
 
         number_its : number of iterations before assumed converged.
                  default value is 100
@@ -3742,10 +3727,9 @@ def Epi_Prob_non_Markovian(Pk, tau, gamma, Pxidxi, po, umin=0, umax = 10,
         Calculated Epidemic probability (assuming configuration model)
     '''
     ks = scipy.arange(len(Pk))
-    def psi(x):
-        return Pk.dot(x**ks)
-    def psiPrime(x):
-        return (ks*Pk).dot(x**(ks-1))
+    psi = get_Psi(Pk)
+    psiPrime = get_PsiPrime(Pk)
+    
     xis = Pxidxi.keys()
     alpha = {xi: 1-po(xi) for xi in xis}
     for counter in xrange(number_its):
@@ -3856,7 +3840,8 @@ def Attack_rate_cts_time(Pk, tau, gamma, number_its =100, rho = None,
             of iterations.
 
         rho : number, optional
-            The initial proportion infected (defaults to None)
+            The initial proportion infected (defaults to None).  If None, then
+            result is limit of rho->0.
 
         Sk0 : dict (default None)
             only one of rho and Sk0 can be defined.  
@@ -3914,12 +3899,34 @@ def Attack_rate_cts_time_from_graph(G,  tau, gamma, number_its =100, rho=None,
     return Attack_rate_cts_time(Pk, tau, gamma, number_its = number_its, 
                                 rho=rho, Sk0=Sk0)
     
-def Attack_rate_non_Markovian():
+def Attack_rate_non_Markovian(Pk, Pzetadzeta, pi, number_its = 100):
     r'''
     Encodes system (6.8) of Kiss, Miller, & Simon.  Please cite the
     book if using this algorithm.
+    
+    Arguments:
+        Pk : dict
+            Pk[k] is probability of degree k.
+        Pzetadzeta: a dict.  Returns P(zeta)dzeta for user-selected zeta.  The 
+             algorithm will replace the integral with
+             \sum_{zeta \in Pzetadzeta.keys()} \psi(\alpha(zeta)) Pzetadzeta(zeta)
+
+        pi : a function.
+            returns p_i(zeta), the probability a node will receive a transmission from 
+            random infected neighbor given zeta.
+
+        number_its : number of iterations before assumed converged.
+                 default value is 100
+    Returns:
+        AR: number
+            attack rate
+            
+    Comments:
+        Because of the symmetry for epidemic probability, this works by simply
+        calling Epi_Prob_non_Markovian.
     '''
-    pass
+    return Epi_Prob_non_Markovian(Pk, Pzetadzeta, pi, number_its = number_its)
+
 
 def EBCM_discrete(N, psihat, psihatPrime, p, phiS0, phiR0=0, R0=0, tmax = 100,
                     return_full_data = False):
