@@ -26,3 +26,4 @@ The package is built using tools from NetworkX_.
    EoN
    Algorithms for Simulation <simulation>
    Algorithms for analyic approximations <analytic>
+ 

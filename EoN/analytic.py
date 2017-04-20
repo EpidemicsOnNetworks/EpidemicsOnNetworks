@@ -2793,8 +2793,14 @@ def SIS_compact_pairwise(Sk0, Ik0, SI0, SS0, II0, tau, gamma, tmin = 0,
     
     
     Returns:
+        :
+        All scipy arrays
+        if return_full_data:
+	   return times, S, I, Sk, Ik, SI, SS, II
+        else:
+	   return times, S, I
 
-    
+
     :SAMPLE USE:
 
     ::
@@ -2864,6 +2870,11 @@ def SIR_compact_pairwise(Sk0, I0, R0, SS0, SI0, tau, gamma, tmin=0, tmax=100,
             tells whether to just return times, S, I, R or all calculated data.
 
     Returns:
+        :
+        if return_full_data:
+           times, Sk, I, R, SS, SI
+        else:
+           times, S, I, R
 
 
     :SAMPLE USE:
@@ -3087,6 +3098,14 @@ def SIR_super_compact_pairwise(R0, SS0, SI0,  N, tau, gamma, psihat,
         return_full_data : boolean
             tells whether to just return times, S, I, R or all 
             calculated data.
+
+    Returns:
+        :
+        if return_full_data:
+	   return times, S, I, R, SS, SI
+        else:
+	   return times, S, I, R
+
 '''
     times = scipy.linspace(tmin,tmax,tcount)
     X0 = scipy.array([1., SS0, SI0, R0])
@@ -3314,7 +3333,14 @@ def SIS_effective_degree(Ssi0, Isi0, tau, gamma, tmin = 0, tmax=100,
                 return times, S, I, Ssi, Isi
             if False, 
                 return times, S, I
-                       
+                   
+   Returns:
+       :
+        if return_full_data:
+            return times, S, I, Ssi, Isi
+        else:
+            return times, S, I
+    
     '''
     times = scipy.linspace(tmin,tmax,tcount) 
     original_shape = Ssi0.shape
@@ -3893,7 +3919,8 @@ def Attack_rate_cts_time_from_graph(G,  tau, gamma, number_its =100, rho=None,
     
     SEE ALSO
     --------
-    estimate_SIR_prob_size(G, p) - accounts for entire structure of G
+    estimate_SIR_prob_size(G, p) which accounts for entire structure of G, not just
+    degree distribution.
     '''
     Pk = get_Pk(G)
     return Attack_rate_cts_time(Pk, tau, gamma, number_its = number_its, 
