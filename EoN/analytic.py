@@ -3915,11 +3915,10 @@ def Attack_rate_cts_time_from_graph(G,  tau, gamma, number_its =100, rho=None,
     for any structure in G beyond degree distribution.
     
     First calculates the degree distribution and then calls 
-    Attack_rate_cts_time.
+    `Attack_rate_cts_time`.
     
-    SEE ALSO
-    --------
-    estimate_SIR_prob_size(G, p) which accounts for entire structure of G, not just
+    See also:
+    `estimate_SIR_prob_size(G, p)` which accounts for entire structure of G, not just
     degree distribution.
     '''
     Pk = get_Pk(G)

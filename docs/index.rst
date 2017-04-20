@@ -23,7 +23,7 @@ The package is built using tools from NetworkX_.
    :maxdepth: 2
 
    Getting Started <GettingStarted>
-   EoN
+   EoN 
    Algorithms for Simulation <simulation>
    Algorithms for analyic approximations <analytic>
  
