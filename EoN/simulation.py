@@ -355,7 +355,98 @@ def basic_discrete_SIR_epidemic(G, p, initial_infecteds=None, rho = None,
     return discrete_SIR_epidemic(G, _simple_test_transmission_, (p,), 
                                     initial_infecteds, rho, return_full_data)
 
+def basic_discrete_SIS_epidemic(G, p, initial_infecteds=None, rho = None,
+                                return_full_data = False):
+    
+    '''
+    Arguments:
 
+        G : NetworkX Graph
+            The network the disease will transmit through.
+        p : number
+            transmission probability
+        initial_infecteds: node or iterable of nodes (default None)
+            if a single node, then this node is initially infected
+            if an iterable, then whole set is initially infected
+            if None, then choose randomly based on rho.  If rho is also
+            None, a random single node is chosen.
+            If both initial_infecteds and rho are assigned, then there
+            is an error.
+       
+        rho : number
+            initial fraction infected. number is int(round(G.order()*rho))
+
+        return_full_data: boolean (default False)
+            Tells whether the infection and recovery times of each 
+            individual node should be returned.  
+            It is returned in the form of two dicts, 
+                `infection_time` and `recovery_time`
+            `infection_time[node]` is the time of infection and 
+            `recovery_time[node]` is the recovery time
+
+    Returns:
+        :
+            t, S, I, : 
+                All scipy arrays OR if `return_full_data is True`:
+            t, S, I,, infection_times, recovery_times
+                where the additional values are dicts:
+                `infection_times[node]` is a list giving times of infection and 
+                `recovery_times[node]` is a list with times of recovery of node.
+
+    these scipy arrays give all the times observed and the number in 
+    each state at each time.  The dicts give times at which each node 
+    changed status.
+    '''
+    
+    if rho is not None and initial_infecteds is not None:
+        raise EoN.EoNError("cannot define both initial_infecteds and rho")
+
+    if return_full_data:
+        infection_time = {}
+        recovery_time = {}
+    
+    
+    if initial_infecteds is None:  #create initial infecteds list if not given
+        if rho is None:
+            initial_number = 1
+        else:
+            initial_number = int(round(G.order()*rho))
+        initial_infecteds=random.sample(G.nodes(), initial_number)
+    elif G.has_node(initial_infecteds):
+        initial_infecteds=[initial_infecteds]
+    #else it is assumed to be a list of nodes.
+
+    infecteds = set(initial_infecteds)
+
+    N=G.order()
+    t = [0]
+    S = [N-len(infecteds)]
+    I = [len(infecteds)]
+    
+    while infecteds:
+        next_infecteds = set()
+        for u in infecteds:
+            next_infecteds.union({v for v in G.neighbors(u) if random.random()<p and v not in infecteds})
+
+        if return_full_data:
+            for u in infecteds:
+                recovery_time[u].append(t[-1]+1)
+            for v in next_infecteds:
+                infection_time[u].append(t[-1]+1)
+        infecteds = next_infecteds
+        t.append(t[-1]+1)
+        S.append(N-len(infecteds))
+        I.append(len(infecteds))
+            
+        
+    if not return_full_data:
+        return scipy.array(t), scipy.array(S), scipy.array(I)
+    else:
+        return scipy.array(t), scipy.array(S), scipy.array(I), \
+                infection_times, recovery_times
+
+    
+    
 def percolate_network(G, p):
     #tested indirectly in test_basic_discrete_SIR_epidemic   
 
