@@ -92,10 +92,10 @@ def _get_rate_functions(G, tau, gamma, transmission_weight = None,
 
 
 
-import simulation
-from simulation import *
-import analytic
-from analytic import *
+import EoN.simulation
+from EoN.simulation import *
+import EoN.analytic
+from EoN.analytic import *
 
 
 

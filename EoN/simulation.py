@@ -1930,10 +1930,10 @@ def _Gillespie_Recover_SIS_(G, S, I, times, infected, current_time, status,
     times.append(current_time)
     infected_neighbor_count[recovering_node] = 0
     for neighbor in G.neighbors(recovering_node):
-	if neighbor == recovering_node:
-	    continue  #Deals with selfloops
-                #there is probably a good way to count the 
-                #number of infected neighbors
+        if neighbor == recovering_node:
+            continue  #Deals with selfloops
+                      #there is probably a good way to count the 
+                      #number of infected neighbors
         if status[neighbor] == 'I':
             infected_neighbor_count[recovering_node] += 1
         else: #neighbor susceptible, its risk just got smaller

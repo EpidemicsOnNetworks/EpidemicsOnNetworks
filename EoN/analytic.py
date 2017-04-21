@@ -1539,7 +1539,7 @@ def SIS_homogeneous_pairwise(S0, I0, SI0, SS0, n, tau, gamma, tmin = 0,
     I = N-S
     
     if return_full_data:
-	II = N*n - SS-2*SI
+        II = N*n - SS-2*SI
         return times, S, I, SI, SS, II
     else:
         return times, S, I
@@ -1863,7 +1863,7 @@ def SIS_heterogeneous_meanfield(Sk0, Ik0, tau, gamma, tmin = 0, tmax=100,
     S = Sk.sum(axis=0)
     I = Ik.sum(axis=0)
     if return_full_data:
-	return times, S, I, Sk, Ik
+        return times, S, I, Sk, Ik
     else:
         return times, S, I
 	
@@ -1948,9 +1948,9 @@ def SIR_heterogeneous_meanfield(Sk0, Ik0, Rk0, tau, gamma, tmin = 0, tmax=100,
     Sk=Sk0[:,None]*L
     Ik = Nk[:,None]-Sk-Rk
     if not return_full_data:
-	return times, sum(Sk), sum(Ik), sum(Rk)
+        return times, sum(Sk), sum(Ik), sum(Rk)
     else:
-	return times, Sk, Ik, Rk
+        return times, Sk, Ik, Rk
     
 def SIS_heterogeneous_meanfield_from_graph(G, tau, gamma, rho = None, 
                                             tmin = 0, tmax=100, tcount=1001, 
@@ -2287,20 +2287,20 @@ def SIS_heterogeneous_pairwise(Sk0, Ik0, SkSl0, SkIl0, IkIl0, tau, gamma,
 
     kcount = len(Nk)
     Sk = X.T[:kcount]
-    print Sk.size
+    #print Sk.size
     S = Sk.sum(axis=0)
-    print S.size
+    #print S.size
     Ik = Nk[:,None] - Sk
     I = Ik.sum(axis=0)
     if return_full_data:
-	SkSl = X.T[kcount:kcount+kcaount**2]
-	SkIl = X.T[kcount+kcount**2:]
+        SkSl = X.T[kcount:kcount+kcaount**2]
+        SkIl = X.T[kcount+kcount**2:]
         SkSl.shape = (kcount,kcount,tcount)
         SkIl.shape = (kcount,kcount,tcount)
-	IkIl = NkNl - SkSl - SkIl - SkIl.T
-	return times, S, I, Sk, Ik, SkIl, SkSl, IkIl
+        IkIl = NkNl - SkSl - SkIl - SkIl.T
+        return times, S, I, Sk, Ik, SkIl, SkSl, IkIl
     else:
-	return times, S, I
+        return times, S, I
 
 def SIR_heterogeneous_pairwise(Sk0, Ik0, Rk0, SkSl0, SkIl0, tau, gamma, 
                                 tmin = 0, tmax=100, tcount=1001, 
@@ -2617,9 +2617,9 @@ def SIS_compact_pairwise(Sk0, Ik0, SI0, SS0, II0, tau, gamma, tmin = 0,
     II = twoM - SS - 2*SI
 
     if return_full_data:
-	return times, S, I, Sk, Ik, SI, SS, II
+        return times, S, I, Sk, Ik, SI, SS, II
     else:
-	return times, S, I
+        return times, S, I
 
 def SIR_compact_pairwise(Sk0, I0, R0, SS0, SI0, tau, gamma, tmin=0, tmax=100,
                             tcount=1001, return_full_data=False):
@@ -2686,9 +2686,9 @@ def SIR_compact_pairwise(Sk0, I0, R0, SS0, SI0, tau, gamma, tmin=0, tmax=100,
     S = Sk.sum(axis=0)
     I = N - R - S
     if return_full_data:
-	return times, Sk, I, R, SS, SI
+        return times, Sk, I, R, SS, SI
     else:
-	return times, S, I, R
+        return times, S, I, R
 
 
 def SIS_compact_pairwise_from_graph(G, tau, gamma, rho = None, tmin = 0, 
@@ -2907,9 +2907,9 @@ def SIR_super_compact_pairwise(R0, SS0, SI0,  N, tau, gamma, psihat,
     S = N*psihat(theta)
     I = N-S-R
     if return_full_data:
-	return times, S, I, R, SS, SI
+        return times, S, I, R, SS, SI
     else:
-	return times, S, I, R
+        return times, S, I, R
 
 def SIS_super_compact_pairwise_from_graph(G, tau, gamma, rho = None, tmin = 0,
                                             tmax=100, tcount=1001, 
@@ -3226,7 +3226,7 @@ def SIR_effective_degree(S_si0, I0, R0, tau, gamma, tmin=0, tmax=100,
     I = N - R - S
     if return_full_data:
         S_si.shape = (original_shape[0], original_shape[1], tcount)
-	return  times, S, I, R, S_si
+        return  times, S, I, R, S_si
     else:
         return times, S, I, R
 
@@ -3400,7 +3400,7 @@ def SIR_compact_effective_degree(Skappa0, I0, R0, SI0, tau, gamma, tmin=0,
     if return_full_data:
         return times, S, I, R, Skappa, SI
     else:
-	return times, S, I, R
+        return times, S, I, R
 
 def SIR_compact_effective_degree_from_graph(G, tau, gamma, rho = None, 
                                             tmin = 0, tmax=100, tcount=1001, 
