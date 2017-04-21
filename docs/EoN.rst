@@ -14,7 +14,7 @@ This submodule deals with epidemic simulation.  The most notable of the algorith
     - fast_SIR  (a very efficient event-based algorithm)
     - fast_SIS  (a very efficient event-based algorithm)
     - basic_discrete_SIR_epidemic
-    - 
+    - basic_discrete_SIS_epidemic
     - Gillespie_SIR
     - Gillespie_SIS
 - Percolation-based approaches (for SIR disease)
