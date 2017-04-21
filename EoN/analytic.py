@@ -868,9 +868,9 @@ def _dSIR_pair_based_(V, t, G, nodelist, index_of_node, trans_rate_fxn, rec_rate
     dV = scipy.concatenate((dX[:, None], dY[:,None], dXY, dXX), axis=0).T[0]
     return dV
 
-
-def SIS_pair_based(G, nodelist, Y0, tau, gamma, XY0=None, XX0 = None, 
-                    tmin = 0, tmax = 100, tcount = 1001, transmission_weight=None, 
+def SIS_pair_based(G, tau, gamma, rho = None, nodelist = None,
+                    Y0=None, XY0=None, XX0 = None, tmin = 0, tmax = 100,  
+                    tcount = 1001, transmission_weight=None, 
                     recovery_weight=None, return_full_data = False):
     r'''
     Encodes System (3.26) of Kiss, Miller, & Simon.  Please cite the
@@ -898,19 +898,25 @@ def SIS_pair_based(G, nodelist, Y0, tau, gamma, XY0=None, XX0 = None,
     Arguments:
     
         G : Networkx graph
-
-        nodelist : list
-            list of nodes in G in the same order as in Y0
-
-        Y0 : scipy array
-            the array of initial infection probabilities for each node in 
-            order as in nodelist
-
+        
         tau : number
             transmission rate of disease
 
-        gamma : number (default None)
+        gamma : number
             global recovery rate  
+            
+        rho : number (default None)
+            proportion assumed initially infected.  If None, then Y0 is used
+            if Y0 is also None, then rho = 1./N
+
+        nodelist : list
+            list of nodes in G in the some order (just since there is no 
+            guarantee that G returns nodes in the same order if things change 
+            a bit.)
+            
+        Y0 : scipy array
+            the array of initial infection probabilities for each node in 
+            the same order as in nodelist
 
         XY0 : 2D scipy array (default None)
             (each dimension has length number of nodes of G)
@@ -972,6 +978,22 @@ def SIS_pair_based(G, nodelist, Y0, tau, gamma, XY0=None, XX0 = None,
         plt.plot(t,I)
         
 '''
+
+    N = G.order()
+        
+    if Y0 is None and rho is None:
+        rho = 1./N
+    if Y0 is not None and rho is not None:
+        raise EoN.EoNError("either Y0 or rho must be defined")
+    if Y0 is not None and  nodelist is None:
+        raise EoN.EoNError("cannot define Y0 without nodelist")
+        
+    if  nodelist is None:
+        nodelist = G.nodes()
+        Y0 = scipy.array([rho]*N)
+    if len(Y0) != N:
+        raise EoN.EoNError("incompatible length for Y0")            
+
     trans_rate_fxn, rec_rate_fxn = EoN._get_rate_functions(G, tau, gamma, 
                                                 transmission_weight,
                                                 recovery_weight)
@@ -979,23 +1001,22 @@ def SIS_pair_based(G, nodelist, Y0, tau, gamma, XY0=None, XX0 = None,
     times = scipy.linspace(tmin,tmax,tcount)
 
 
-    N = len(Y0)
+    
     X0=1-Y0
 
     if XY0 is None:
         XY0 = X0[:,None]*Y0[None,:]
-    else:
-        if XY0.shape != (N,N):
-            raise EoN.EoNError("incompatible lengths for XY0 and Y0")
+    elif XY0.shape != (N,N):
+        raise EoN.EoNError("incompatible lengths for XY0 and Y0")
 
     if XX0 is None:
         XX0 = X0[:,None]*X0[None,:]
-    else:
-        if XX0.shape != (N,N):
-            raise EoN.EoNError("incompatible lengths for XX0 and Y0")
+    elif XX0.shape != (N,N):
+        raise EoN.EoNError("incompatible lengths for XX0 and Y0")
+        
     A = nx.adjacency_matrix(G).toarray()
     XY0 = XY0*A  #in principle the equations should still work for pairs not
-    XX0 = XX0*A  #in an edge, but this led to the error with odeint.  
+    XX0 = XX0*A  #in an edge, but this led to an error with odeint.  
                  #Multiplying by A restricts attention just to present edges.
     
     XY0.shape=(N**2,1)
@@ -1024,8 +1045,59 @@ def SIS_pair_based(G, nodelist, Y0, tau, gamma, XY0=None, XX0 = None,
 
 
 
+def _SIR_pair_based_initialize_node_data(G, rho, nodelist, X0, Y0):
+    #inputs must define either rho or Y0.  In first case nodelist is optional.
+    if (rho and Y0 is not None) or (not rho and Y0 is None):
+        raise EoN.EoNError("need rho or Y0 defined for initial condition, \
+                        but not both")
+    if Y0 is not None and nodelist is None:
+        raise EoN.EoNError("order in Y0 is ambiguous if nodelist is not given.")
 
-def SIR_pair_based(G, nodelist, Y0, tau, gamma, X0 = None, XY0=None, 
+    if not nodelist: #then rho is defined but not Y0
+        nodelist = list(G.nodes())
+    if rho: #Y0 not defined
+        Y0 = rho*scipy.ones(len(nodelist))
+        X0 = 1-Y0 #assume X0=0
+    else:  #Y0 is defined
+        if not X0:
+            X0=1-Y0  #assume Z0=0
+        #otherwise X0 is given and Z0=1-X0-Y0
+    return nodelist, X0, Y0
+
+def _SIR_pair_based_initialize_edge_data(G, edgelist, nodelist, XY0, YX0, 
+                                            XX0, X0, Y0, index_of_node):
+    if (not XY0 is None or YX0 is None or XX0 is None) \
+            and (XY0 is not None or YX0 !=None  or XX0 is not None):  
+            #at least one defined and one not defined
+        raise EoN.EoNError("must define all of XY0, YX0, and XX0 or none of them")
+    if not edgelist:
+        if XY0:
+            raise EoN.EoNError("order in XY0, YX0, and XX0 is ambiguous if \
+                            edgelist is not given.")
+        else:
+            edgelist = list(G.edges())
+
+    if XY0:
+        #test that XY0 <= X0Y0, same for  YX0 and XX0
+        for index,(u,v) in enumerate(edgelist):
+           i_u = index_of_node[u]
+           i_v = index_of_node[v]
+           if XY0[index] >X0[i_u]*Y0[i_v] or YX0[index]>Y0[i_u]*X0[I_v] \
+                                or XX0[index]>X0[i_u]*X0[i_v]:
+               raise EoN.EoNError("edge probabilities inconsistent with node \
+                                probabilities")
+    else:
+        XY0 = scipy.array([X0[index_of_node[u]]*Y0[index_of_node[v]] 
+                            for u,v in edgelist])
+        YX0 = scipy.array([Y0[index_of_node[u]]*X0[index_of_node[v]] 
+                            for u,v in edgelist])
+        XX0 = scipy.array([X0[index_of_node[u]]*X0[index_of_node[v]] 
+                            for u,v in edgelist])
+    return edgelist, XY0, YX0, XX0
+
+
+def SIR_pair_based(G, tau, gamma, rho = None, nodelist=None, Y0=None, 
+                    X0 = None, XY0=None, 
                     XX0 = None, tmin = 0, tmax = 100, tcount = 1001, 
                     transmission_weight=None, recovery_weight=None, 
                     return_full_data = False):
@@ -1054,25 +1126,31 @@ def SIR_pair_based(G, nodelist, Y0, tau, gamma, X0 = None, XY0=None,
 
     Arguments:
         G : Networkx graph
-    
-        nodelist : list
-            list of nodes in G in the same order as in Y0
-
-        Y0 : scipy array
-            the array of initial infection probabilities for each node in 
-            order as in nodelist
 
         tau : number
             transmission rate of disease
 
-        gamma : number (default None)
+        gamma : number
             global recovery rate  
+    
+        rho : number (default None)
+            proportion assumed initially infected.  If None, then Y0 is used
+            if Y0 is also None, then rho = 1./N
+
+        nodelist : list
+            list of nodes in G in the some order (just since there is no 
+            guarantee that G returns nodes in the same order if things change 
+            a bit.)
+
+        Y0 : scipy array
+            the array of initial infection probabilities for each node in 
+            order as in nodelist/
 
         X0 : scipy array (default None)
             probability a random node is initially susceptible.
             the probability of initially recovered will be 1-X0-Y0.  By 
             default we assume no initial recoveries, so X0=1-Y0 will be 
-            assumed in this case.
+            assumed unless both Y0 and X0 are given.
 
         XY0 : 2D scipy array (default None)
             (each dimension has length number of nodes of G)
@@ -1133,6 +1211,20 @@ def SIR_pair_based(G, nodelist, Y0, tau, gamma, X0 = None, XY0=None,
         plt.plot(t,I)
     '''
 
+    N = G.order()
+        
+    if Y0 is None and rho is None:
+        rho = 1./N
+    if Y0 is not None and rho is not None:
+        raise EoN.EoNError("either Y0 or rho must be defined")
+    if Y0 is not None and  nodelist is None:
+        raise EoN.EoNError("cannot define Y0 without nodelist")
+        
+    if  nodelist is None:
+        nodelist = G.nodes()
+        Y0 = scipy.array([rho]*N)
+    if len(Y0) != N:
+        raise EoN.EoNError("incompatible length for Y0")            
 
     trans_rate_fxn, rec_rate_fxn = EoN._get_rate_functions(G, tau, gamma, 
                                                 transmission_weight,
@@ -1141,7 +1233,6 @@ def SIR_pair_based(G, nodelist, Y0, tau, gamma, X0 = None, XY0=None,
     times = scipy.linspace(tmin,tmax,tcount)
     if X0 is None:
         X0 = 1-Y0
-    N = len(Y0)
 
     if XY0 is None:
         XY0 = X0[:,None]*Y0[None,:]
@@ -1185,311 +1276,6 @@ def SIR_pair_based(G, nodelist, Y0, tau, gamma, X0 = None, XY0=None,
         XY.shape = (N,N,tcount)
         XX.shape = (N,N,tcount)
         return times, S, I, R, Xs, Ys, Zs, XY, XX
-    else:
-        return times, S, I, R
-
-
-def _dSIR_pair_based2_(V, t, G, nodelist, index_of_node, edgelist, 
-                        index_of_edge, trans_rate_fxn, rec_rate_fxn):
-    #X, Y, XY, YX, XX
-    N=len(nodelist)
-    E=len(edgelist)
-    
-    X = V[0:N]
-    Y = V[N:2*N]
-    def Xinv(u):
-        '''
-        There are places where we divide by X[i] which may = 0.  
-        
-        In those cases the numerator is (very) 0, so it's easier
-        to set this up as mult by inverse with a dummy value when it 
-        is 1/0.
-        '''
-        index = index_of_node[u]
-        if X[index]==0:
-            return 0
-        else:
-            return 1/X[index]
-    def Yinv(u):
-        index = index_of_node[u]
-        if Y[index]==0:
-            return 0
-        else:
-            return 1/Y[index]
-    #Xinv = scipy.array([1/v if v!=0 else 0 for v in X]) 
-    #Yinv = scipy.array([1/v if v!=0 else 0 for v in Y])
-    
-    XY = V[2*N: 2*N+E]
-    YX = V[2*N+E:2*N+2*E]
-    XX = V[2*N+2*E:]
-
-    #print X.shape, Y.shape, XY.shape, XX.shape, N
-
-    dX = scipy.zeros(N)
-    dY = scipy.zeros(N)
-    dXY = scipy.zeros(E)
-    dYX = scipy.zeros(E)
-    dXX = scipy.zeros(E)
-
-    def my_XY(u,v): #either XY[i,j] or YX[i,j], depending on which is defined.  
-                    #Might be cleaner with Try, Except
-        if index_of_edge.has_key((u,v)):
-            index = index_of_edge[(u,v)]
-            return XY[index]
-        else:
-            index = index_of_edge[(v,u)]
-            return YX[index]
-    def my_YX(u,v):
-        return my_XY(v,u)
-    def my_XX(u,v):
-        if index_of_edge.has_key((u,v)):
-            index = index_of_edge[(u,v)]
-        else:
-            index = index_of_edge[(v,u)]
-        return XX[index]
-    
-    #I could make the below more efficient, but I think this sequence 
-    #of for loops is easier to read, or at least understand.
-    #I expect it to run quickly regardless.  
-    #Will avoid (premature) optimization for now.
-    for i, u in enumerate(nodelist):
-        dY[i] += -rec_rate_fxn(u)*Y[i] 
-    for edgeindex, (u,v) in enumerate(edgelist):
-        i = index_of_node[u]
-        j = index_of_node[v]
-
-        dX[i] += -trans_rate_fxn(u,v)*XY[edgeindex] 
-        dY[i] += trans_rate_fxn(u,v)*XY[edgeindex]  
-
-        dX[j] += -trans_rate_fxn(u,v)*YX[edgeindex]
-        dY[j] += trans_rate_fxn(u,v)*YX[edgeindex]
-
-        dXY[edgeindex] += - (trans_rate_fxn(u,v)+rec_rate_fxn(v))*XY[edgeindex]
-        dYX[edgeindex] += - (trans_rate_fxn(u,v)+rec_rate_fxn(v))*YX[edgeindex]
-
-        for w in G.neighbors(u):
-            if w==v:  #skip this case
-                continue
-            k=index_of_node[w]
-            dXY[edgeindex] += -trans_rate_fxn(w,u)*my_YX(w,u) * my_XY(u,v)*Xinv(u)
-            dYX[edgeindex] += trans_rate_fxn(w,u)*my_XX(v,u)*my_XY(u,w)*Xinv(u)
-            dXX[edgeindex] += -trans_rate_fxn(w,u) * my_XX(u,v) \
-                                * my_XY(u,w)*Xinv(u) 
-        for w in G.neighbors(v):
-            if w==u:
-                continue
-            #w transmits to v.
-            dXY[edgeindex] += trans_rate_fxn(w,v)*my_XX(u,v) *my_XY(v,w)*Xinv(v)
-            dYX[edgeindex] += -trans_rate_fxn(w,v)*my_XY(v,w)*my_YX(u,v)*Xinv(v)
-            dXX[edgeindex] += -trans_rate_fxn(w,v)*my_XX(u,v)*my_XY(v,w)*Xinv(v)
-
-    dV = scipy.concatenate((dX, dY, dXY, dYX, dXX), axis=0)
-    return dV
-
-
-def _SIR_pair_based_initialize_node_data(G, rho, nodelist, X0, Y0):
-    #inputs must define either rho or Y0.  In first case nodelist is optional.
-    if (rho and Y0 is not None) or (not rho and Y0 is None):
-        raise EoN.EoNError("need rho or Y0 defined for initial condition, \
-                        but not both")
-    if Y0 is not None and nodelist is None:
-        raise EoN.EoNError("order in Y0 is ambiguous if nodelist is not given.")
-
-    if not nodelist: #then rho is defined but not Y0
-        nodelist = list(G.nodes())
-    if rho: #Y0 not defined
-        Y0 = rho*scipy.ones(len(nodelist))
-        X0 = 1-Y0 #assume X0=0
-    else:  #Y0 is defined
-        if not X0:
-            X0=1-Y0  #assume Z0=0
-        #otherwise X0 is given and Z0=1-X0-Y0
-    return nodelist, X0, Y0
-
-def _SIR_pair_based_initialize_edge_data(G, edgelist, nodelist, XY0, YX0, 
-                                            XX0, X0, Y0, index_of_node):
-    if (not XY0 is None or YX0 is None or XX0 is None) \
-            and (XY0 is not None or YX0 !=None  or XX0 is not None):  
-            #at least one defined and one not defined
-        raise EoN.EoNError("must define all of XY0, YX0, and XX0 or none of them")
-    if not edgelist:
-        if XY0:
-            raise EoN.EoNError("order in XY0, YX0, and XX0 is ambiguous if \
-                            edgelist is not given.")
-        else:
-            edgelist = list(G.edges())
-
-    if XY0:
-        #test that XY0 <= X0Y0, same for  YX0 and XX0
-        for index,(u,v) in enumerate(edgelist):
-           i_u = index_of_node[u]
-           i_v = index_of_node[v]
-           if XY0[index] >X0[i_u]*Y0[i_v] or YX0[index]>Y0[i_u]*X0[I_v] \
-                                or XX0[index]>X0[i_u]*X0[i_v]:
-               raise EoN.EoNError("edge probabilities inconsistent with node \
-                                probabilities")
-    else:
-        XY0 = scipy.array([X0[index_of_node[u]]*Y0[index_of_node[v]] 
-                            for u,v in edgelist])
-        YX0 = scipy.array([Y0[index_of_node[u]]*X0[index_of_node[v]] 
-                            for u,v in edgelist])
-        XX0 = scipy.array([X0[index_of_node[u]]*X0[index_of_node[v]] 
-                            for u,v in edgelist])
-    return edgelist, XY0, YX0, XX0
-
-    
-def SIR_pair_based2(G, tau, gamma, rho = None, nodelist=None, X0=None, 
-                    Y0=None, edgelist = None, XY0=None, YX0 = None, 
-                    XX0 = None, tmin = 0, tmax = 100, tcount = 1001, 
-                    transmission_weight=None, recovery_weight=None, 
-                    return_full_data = False):
-    '''
-    Encodes System (3.39) of Kiss, Miller, & Simon.  Please cite the
-    book if using this algorithm.
-
-    This system solves equations for an SIR disease model spreading on a 
-    given graph.  It captures the dependence with pairs, but not 
-    triples.
-
-    It will be exact for a tree.
-
-    There are NO CORRECTIONS for the existence of TRIANGLES or any other 
-    CYCLES.
-    
-    Some corrections for triangles are provided in the text, but not 
-    implemented here.
-
-    See also:
-    Hadjichrysanthou and Sharkey
-    Epidemic control analysis: Desigining targeted intervention 
-    strategies against epidemics propagated on contact networks,
-    Journal of Theoretical Biology
-
-    <\dot{Y}_i> = tau \sum_j g_{ij} <XY>  -  gamma_i <Y_i>
-    
-    <\dot{XY}> = tau sum_{k \neq i} g_{jk} <XX><XjYk>/<Xj>
-                   - tau sum_{k neq j} g_{ik} <YkXi><XY>/<Xi>
-                   - tau g_{ij}<XY> - gamma_j <XIYj> 
-
-    <\dot{XX}> = 
-    <>
-    
-    The equations as coded involve all pairs rather than just the pairs 
-    that are in edges.  
-    
-    Those that are not part of an edge are set to zero and their 
-    derivatives are zero.  
-    
-    So the code could run faster, but I think for most cases this is a 
-    small contribution.  
-    
-    Before I forced the initial conditions for these nonedges to be 0, 
-    they caused quite a bit of numerical headaches.
-
-
-
-    Arguments:
-        
-        G : Networkx graph
-
-        nodelist : list
-            list of nodes in G in the same order as in Y0
-
-        Y0 : scipy array
-            the array of initial infection probabilities for each node in 
-            order as in nodelist
-
-        tau : number
-            transmission rate of disease
-
-        gamma : number (default None)
-            global recovery rate  
-
-        XY0 : 2D scipy array (default None)
-            (each dimension has length number of nodes of G)
-            XY0[i,j] is probability node i is susceptible and j is 
-            infected.
-            if None, then assumes that infections are introduced 
-                randomly according to Y0.
-
-        XX0 : 2D scipy array (default None)
-            (each dimension has length number of nodes of G)
-            XX0[i,j] is probability nodes i and j are susceptible.
-            if None, then assumes that infections are introduced 
-                randomly according to Y0.
-
-        tmin : number (default 0)
-            minimum report time
-
-        tmax : number (default 100)
-            maximum report time 
-
-        tcount : integer (default 1001)
-            number of reports
-
-        transmission_weight : string
-            the label for a weight given to the edges.
-            G.edge[i][j][transmission_weight] = g_{ij}
-
-        recovery_weight : string       (default None)
-            a label for a weight given to the nodes to scale their 
-            recovery rates
-                gamma_i = G.node[i][recovery_weight]*gamma
-
-        return_full_data : boolean      (default False)
-            if True:
-                returns times, S, I, R, Xs, Ys, Zs, XY, XX
-            if False:
-                returns times, S, I, R
-    Returns:
-        :
-        if return_full_data is True:
-            returns times, S, I, R, Xs, Ys, Zs, XY, XX
-        if ... is False:
-            returns times, S, I, R
-    '''
-
-    #note: we do not test whether the nodelist and edgelist are in 
-    #fact lists of nodes or edges
-    nodelist, X0, Y0 = _SIR_pair_based_initialize_node_data(G, rho, nodelist, 
-                                                                X0, Y0)
-
-    index_of_node = {node:i for i, node in enumerate(nodelist)}
-
-    edgelist, XY0, YX0, XX0 = _SIR_pair_based_initialize_edge_data(G, 
-                                                edgelist, nodelist, XY0, YX0, 
-                                                XX0, X0, Y0, index_of_node)
-
-    index_of_edge = {edge:i for i, edge in enumerate(edgelist)}
-    N = len(nodelist)
-    E = len(edgelist)
-    #now we define functions which give the transmission rate of edges 
-    #and recovery rate of nodes.  
-    trans_rate_fxn, rec_rate_fxn = EoN._get_rate_functions(G, tau, gamma, 
-                                                transmission_weight,
-                                                recovery_weight)
-
-    times = scipy.linspace(tmin,tmax,tcount)
-
-    
-    V0 = scipy.concatenate((X0, Y0, XY0, YX0, XX0),axis=0)
-    V = integrate.odeint(_dSIR_pair_based2_, V0, times, 
-                            args = (G, nodelist, index_of_node, edgelist, 
-                                    index_of_edge, trans_rate_fxn, rec_rate_fxn))
-                                    
-    #dX, dY, dXY, dYX, dXX
-    Xs = V.T[0:N]
-    S = Xs.sum(axis=0)
-    Ys = V.T[N:2*N]
-    I = Ys.sum(axis=0)
-    Zs = scipy.ones(N)[:,None]-Xs-Ys
-    R = Zs.sum(axis=0)
-    if return_full_data:
-        XY = V.T[2*N: 2*N+E]
-        YX = V.T[2*N+E:2*N+2*E]
-        XX = V.T[2*N+2*E:]
-        YY = 1 - XY - YX-XX
-        return times, S, I, R, Xs, Ys, Zs, XY, YX, XX, YY,edgelist, nodelist
     else:
         return times, S, I, R
 
@@ -3944,6 +3730,7 @@ def Attack_rate_non_Markovian(Pk, Pzetadzeta, pi, number_its = 100):
         number_its : number of iterations before assumed converged.
                  default value is 100
     Returns:
+        :
         AR: number
             attack rate
             
@@ -4235,6 +4022,10 @@ def EBCM_uniform_introduction(N, psi, psiPrime, tau, gamma, rho, tmin=0,
 
 def EBCM_from_graph(G, tau, gamma, rho = None, tmin = 0, tmax=100, 
                         tcount=1001, return_full_data=False):
+    r'''
+    Given network G and rho, calculates N, psihat, psihatPrime, and calls EBCM.
+    '''
+    
     #tested in test_SIR_dynamics
     if rho is None:
         rho = 1./G.order()
