@@ -17,6 +17,17 @@ For simulations, we assume that input networks are **NetworkX**
 graphs; see https://networkx.github.io/
 
 
+
+EoN consists of two sets of algorithms.  
+
+- The first deals with simulation of epidemics on networks.  The most significant of these are `fast_SIS` and `fast_SIR` which significantly outperform Gillespie algorithms (also included).  These algorithms are discussed in more detail in the appendix of the book.
+
+
+- The second deals with solution of systems of equations derived in the book.  For these it is possible to either provide the degree distribution, or simply use a network and let the code determine the degree distribution.
+
+
+- There are a few additional algorithms which are not described in the book, but which we believe will be useful. Most notably, the function `visualize` which creates a sequence of images of a network which are appropriate for creating a movie showing disease spread.
+
 Distributed under MIT license.  See :download:`license.txt<../license.txt>` for full details.
 
 
