@@ -34,14 +34,12 @@ Distributed under MIT license.  See :download:`license.txt<../license.txt>` for 
 
 '''
 
-print("warning - EoN is not yet tested in Python 3")
-
 print("warning - EoN is currently under significant development.  Interface"
       +" may change with little if any warning until version 1.0")
-
+print("Warning - testing in Python 3 is limited")
 
 __author__ = "Joel C. Miller, Istvan Z. Kiss, and Peter Simon"
-__version__ = "0.92"
+__version__ = "0.93"
 
 
 
