@@ -134,8 +134,7 @@ def _simple_test_transmission_(u, v, p):
     return random.random()<p
 
 
-def discrete_SIR_epidemic(G, 
-                test_transmission=_simple_test_transmission_, args=(), 
+def discrete_SIR_epidemic(G, test_transmission=_simple_test_transmission_, args=(), 
                 initial_infecteds=None, rho = None, return_full_data = False):
     #tested in test_discrete_SIR_epidemic
     r'''
@@ -581,9 +580,8 @@ def percolation_based_discrete_SIR_epidemic(G, p,
     elif G.has_node(initial_infecteds):
         initial_infecteds=[initial_infecteds]
     H = percolate_network(G, p)
-    return discrete_SIR_epidemic(H, _edge_exists_, [H], initial_infecteds, 
-                                    return_full_data)
-
+    return discrete_SIR_epidemic(H, test_transmission=H.has_edge, initial_infecteds=initial_infecteds, 
+                                    return_full_data=return_full_data)
 
 def estimate_SIR_prob_size(G, p):
     #tested in test_estimate_SIR_prob_size

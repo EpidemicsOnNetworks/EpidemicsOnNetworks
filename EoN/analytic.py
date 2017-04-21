@@ -769,16 +769,21 @@ def _dSIS_pair_based_(V, t, G, nodelist, index_of_node, trans_rate_fxn, rec_rate
                             + rec_rate_fxn(u)*YY[i,j]
             dXX[i,j] +=  rec_rate_fxn(u)*YX[i,j] + rec_rate_fxn(v)*XY[i,j]
             #all the pure pairs are dealt with.  Now the triples
-            for w in G.neighbors(u):
-                if w == v: #skip these
+            for w in G.neighbors(v):
+                if w == u: #skip these
                     continue
                 #so w != v. 
                 k= index_of_node[w]
 
-                dXY[i,j] += trans_rate_fxn(v,w) * XX[i,j] * XY[j,k]*Xinv[j]  \
-                            -  trans_rate_fxn(u,w) * YX[k,i] * XY[i,j]*Xinv[i]
-                dXX[i,j] += -trans_rate_fxn(v,w) * XX[i,j] * XY[j,k]*Xinv[j] \
-                            -  trans_rate_fxn(u,w) * YX[k,i] * XX[i,j]*Xinv[i]
+                dXY[i,j] += trans_rate_fxn(v,w) * XX[i,j] * XY[j,k]*Xinv[j] 
+                dXX[i,j] += -trans_rate_fxn(v,w) * XX[i,j] * XY[j,k]*Xinv[j] 
+            for w in G.neighbors(u):
+                if w == v:
+                    continue #skip these
+                k = index_of_node[w]
+                dXY[i,j] += -  trans_rate_fxn(u,w) * YX[k,i] * XY[i,j]*Xinv[i]
+                dXX[i,j] += -  trans_rate_fxn(u,w) * YX[k,i] * XX[i,j]*Xinv[i]
+
 
     dXY.shape = (N**2,1)
     dXX.shape = (N**2,1)
