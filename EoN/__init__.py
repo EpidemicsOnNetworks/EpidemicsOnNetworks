@@ -41,7 +41,7 @@ print("Warning - testing in Python 3 is limited")
 __author__ = "Joel C. Miller, Istvan Z. Kiss, and Peter Simon"
 __version__ = "0.93"
 
-
+#__all__ = 
 
 class EoNError(Exception):
     r'''
@@ -101,20 +101,12 @@ def subsample(report_times, times, status1, status2=None,
                 status3 = None):
     r'''
     Given 
-      S, I, and/or R as lists (or other iterable) of numbers of nodes of
-      given status at given times
+      S, I, and/or R as lists of numbers of nodes of the given status
+      at given times
+
     returns them 
       subsampled at specific report_times.
-      
-    If more than one argument is given, does so as a list in order given, but 
-    skipping whichever was not included (if any not included)
-
-    If only one is given then returns just that.
-
-    If report_times goes longer than times, then this simply assumes the 
-    system freezes in the final state.
     
-    This uses a recursive approach if multiple arguments are defined.
 
     :INPUTS:
 
@@ -138,7 +130,56 @@ def subsample(report_times, times, status1, status2=None,
         [report_status1, report_status2]
     or
         [report_status1, report_status2, report_status3]
-        
+
+    :SAMPLE USE:
+
+    ::
+
+        import networkx as nx
+        import EoN
+        import scipy
+        import matplotlib.pyplot as plt
+
+        """ in this example we will run 100 stochastic simulations.
+            Each simulation will produce output at a different set
+            of times.  In order to calculate an average we will use
+            subsample to find the epidemic sizes at a specific set
+            of times given by report_times.
+        """
+
+        G = nx.fast_gnp_random_graph(10000,0.001)
+        tau = 1.
+        gamma = 1.
+        report_times = scipy.linspace(0,5,101)
+        Ssum = scipy.zeros(len(report_times))
+        Isum = scipy.zeros(len(report_times))
+        Rsum = scipy.zeros(len(report_times))
+        iterations = 100
+        for counter in range(iterations): 
+            t, S, I, R = EoN.fast_SIS(G, tau, gamma, initial_infecteds = range(10))
+            #t, S, I, and R have an entry for every single event.
+            newS, newI, newR = EoN.subsample(report_times, t, S, I, R)
+            plt.plot(t, newI, linewidth=1, alpha = 0.4)
+            Ssum += newS
+            Isum += newI
+            Rsum += newR
+        Save = Ssum / float(iterations)
+        Iave = Isum / float(iterations)
+        Rave = Rsum / float(iterations)
+        plt.plot(report_times, Save, "--", linewidth = 3, label = "average")
+        plt.plot(report_times, Iave, "--", linewidth = 3)
+        plt.plot(report_times, Rave, "--", linewidth = 3)
+        plt.legend(loc = "upper right")
+        plt.savefig("tmp.pdf")
+
+    If only one of the sample times is given then returns just that.
+
+    If report_times goes longer than times, then this simply assumes the 
+    system freezes in the final state.
+    
+    This uses a recursive approach if multiple arguments are defined.
+
+
     '''
     if report_times[0] < times[0]:
         raise EoNError("report_times[0]<times[0]")
@@ -173,24 +214,56 @@ def get_time_shift(times, L, threshold):
     Identifies the first time at which L crosses a threshold.  
     Useful for shifting times.
     
-    :INPUTS:
-
-    times : list or scipy array (ordered)
+    Arguments:
+        times : list or scipy array (ordered)
             the times we have observations
-    L : a list or scipy array
-        order of L corresponds to times
-    threshold : number
-        a threshold value
+        L : a list or scipy array
+            order of L corresponds to times
+        threshold : number
+            a threshold value
 
-    :RETURNS:
+    Returns:
+        : 
+        t : number
+            the first time at which L reaches or exceeds a threshold.
 
-    t : number
-        the first time at which L reaches or exceeds a threshold.
+    :SAMPLE USE:
+
+    ::
+
+        import networkx as nx
+        import EoN
+        import matplotlib.pyplot as plt
+
+        """ in this example we will run 20 stochastic simulations.
+            We will produce one plot showing the unshifted
+            curves and one with them shifted so that t=0 when 1%
+            are in the I class.
+        """
+        N=1000000
+        kave = 10.
+        G = nx.fast_gnp_random_graph(100000,kave/(N-1.))
+        tau = 1.
+        gamma = 1.
+        report_times = scipy.linspace(0,5,101)
+        Ssum = scipy.zeros(len(report_times))
+        Isum = scipy.zeros(len(report_times))
+        Rsum = scipy.zeros(len(report_times))
+        iterations = 20
+        for counter in range(iterations):
+            R=[0]
+            while R[-1]<1000: #if an epidemic doesn't happen, repeat
+                t, S, I, R = EoN.fast_SIS(G, tau, gamma, initial_infecteds = range(10))
+            plt.plot(t, I, linewidth = 1, color = 'gray', alpha=0.4)
+            tshift = EoN.get_time_shift(t, I, 0.01*kave)
+            plt.plot(t-tshift, I, color = 'red', linewidth = 1, alpha = 0.4)
+        plt.savefig("tmp.pdf")
     '''
     for index, t in enumerate(times):
         if L[index]>= threshold:
             break
     return t
+
 
 
 
@@ -244,8 +317,5 @@ add models that take in graph, measure degree distribution and run EBCM
 similarly for EBCM with neighbor degrees (see barabasi_SIR.py)
 
 consider explicitly defining toast graph etc.
-
-SIR_pair_based --- which of 2 versions to keep, and comments need to 
-                   explain it a bit better.
 '''
 
