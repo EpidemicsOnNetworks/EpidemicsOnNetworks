@@ -206,7 +206,7 @@ def get_Psi(Pk):
     Returns:
         :
         psi : function.
-            psi(x) = \sum_k Pk[k] x^k
+            :math:`\psi(x) = \sum_k Pk[k] x^k`
     '''
     maxk = max(Pk.keys())
     Pkarray = scipy.array([Pk.get(k,0) for k in range(maxk+1)])
@@ -1312,8 +1312,9 @@ def SIS_homogeneous_meanfield(S0, I0, n, tau, gamma, tmin=0, tmax=100,
     In the text this is often referred to as the 
     "mean-field model closed at the level of pairs"
 
-    [\dot{S}] = \gamma [I] - tau n[S][I]/N
-    [\dot{I}] = \tau n[S][I]/N - \gamma [I]
+       [\dot{S}] = \gamma [I] - tau n[S][I]/N
+       
+       [\dot{I}] = \tau n[S][I]/N - \gamma [I]
 
 
     Arguments:
@@ -3618,11 +3619,11 @@ def Attack_rate_discrete(Pk, p, number_its=100, rho = None, Sk0=None,
         theta = 1-p + p*(phiR0 +  phiS0*psihatPrime(theta)/psihatPrime(1))
     return 1 - psihat(theta)
 
-#def Attack_rate_discrete_from_graph(G, p, number_its = 100, rho = None, 
-#                                        Sk0 = None):
-#    Pk = get_Pks(G)
-#    return Attack_rate_discrete(Pk, p, number_its = number_its, 
-#                                            rho = rho, Sk0 = Sk0)
+def Attack_rate_discrete_from_graph(G, p, number_its = 100, rho = None, 
+                                       Sk0 = None):
+    Pk = get_Pks(G)
+    return Attack_rate_discrete(Pk, p, number_its = number_its, 
+                                            rho = rho, Sk0 = Sk0)
 
 def Attack_rate_cts_time(Pk, tau, gamma, number_its =100, rho = None, 
                             Sk0 = None, phiS0=None, phiR0=0):

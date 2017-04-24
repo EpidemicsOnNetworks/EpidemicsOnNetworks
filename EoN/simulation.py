@@ -147,13 +147,13 @@ def discrete_SIR_epidemic(G, test_transmission=_simple_test_transmission_, args=
     time and then recover with immunity.
 
     This is defined to handle a user-defined function
-        test_transmission(node1,node2,*args)
+    `test_transmission(node1,node2,*args)`
     which determines whether transmission occurs.
 
     So elaborate rules can be created as desired by the user.
 
     By default it uses 
-        _simple_test_transmission_
+    `_simple_test_transmission_`
     in which case args should be entered as (p,)
 
     Arguments:
@@ -169,16 +169,17 @@ def discrete_SIR_epidemic(G, test_transmission=_simple_test_transmission_, args=
 
             This function can be user-defined.
             It is called like:
-            `test_transmission(u,v,*args)`
+            test_transmission(u,v,*args)
             Note that if args is not entered, then args=(), and this call is 
             equivalent to
-            `test_transmission(u,v)`
+            test_transmission(u,v)
 
         args: a list or tuple
             The arguments of test_transmission coming after the nodes.  If 
             simply having transmission with probability p it should be 
             entered as 
-            `args=(p,)   `
+            args=(p,)
+            
             [note the comma is needed to tell Python that this is really a 
             tuple]
 
@@ -316,7 +317,8 @@ def basic_discrete_SIR_epidemic(G, p, initial_infecteds=None, rho = None,
             Tells whether the infection and recovery times of each 
             individual node should be returned.  
             It is returned in the form of two dicts, 
-                `infection_time` and `recovery_time`
+            `infection_time` and `recovery_time`
+            
             `infection_time[node]` is the time of infection and 
             `recovery_time[node]` is the recovery time
 
@@ -379,7 +381,7 @@ def basic_discrete_SIS_epidemic(G, p, initial_infecteds=None, rho = None,
             Tells whether the infection and recovery times of each 
             individual node should be returned.  
             It is returned in the form of two dicts, 
-                `infection_time` and `recovery_time`
+            `infection_time` and `recovery_time`
             `infection_time[node]` is the time of infection and 
             `recovery_time[node]` is the recovery time
 
@@ -713,7 +715,7 @@ def _out_component_(G, source):
             will ever have a name that is an iterable of other node names.
             It will run, but may not use source user expects.
 
-    Warning: 
+    :Warning: 
         if the graph G has nodes like 1, 2, 3, and (1,2,3), then a
         source of (1,2,3) is potentially ambiguous.  It will interpret
         the source as the single node (1,2,3)
@@ -753,7 +755,7 @@ def _in_component_(G, target):
             would be finding those possible sources whose infection leads to 
             infection of at least one target, not all.
 
-    Warning: 
+    :Warning: 
         
         if the graph G has nodes like 1, 2, 3, and (1,2,3), then a
         target of (1,2,3) is potentially ambiguous.  It will interpret
@@ -799,7 +801,7 @@ def get_infected_nodes(G, tau, gamma, initial_infecteds=None):
     There are much faster ways to implement an algorithm giving the same 
     output, for example by actually running an epidemic.
     
-    :WARNING:
+    :Warning:
     
     why are you using this command? If it's to better understand some
     concept, that's fine.  But this command IS NOT an efficient way to
@@ -1254,7 +1256,7 @@ def fast_SIR(G, tau, gamma, initial_infecteds = None, rho = None,
         recovery_weight : string       (default None)
             a label for a weight given to the nodes to scale their 
             recovery rates
-                gamma_i = G.node[i][recovery_weight]*gamma
+            gamma_i = G.node[i][recovery_weight]*gamma
 
         return_full_data: boolean
             Tells whether the infection and recovery times of each 
@@ -1328,18 +1330,23 @@ def fast_nonMarkov_SIR(G, process_trans = _process_trans_SIR_,
         G : Networkx Graph
     
         process_trans : a function that handles a transmission event.
-                    Called by 
-                        process_trans(G, time, node, times, S, I, R, Q, 
-                           status, rec_time, pred_inf_time, *args)
-                    must update :   status, rec_time, times, S, I, R,
-                    must also update : Q, pred_inf_time.
-                    In updating these last two, it calculates the 
-                       recovery time, and adds the event to Q.  
-                    It then calculates predicted times of transmission 
-                       to neighbors.  
-                    If before current earliest prediction, it will add
-                       appropriate transmission event to Q and update 
-                       this prediction.
+            Called by 
+            process_trans(G, time, node, times, S, I, R, Q, 
+            status, rec_time, pred_inf_time, \*args)
+            
+            must update :   status, rec_time, times, S, I, R,
+            
+            must also update : Q, pred_inf_time.
+            
+            In updating these last two, it calculates the 
+            recovery time, and adds the event to Q.  
+            
+            It then calculates predicted times of transmission 
+            to neighbors.  
+                    
+            If before current earliest prediction, it will add
+            appropriate transmission event to Q and update 
+            this prediction.
                        
         args: The final arguments going into process_trans.  
             If there is some reason to collect data about node that is 
@@ -1681,7 +1688,7 @@ def fast_SIS(G, tau, gamma, initial_infecteds=None, rho = None, tmax=100,
             is an error.
        
         rho : number
-            initial fraction infected. number is int(round(G.order()*rho))
+            initial fraction infected. number infected is int(round(G.order()*rho))
        
         tmax : number
             stop time
@@ -1694,7 +1701,7 @@ def fast_SIS(G, tau, gamma, initial_infecteds=None, rho = None, tmax=100,
         recovery_weight : string       (default None)
             a label for a weight given to the nodes to scale their 
             recovery rates
-                `gamma_i = G.node[i][recovery_weight]*gamma`
+            `gamma_i = G.node[i][recovery_weight]*gamma`
     
         return_full_data: boolean
             Tells whether the infection and recovery times of each 
@@ -2252,118 +2259,3 @@ def Gillespie_SIS(G, tau, gamma, initial_infecteds=None, rho = None, tmax=100,
 
 
 
-def visualize(G, plot_times, infection_times, recovery_times, pos = None, 
-                SIR = True, filetype = 'png', filenamebase = 'tmp', 
-                colorS = '#009a80', colorI = '#ff2020', 
-                colorR = 'gray', show_edges = True, plot_args = ()):
-    r''' 
-    Creates a set of plots showing statuses of nodes at different times.  By 
-    default, the plot for t = 1.3 would be put into "tmp1p3.png"
-    
-    Arguments:
-        G : NetworkX Graph
-        
-        plot_times : list (or array, maybe even a set)
-            collection of times to output plot
-        
-        infection_times : dict
-            infection_times[node] is a list of times (if SIS) or the time (if 
-            SIR) of infection of node.  If node is never infected, 
-            it does not appear in dict and is assumed susceptible throughout.
-            
-        recovery_times : dict
-            see infection_times, except this has time(s) of recovery.
-            
-        pos : dict, optional
-            the positions to plot nodes of G.  By default spring_layout is used.
-        
-        SIR : boolean, default True
-            True if the simulation is SIR, False if it is SIS.
-            
-        filetype : string (default 'png')
-            the type of figure to make.
-            
-        filenamebase : string (default 'tmp')
-            base name for output plot file names.
-            
-        colorS : default '#009a80'
-            something that will be interpreted as a color by matplotlib.  
-            Used to plot susceptible nodes.  Note, if using RGB as a tuple
-            of length 3, if there are 3 susceptible nodes, the tuple will
-            be interpreted as 3 different colors to use.
-            
-        colorI : default '#ff2020'
-            see colorS
-            
-        colorR : default 'gray'
-            see colorS
-            
-        show_edges : Boolean, default True
-            whether the edges should be plotted
-            
-        plot_args : tuple, default ()
-            arguments to be passed to the networkx drawing commands
-            draw_networkx_nodes and draw_networkx_edges.
-         
-         
-    :SAMPLE USE:
-
-    ::
-
-        import EoN
-        import networkx as nx
-        import matplotlib.pyplot as plt
-        
-        G = nx.fast_gnp_random_graph(100,0.06)
-        plot_times = scipy.linspace(0,10,101) #0, 0.1, 0.2, ..., 10
-        
-        #let's create 101 figures for an SIS epidemic
-        times, S, I, inf_times, rec_times = EoN.fast_SIS(G, 1., 1., return_full_data=True)
-        EoN.visualize(G, plot_times, inf_times, rec_times, filenamebase = 'tmpSIS', SIR = False)
-        
-        #let's create 101 figures for an SIR epidemic
-        times, S, I, R, inf_time, rec_time = EoN.fast_SIR(G, 1., 1., return_full_data=True)
-        EoN.visualize(G, plot_times, inf_time, filenamebase = 'tmpSIR', rec_time)
-        
-    '''
-    
-    if pos is None:
-        pos = nx.spring_layout(G)
-
-        
-    for time in plot_times:
-        plt.clf()
-        S = set()
-        I = set()
-        R = set()
-        if SIR:
-            for node in G.nodes():
-                if node not in infection_times or infection_times[node]>time:
-                    S.add(node)
-                elif recovery_times[node]>time:
-                    I.add(node)
-                else:
-                    R.add(node)    
-        else: #SIS
-            for node in G.nodes():
-                if node not in infection_times or infection_times[node][0]>time:
-                    S.add(node)
-                else: #has been infected at least once. I'm not taking advantage of ordering of lists. 
-                    time_of_last_inf = max(inftime for inftime in infection_times[node] if inftime<=time)
-                    if recovery_times[node][0]<time:
-                        time_of_last_rec = max(rectime for rectime in recovery_times[node] if rectime<=time)
-                    else:
-                        time_of_last_rec = -1
-                    if time_of_last_rec<time_of_last_inf: #most recent thing was infection
-                        I.add(node)
-                    else: #most recent thing was recovery.
-                        S.add(node)
-
-        nx.draw_networkx_nodes(G, pos = pos, node_color = colorS, nodelist = list(S), *plot_args)            
-        nx.draw_networkx_nodes(G, pos = pos, node_color = colorI, nodelist = list(I), *plot_args)            
-        nx.draw_networkx_nodes(G, pos = pos, node_color = colorR, nodelist = list(R), *plot_args)
-        if show_edges:
-            nx.draw_networkx_edges(G, pos, *plot_args)
-        plt.savefig(filenamebase+str(time).replace('.', 'p')+'.'+filetype)
-                
-    

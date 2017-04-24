@@ -20,3 +20,5 @@ The package is built using tools from NetworkX_.
 
    Getting Started <GettingStarted>
    EoN 
+   Function Documentation <documentation>
+   
