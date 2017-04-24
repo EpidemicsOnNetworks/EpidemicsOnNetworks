@@ -11,6 +11,14 @@ Simulation Toolkit
     :undoc-members:
     :show-inheritance:
 
+.. currentmodule:: EoN.simulation
+
+.. autosummary::
+   :toctree: functions
+   
+   fast_SIR
+   fast_SIS
+
 Analytic Toolkit
 ----------------
 .. automodule:: EoN.analytic

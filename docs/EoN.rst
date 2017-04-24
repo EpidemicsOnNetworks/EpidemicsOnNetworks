@@ -227,7 +227,7 @@ The numbers given below are the equation numbers in the book.
        
     - System (6.5) As in 6.2, but with user-specified transmission rules
       
-       - **Epi_Prob_non_Markovian**
+       - **Epi_Prob_non_Markovian** 
        
     - System (6.6) Given a degree distribution, initial proportion infected, and transmission probability, find attack rate.
       See also System (6.10).
