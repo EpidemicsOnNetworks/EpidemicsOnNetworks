@@ -13,28 +13,29 @@ def subsample(report_times, times, status1, status2=None,
       subsampled at specific report_times.
     
 
-    :INPUTS:
+    Arguments:
 
-    report_times : iterable (ordered)
-                   times at which we want to know state of system
+        report_times : iterable (ordered)
+            times at which we want to know state of system
                    
-    times : iterable (ordered)
+        times : iterable (ordered)
             times at which we have the system state (assumed no change 
             between these times)
             
-    statusX (X one of 1, 2 or 3) : iterable (order corresponds to times)
+        statusX (X one of 1, 2 or 3) : iterable (order corresponds to times)
                           generally S, I, or R
                           number of nodes in given status.
-    :RETURNS:
+    Returns:
 
-    If only status1 is defined
-        report_status1 : scipy array gives status1 subsampled just at 
-                         report_times.
+        :
+        If only status1 is defined
+            report_status1 : scipy array gives status1 subsampled just at 
+                 report_times.
                      
-    If more are defined then it returns a list, either
-        [report_status1, report_status2]
-    or
-        [report_status1, report_status2, report_status3]
+        If more are defined then it returns a list, either
+            [report_status1, report_status2]
+        or
+            [report_status1, report_status2, report_status3]
 
     :SAMPLE USE:
 
@@ -131,9 +132,9 @@ def get_time_shift(times, L, threshold):
             a threshold value
 
     Returns:
-        : 
-        t : number
-            the first time at which L reaches or exceeds a threshold.
+        :
+            t  (number)
+                the first time at which L reaches or exceeds a threshold.
 
     :SAMPLE USE:
 
@@ -145,14 +146,15 @@ def get_time_shift(times, L, threshold):
         import matplotlib.pyplot as plt
 
         """ in this example we will run 20 stochastic simulations.
-            We will produce one plot showing the unshifted
-            curves and one with them shifted so that t=0 when 1%
-            are in the I class.
+            We plot the unshifted curves (grey) and the curves shifted 
+            so that t=0 when 1% have been infected (I+R = 0.01N) (red)
         """
-        N=1000000
+        plt.clf() # just clearing any previous plotting.
+        
+        N=100000
         kave = 10.
         G = nx.fast_gnp_random_graph(N,kave/(N-1.))
-        tau = 1.
+        tau = 0.2
         gamma = 1.
         report_times = scipy.linspace(0,5,101)
         Ssum = scipy.zeros(len(report_times))
@@ -163,10 +165,11 @@ def get_time_shift(times, L, threshold):
             R=[0]
             while R[-1]<1000: #if an epidemic doesn't happen, repeat
                 t, S, I, R = EoN.fast_SIR(G, tau, gamma)
+                print R[-1]
             plt.plot(t, I, linewidth = 1, color = 'gray', alpha=0.4)
-            tshift = EoN.get_time_shift(t, I, 0.01*kave)
+            tshift = EoN.get_time_shift(t, I+R, 0.01*N)
             plt.plot(t-tshift, I, color = 'red', linewidth = 1, alpha = 0.4)
-        plt.savefig("tmp.pdf")
+        plt.savefig("timeshift_demonstration.pdf")
     '''
     for index, t in enumerate(times):
         if L[index]>= threshold:
